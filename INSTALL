@@ -1,0 +1,23 @@
+#
+#  (COPYRIGHT) Copyright (C) 2008, 2009, The ONS Team.
+#  This file is part of ONS, see COPYING for details.
+#
+
+ONS is distributed with the GNU autotools. However, there are ways to install
+ONS on platforms without the GNU autotools. For further information look into
+the documentation.
+
+Autotools:
+Please change into the ./libraries directory and execute the common commands to
+install programs with the GNU autotools:
+ -- ./configure --help=short
+ -- ./configure [probably options]
+ -- make
+ -- su -
+ -- make install
+ -- exit
+
+Please look into the documentation to get a detailed explanation how to install
+ONS with autotools. The documentation contains also information about how to
+install ONS on supported platforms that do not use GNU autotools.
+

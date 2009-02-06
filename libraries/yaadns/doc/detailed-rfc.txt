@@ -1,0 +1,365 @@
+#
+#  (COPYRIGHT) Copyright (C) 2008, 2009, The ONS Team.
+#  This file is part of ONS, see COPYING for details.
+#
+
+#
+# File information:
+# - Created: 21. March 2008
+# - Lead-Dev: - David Herrmann
+# - Contributors: /
+# - Last-Change: 27. December 2008
+#
+
+
+######                                       ######
+## Almost all DNS RFCs with a brief description: ##
+######                                       ######
+
+
+881 - Outlines a plan for domain names in the ARPA-NET.
+897 - Implementation schedule of the DNS in the internet.
+921 - Revision of the RFCs 881/897.
+952 - Revised definition of the DoD hosts.txt on SRI-NIC.
+1032 - Domain registration guideline at NIC (DDN).
+     - Should be used in conjunction with RFC 920.
+1033 - Shows Domain admins how to maintain their part in the DNS.
+1034 - Describes the main facilities of the DNS protocol.
+1035 - Shows details to the RFC 1034.
+1101 - Shows how to get network information through DNS.
+     - Allows mapping of network addresses to network numbers.
+     - *.in-addr.arpa A RRs are mapped to subnet masks.
+1123 - Defines which actions must be supported by internet hosts including
+       the DNS.
+1183 - new RRs: AFS Data Base location RR, Responsible Person RR,
+       X25 RR, ISDN RR, Route Through RR
+1383 - Some ideas in routing through DNS and some other discussions.
+1401 - Shows 3 letters between IAB and DISA trying to clarify about the future
+       domain name system.
+1464 - Shows how to use TXT records to store arbitrary information. Uses a key
+       value architecture.
+1480 - Structure of the *.us. domain name.
+1535 - Shows a security problem with widely deployed DNS software and non rooted
+       FQDNs.
+1536 - Common DNS implementation errors and suggested fixes.
+1591 - Domain name system structure and delegation.
+1611 - Server portion of Management Information Base (MIB) with network
+       management protocols.
+1612 - Client portion of Management Information Base (MIB) with network
+       management protocols.
+1706 - NSAP resource records and NSAP name translation.
+1712 - Encoding of geographical information.
+1713 - Domain name system debug facilities and software.
+1794 - Domain name system support for load balancing.
+1876 - Encoding of geographical information.
+1912 - Common DNS operational and configuration errors.
+1982 - Serial number arithmetics.
+1995 - Incremental zone transfer protocol (IXFR).
+1996 - DNS NOTIFY mechanism for prompt notification of zone changes.
+2136 - New OPCODE: UPDATE
+     - Allows dynamic updates to a zone file of a nameserver.
+2163 - Using the internet DNS to distribute MIXER conformant global address
+       mapping (MCGAM).
+2181 - Clarifications to the DNS specification.
+2182 - Selection and operation of secondary dns servers.
+2219 - Use of DNS aliases for several services.
+     - Declaration of the "www" abbreviation.
+2230 - Key Exchange Delegation Record for the DNS.
+2308 - Negative caching of DNS queries.
+2317 - Classless in-addr.arpa delegation.
+2536 - DSA KEYs and SIGs in the Domain Name System (DNS).
+2539 - Storage of Diffie-Hellman Keys in the Domain Name System (DNS)
+2540 - Detached Domain Name System (DNS) Information.
+2606 - Reserved Top Level DNS Names.
+2671 - Extension Mechanisms for DNS (EDNS0).
+2672 - Non-terminal dns name redirection, DName RR.
+2673 - Binary labels in the Domain Name System.
+2782 - A DNS RR for specifying the location of services (DNS SRV).
+2825 - I18n issues and domain names (Unicode?).
+2826 - Technical comment on the unique of the DNS root.
+2845 - Secret Key Transaction Authentication for DNS (TSIG)
+2870 - Root Name Server Operational Requirements.
+2874 - DNS Extensions to Support IPv6 Address Aggregation and Renumbering.
+     - A6 RR.
+2929 - IANA considerations - Current summary of the DNS structures.
+2930 - Secret Key Establishment for DNS (TKEY RR).
+2931 - DNS Request and Transaction Signatures ( SIG(0)s ).
+3007 - Secure Domain Name System (DNS) Dynamic Update.
+3071 - Reflections on the DNS, RFC 1591, and Categories of Domains.
+3110 - RSA/SHA-1 SIGs and RSA KEYs in the Domain Name System (DNS).
+3123 - A DNS RR Type for Lists of Address Prefixes (APL RR).
+3130 - A memo for the "actual" state of DNSSEC.
+3225 - Indicating of DNSSEC support in resolvers.
+3226 - DNSSEC and IPv6 A6 aware server/resolver message size requirements.
+3258 - Distributing Authoritative Name Servers via Shared Unicast Addresses.
+3368 - The 'go' URI Scheme for the Common Name Resolution Protocol.
+3363 - Describes the recommended behaviour in handling A6 and AAAA records.
+3364 - Describes the recommended behaviour in handling A6 and AAAA records.
+3401 - Dynamic Delegation Discovery System (DDDS).
+     - Part One: The Comprehensive DDDS.
+3402 - Dynamic Delegation Discovery System (DDDS).
+     - Part Two: The Algorithm.
+3403 - Dynamic Delegation Discovery System (DDDS).
+     - Part Three: The Domain Name System (DNS) Database.
+3404 - Dynamic Delegation Discovery System (DDDS).
+     - Part Four: The Uniform Resource Identifiers (URI) Resolution Application.
+3405 - Dynamic Delegation Discovery System (DDDS).
+     - Part Five: URI.ARPA Assignment Procedures.
+3425 - Obsoletes IQuery.
+3467 - Role of the Domain Name System (DNS).
+3490 - Internationalizing Domain Names in Applications (IDNA).
+3491 - Nameprep: A Stringprep Profile for Internationalized Domain Names (IDN).
+3492 - Punycode: A Bootstring encoding of Unicode for Internationalized Domain
+       Names in Applications (IDNA).
+3596 - AAAA RR type declaration and definition.
+3597 - Handling of Unknown DNS Resource Record (RR) Types.
+3645 - Generic Security Service Algorithm for Secret Key Transaction
+       Authentication for DNS (GSS-TSIG).
+3646 - DNS Configuration options for Dynamic Host Configuration Protocol
+       for IPv6.
+3681 - Delegation of E.F.F.3.IP6.ARPA.
+3743 - Joint Engineering Team (JET) Guidelines for Internationalized Domain
+       Names (IDN) Registration and Administration for Chinese, Japanese, and
+       Korean.
+3761 - The E.164 to Uniform Resource Identifiers (URI) Dynamic Delegation
+       Discovery System (DDDS) Application (ENUM).
+3762 - Telephone Number Mapping (ENUM) Service Registration for H.323.
+3764 - enumservice registration for Session Initiation Protocol (SIP)
+       Addresses-of-Record.
+3833 - Threat Analysis of the Domain Name System (DNS).
+3901 - DNS IPv6 Transport Operational Guidelines.
+3958 - Domain-Based Application Service Location Using SRV RRs and the Dynamic
+       Delegation Discovery Service (DDDS).
+4025 - A Method for Storing IPsec Keying Material in DNS.
+4027 - Domain Name System Media Types.
+4033 - DNS Security Introduction and Requirements.
+4034 - Resource Records for the DNS Security Extensions.
+4035 - Protocol Modifications for the DNS Security Extensions.
+4074 - Common Misbehavior Against DNS Queries for IPv6 Addresses.
+4183 - A Suggested Scheme for DNS Resolution of Networks and Gateways.
+4185 - National and Local Characters for DNS Top Level Domain (TLD) Names.
+4255 - Using DNS to Securely Publish Secure Shell (SSH) Key Fingerprints.
+     - SSHFP RR.
+4310 - Domain Name System (DNS) Security Extensions Mapping for the Extensible
+       Provisioning Protocol (EPP).
+4339 - IPv6 Host Configuration of DNS Server Information Approaches.
+4343 - Domain Name System (DNS) Case Insensitivity Clarification.
+4367 - What's in a Name: False Assumptions about DNS Names.
+4398 - Storing Certificates in the Domain Name System (DNS).
+4431 - The DNSSEC Lookaside Validation (DLV) DNS Resource Record.
+4470 - Minimally Covering NSEC Records and DNSSEC On-line Signing.
+4471 - Derivation of DNS Name Predecessor and Successor.
+4472 - Operational Considerations and Issues with IPv6 DNS.
+4501 - Domain Name System Uniform Resource Identifiers.
+4509 - Use of SHA-256 in DNSSEC Delegation Signer (DS) Resource Records (RRs).
+4592 - The Role of Wildcards in the Domain Name System.
+4635 - HMAC SHA TSIG Algorithm Identifiers.
+4641 - DNSSEC Operational Practices.
+4690 - Review and Recommendations for Internationalized Domain Names (IDNs).
+4697 - Observed DNS Resolution Misbehavior.
+4701 - A DNS Resource Record (RR) for Encoding Dynamic Host Configuration
+       Protocol (DHCP) Information (DHCID RR).
+4848 - Domain-Based Application Service Location Using URIs and the Dynamic
+       Delegation Discovery Service (DDDS).
+4892 - Requirements for a Mechanism Identifying a Name Server Instance.
+4955 - DNS Security (DNSSEC) Experiments.
+4956 - DNS Security (DNSSEC) Opt-In.
+4986 - Requirements Related to DNS Security (DNSSEC) Trust Anchor Rollover.
+5001 - DNS Name Server Identifier (NSID) Option.
+5006 - IPv6 Router Advertisement Option for DNS Configuration.
+5011 - Automated Updates of DNS Security (DNSSEC) Trust Anchors.
+5074 - DNSSEC Lookaside Validation (DLV).
+5155 - DNS Security (DNSSEC) Hashed Authenticated Denial of Existence.
+5158 - 6to4 Reverse DNS Delegation Specification.
+
+
+Main DNS functionality (CORE):
+ - RFCs:
+    1034 - Describes the main facilities of the DNS protocol.
+    1035 - Shows details to the RFC 1034.
+ - Implemented in core library.
+
+Information about the core DNS (ICORE [I=information]):
+ - RFCs:
+    1101 - Shows how to get network information through DNS.
+         - Allows mapping of network addresses to network numbers.
+         - *.in-addr.arpa A RRs are mapped to subnet masks.
+    1123 - Defines which actions must be supported by internet hosts including
+           the DNS.
+    1383 - Some ideas in routing through DNS and some other discussions.
+    1535 - Shows a security problem with widely deployed DNS software and non rooted
+           FQDNs.
+    1536 - Common DNS implementation errors and suggested fixes.
+    1591 - Domain name system structure and delegation.
+    1713 - Domain name system debug facilities and software.
+    1794 - Domain name system support for load balancing.
+    1912 - Common DNS operational and configuration errors.
+    2181 - Clarifications to the DNS specification.
+    2308 - Negative caching of DNS queries.
+    2540 - Detached Domain Name System (DNS) Information.
+    3425 - Obsoletes IQuery.
+    3597 - Handling of Unknown DNS Resource Record (RR) Types.
+    4343 - Domain Name System (DNS) Case Insensitivity Clarification.
+    4367 - What's in a Name: False Assumptions about DNS Names.
+    4592 - The Role of Wildcards in the Domain Name System.
+    4697 - Observed DNS Resolution Misbehavior.
+ - Recognized (or not) while developing yaadns.
+
+Additional information (AINFO):
+ - RFCs:
+    1401 - Shows 3 letters between IAB and DISA trying to clarify about the future
+           domain name system.
+    2606 - Reserved Top Level DNS Names.
+    2826 - Technical comment on the unique of the DNS root.
+    2929 - IANA considerations - Current summary of the DNS structures.
+    3467 - Role of the Domain Name System (DNS).
+    3833 - Threat Analysis of the Domain Name System (DNS).
+ - Recognized in yaadns.
+
+I18n issues (I18N or IDN):
+ - RFCs:
+    2825 - I18n issues and domain names (Unicode?).
+    3490 - Internationalizing Domain Names in Applications (IDNA).
+    3491 - Nameprep: A Stringprep Profile for Internationalized Domain Names (IDN).
+    3492 - Punycode: A Bootstring encoding of Unicode for Internationalized Domain
+           Names in Applications (IDNA).
+    3743 - Joint Engineering Team (JET) Guidelines for Internationalized Domain
+           Names (IDN) Registration and Administration for Chinese, Japanese, and
+           Korean.
+    4690 - Review and Recommendations for Internationalized Domain Names (IDNs).
+ - Implemented in yaadns.
+
+Additional RRs/Extensions (EXT):
+ - RFCs:
+    1183 - new RRs: AFS Data Base location RR, Responsible Person RR,
+           X25 RR, ISDN RR, Route Through RR
+    1464 - Shows how to use TXT records to store arbitrary information. Uses a key
+           value architecture.
+    1706 - NSAP resource records and NSAP name translation.
+    1712 - Encoding of geographical information.
+    1876 - Encoding of geographical information.
+    1995 - Incremental zone transfer protocol (IXFR).
+    1996 - DNS NOTIFY mechanism for prompt notification of zone changes.
+    2136 - New OPCODE: UPDATE
+         - Allows dynamic updates to a zone file of a nameserver.
+    2671 - Extension Mechanisms for DNS (EDNS0).
+    2672 - Non-terminal dns name redirection, DName RR.
+    2673 - Binary labels in the Domain Name System.
+    2782 - A DNS RR for specifying the location of services (DNS SRV).
+    3123 - A DNS RR Type for Lists of Address Prefixes (APL RR).
+    4701 - A DNS Resource Record (RR) for Encoding Dynamic Host Configuration
+           Protocol (DHCP) Information (DHCID RR).
+    4892 - Requirements for a Mechanism Identifying a Name Server Instance.
+    5001 - DNS Name Server Identifier (NSID) Option.
+ - Partly supported.
+
+IPv6 Extension (IPV6):
+ - RFCs:
+    2874 - DNS Extensions to Support IPv6 Address Aggregation and Renumbering.
+         - A6 RR.
+    3363 - Describes the recommended behaviour in handling A6 and AAAA records.
+    3364 - Describes the recommended behaviour in handling A6 and AAAA records.
+    3596 - AAAA RR type declaration and definition.
+    3646 - DNS Configuration options for Dynamic Host Configuration Protocol
+           for IPv6.
+    3681 - Delegation of E.F.F.3.IP6.ARPA.
+    3901 - DNS IPv6 Transport Operational Guidelines.
+    4074 - Common Misbehavior Against DNS Queries for IPv6 Addresses.
+    4339 - IPv6 Host Configuration of DNS Server Information Approaches.
+    4472 - Operational Considerations and Issues with IPv6 DNS.
+    5006 - IPv6 Router Advertisement Option for DNS Configuration.
+    5158 - 6to4 Reverse DNS Delegation Specification.
+ - Modulized in yaadns.
+
+DNSSEC Extension (DNSSEC):
+ - RFCs:
+    2230 - Key Exchange Delegation Record for the DNS.
+    2536 - DSA KEYs and SIGs in the Domain Name System (DNS).
+    2539 - Storage of Diffie-Hellman Keys in the Domain Name System (DNS)
+    2845 - Secret Key Transaction Authentication for DNS (TSIG)
+    2930 - Secret Key Establishment for DNS (TKEY RR).
+    2931 - DNS Request and Transaction Signatures ( SIG(0)s ).
+    3007 - Secure Domain Name System (DNS) Dynamic Update.
+    3110 - RSA/SHA-1 SIGs and RSA KEYs in the Domain Name System (DNS).
+    3130 - A memo for the "actual" state of DNSSEC.
+    3225 - Indicating of DNSSEC support in resolvers.
+    3226 - DNSSEC and IPv6 A6 aware server/resolver message size requirements.
+    3645 - Generic Security Service Algorithm for Secret Key Transaction
+           Authentication for DNS (GSS-TSIG).
+    4025 - A Method for Storing IPsec Keying Material in DNS.
+    4033 - DNS Security Introduction and Requirements.
+    4034 - Resource Records for the DNS Security Extensions.
+    4035 - Protocol Modifications for the DNS Security Extensions.
+    4255 - Using DNS to Securely Publish Secure Shell (SSH) Key Fingerprints.
+         - SSHFP RR.
+    4310 - Domain Name System (DNS) Security Extensions Mapping for the Extensible
+           Provisioning Protocol (EPP).
+    4398 - Storing Certificates in the Domain Name System (DNS).
+    4431 - The DNSSEC Lookaside Validation (DLV) DNS Resource Record.
+    4470 - Minimally Covering NSEC Records and DNSSEC On-line Signing.
+    4471 - Derivation of DNS Name Predecessor and Successor.
+    4509 - Use of SHA-256 in DNSSEC Delegation Signer (DS) Resource Records (RRs).
+    4635 - HMAC SHA TSIG Algorithm Identifiers.
+    4641 - DNSSEC Operational Practices.
+    4955 - DNS Security (DNSSEC) Experiments.
+    4956 - DNS Security (DNSSEC) Opt-In.
+    4986 - Requirements Related to DNS Security (DNSSEC) Trust Anchor Rollover.
+    5011 - Automated Updates of DNS Security (DNSSEC) Trust Anchors.
+    5074 - DNSSEC Lookaside Validation (DLV).
+    5155 - DNS Security (DNSSEC) Hashed Authenticated Denial of Existence.
+ - Not yet supported.
+
+DDDS Extension (DDDS):
+ - RFCs:
+    3401 - Dynamic Delegation Discovery System (DDDS).
+         - Part One: The Comprehensive DDDS.
+    3402 - Dynamic Delegation Discovery System (DDDS).
+         - Part Two: The Algorithm.
+    3403 - Dynamic Delegation Discovery System (DDDS).
+         - Part Three: The Domain Name System (DNS) Database.
+    3404 - Dynamic Delegation Discovery System (DDDS).
+         - Part Four: The Uniform Resource Identifiers (URI) Resolution Application.
+    3405 - Dynamic Delegation Discovery System (DDDS).
+         - Part Five: URI.ARPA Assignment Procedures.
+    3761 - The E.164 to Uniform Resource Identifiers (URI) Dynamic Delegation
+           Discovery System (DDDS) Application (ENUM).
+    3762 - Telephone Number Mapping (ENUM) Service Registration for H.323.
+    3764 - enumservice registration for Session Initiation Protocol (SIP)
+           Addresses-of-Record.
+    3958 - Domain-Based Application Service Location Using SRV RRs and the Dynamic
+           Delegation Discovery Service (DDDS).
+    4848 - Domain-Based Application Service Location Using URIs and the Dynamic
+           Delegation Discovery Service (DDDS).
+ - Not yet supported nor recognized.
+
+Unsupported Extensions (UNSUPP):
+ - RFCs:
+    881 - Outlines a plan for domain names in the ARPA-NET.
+    897 - Implementation schedule of the DNS in the internet.
+    921 - Revision of the RFCs 881/897.
+    952 - Revised definition of the DoD hosts.txt on SRI-NIC.
+    1032 - Domain registration guideline at NIC (DDN).
+         - Should be used in conjunction with RFC 920.
+    1033 - Shows Domain admins how to maintain their part in the DNS.
+    1480 - Structure of the *.us. domain name.
+    1611 - Server portion of Management Information Base (MIB) with network
+           management protocols.
+    1612 - Client portion of Management Information Base (MIB) with network
+           management protocols.
+    1982 - Serial number arithmetics.
+    2163 - Using the internet DNS to distribute MIXER conformant global address
+           mapping (MCGAM).
+    2182 - Selection and operation of secondary dns servers.
+    2219 - Use of DNS aliases for several services.
+         - Declaration of the "www" abbreviation.
+    2317 - Classless in-addr.arpa delegation.
+    2870 - Root Name Server Operational Requirements.
+    3071 - Reflections on the DNS, RFC 1591, and Categories of Domains.
+    3258 - Distributing Authoritative Name Servers via Shared Unicast Addresses.
+    3368 - The 'go' URI Scheme for the Common Name Resolution Protocol.
+    4027 - Domain Name System Media Types.
+    4183 - A Suggested Scheme for DNS Resolution of Networks and Gateways.
+    4185 - National and Local Characters for DNS Top Level Domain (TLD) Names.
+    4501 - Domain Name System Uniform Resource Identifiers.
+ - Not yet supported nor recognized.
+

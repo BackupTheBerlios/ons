@@ -1,0 +1,103 @@
+#
+#  (COPYRIGHT) Copyright (C) 2008, 2009, The ONS Team.
+#  This file is part of ONS, see COPYING for details.
+#
+
+#
+# File information:
+# - Created: 18. May 2008
+# - Lead-Dev: - David Herrmann
+# - Contributors: /
+# - Last-Change: [Last changelog entry]
+#
+
+TODO >1.0:
+ - nothing
+
+TODO =1.0:
+ - complete rules and guidelines
+ - add FAQ
+ - better overview of ONS
+ - Update documentation (replace libsaw with SAW).
+ - ROADMAP
+ - Better sorting algorithms in mem_array and mem_llist.
+ - Dynamic hash tables (linear hashing?).
+ - Update Makefile.win32.
+ - DECLARE_ARRAY_* should be DEFINE_ARRAY_*.
+ - FIP:
+    - Add network interface handling (if.h)
+    - Add control message handling (cmsg.h)
+    - Add simple udp interface (udp.h)
+    - Add simple tcp interface (tcp.h)
+    - Add simple file interface (file.h)
+    - Add all options to options.h.
+    - Implement multicast support.
+    - Add ioctl-options support.
+    - File socket support (especially file errors)
+    - Add signal handler (remove and add into event library)
+    - Improve error code catching in socket functions.
+    - Finish error code grouping.
+    - Add Win/BSD compatibility layer
+    - Add debug info
+    - writev and readv
+
+[ ONS v0.1.1.0 (TESTING) ]
+    * David Herrmann 2009/01/31
+        - Add CGI API.
+    * David Herrmann 2009/01/17
+        - Remove automake dependencies and use own makefiles.
+        - cgi.c: Implement form data parser.
+        - Create saw_port_t typedef.
+    * David Herrmann 2009/01/05
+        - Add (fast)CGI parser.
+    * David Herrmann 2009/01/04
+        - Happy Birthday gix.
+        - Start ONS documentation in form of tutorials. References
+          are still in progress.
+    * David Herrmann 2009/01/02
+        - Add threading wrapper into ONS.
+        - Implement dualstack socket option.
+    * David Herrmann 2009/01/01
+        - Update copyright headers.
+    * David Herrmann 2008/12/29
+        - Implement ISAAC+ RNG and fast unbiased non-cryptographic RNG.
+    * David Herrmann 2008/12/28
+        - ONS review. Add Windows support to ons.
+        - Chang license to PUBLIC DOMAIN.
+        - Clean up source directory.
+        - Update scripts and plaintext files.
+    * David Herrmann 2008/12/26
+        - Add Libsaw configure checks.
+        - Add SAW library.
+        - Add FIP library.
+        - Start yaadns library.
+    * David Herrmann 2008/12/25
+        - Implement memoria as a memory library.
+    * David Herrmann 2008/12/22
+        - Make libons containing main setup for all libraries.
+        - Updated root directory to include the new information.
+        - example: Remove whole directory.
+    * David Herrmann 2008/12/22
+        - Integrate the libraries into ONS.
+    * David Herrmann 2008/11/21
+        - documentation.htm: write rules and guidelines
+          which are part of first ONS release. Short
+          overview of the Libsaw library and WIP notice
+          on all other projects.
+
+[ ONS v0.0.0.1 (OLD) ]
+    * David Herrmann 2008/11/21
+        - Merged ONS and ONS Project into ONS.
+        - documentation.htm: write brief overview and
+          finish table of contents
+    * David Herrmann 2008/11/17
+        - Reviewed the files.
+        - Added INSTALL file.
+        - Added documentation template.
+    * David Herrmann 2008/09/09
+        - Added example project files.
+    * David Herrmann 2008/09/08
+        - Wrote README and COPYRIGHT.
+        - ONS is dedicated to public domain.
+    * David Herrmann 2008/09/08
+        - Created the ONS project.

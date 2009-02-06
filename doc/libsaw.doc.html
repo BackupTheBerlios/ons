@@ -1,0 +1,1843 @@
+<!--
+  - (COPYRIGHT) Copyright (C) 2008, The ONS Team.
+  - This file is part of ONS, see COPYING for details.
+  -->
+
+<!--
+  - File Information:
+  - Created: 27. September 2008
+  - Lead-Dev: - David Herrmann
+  - Contributors: /
+  - Last-Change: [ see "last updated" below ]
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Saw Library - Official Documentation</title>
+    <meta name="author" content="The ONS Team" />
+    <meta name="description" content="Documentation of the Saw library." />
+    <meta name="keywords" content="saw, socket, address, ipv4, ipv6, wrapper, internet protocol" />
+    <meta name="robots" content="index" />
+    <style type="text/css">
+    <!--
+    body {
+        padding: 0px;
+        margin: 20px;
+        border: 0px;
+        text-align: justify;
+    }
+    #header {
+        text-align: center;
+        height: 200px;
+    }
+    #actual_state {
+        width: 400px;
+        position: absolute;
+        left: 50%;
+        margin: 0 -200px;
+    }
+    #actual_state dt {
+        float: left;
+        clear: both;
+        font-weight: bold;
+    }
+    #actual_state dt:after {
+        content: ":";
+    }
+    #actual_state dd {
+        float: right;
+    }
+    #people dt {
+        font-weight: bold;
+    }
+    #people dt:after {
+        content: ":";
+    }
+    .box {
+        background-color: #e9ffe8;
+        border: 1px solid black;
+        padding: 10px;
+    }
+    .warnbox {
+        background-color: red;
+        border: 1px solid black;
+        padding: 10px;
+        font-weight: bold;
+    }
+    .box .head {
+        background-color: #7be778;
+    }
+    code {
+        background-color: #e9ffe8;
+        padding: 2px;
+    }
+    #table_of_contents li {
+        list-style: none;
+    }
+    #table_of_contents .toc_layer1 {
+        margin-left: 20px;
+    }
+    #about_license {
+        width: 80ex;
+        margin-left: 20px;
+        border: 1px solid black;
+        padding: 10px;
+    }
+    .shell {
+        background-color: #7be778;
+        border: 1px solid black;
+        margin: 10px;
+    }
+    .shell code {
+        display: block;
+        background-color: #e9ffe8;
+        padding-top: 5px;
+        padding-bottom: 15px;
+        padding-left: 10px;
+    }
+    #inet_ipv4_structure dd {
+        margin-bottom: 10px;
+    }
+    #inet_ipv4_structure dd dd {
+        margin-bottom: 0px;
+    }
+    #inet_ipv4_structure dd dt {
+        font-weight: 600;
+    }
+    #inet_ipv6_structure dd {
+        margin-bottom: 10px;
+    }
+    #inet_ipv6_structure dd dd {
+        margin-bottom: 0px;
+    }
+    #inet_ipv6_structure dd dt {
+        font-weight: 600;
+    }
+    #inet_ipvx_structure dd {
+        margin-bottom: 10px;
+    }
+    #inet_ipvx_structure dd dd {
+        margin-bottom: 0px;
+    }
+    #inet_ipvx_structure dd dt {
+        font-weight: 600;
+    }
+    #local_structure dd {
+        margin-bottom: 10px;
+    }
+    #local_structure dd dd {
+        margin-bottom: 0px;
+    }
+    #local_structure dd dt {
+        font-weight: 600;
+    }
+    #addr_structure dd {
+        margin-bottom: 10px;
+    }
+    #addr_structure dd dd {
+        margin-bottom: 0px;
+    }
+    #addr_structure dd dt {
+        font-weight: 600;
+    }
+    #inet_ipv6_example dl dd:before {
+        content: "\2192\00A0";
+    }
+    #inet_ipv6_example dl {
+        font-family: Monospace;
+    }
+    .ipv6 {
+        color: red;
+        font-weight: bold;
+    }
+    a img {
+        border: 0;
+    }
+    #w3c {
+        text-align: center;
+    }
+    .prac_bsd {
+        background-color: #ff7a7a;
+        width: 60%;
+    }
+    .prac_saw {
+        background-color: #a7ff84;
+        width: 60%;
+    }
+    .prac_group {
+        border: 1px solid black;
+        padding: 10px;
+    }
+    -->
+    </style>
+  </head>
+  <body>
+    <div id="header">
+      <h1 id="main_headline">
+        <acronym title="Socket Address Wrapper Library">Saw Library</acronym>
+      </h1>
+      <span id="main_underline">The Socket Address Wrapper Library.</span>
+      <dl id="actual_state">
+        <dt>Version</dt>
+          <dd>2.0.0.0</dd>
+        <dt>Last doc update</dt>
+          <dd>2008-12-28</dd>
+        <dt>Homepage</dt>
+          <dd>N/A</dd>
+      </dl>
+    </div>
+
+    <div id="people">
+      <dl>
+        <dt>Developers</dt>
+        <dd>David Herrmann</dd>
+        <dt>Contributors</dt>
+        <dd>/</dd>
+        <dt>Documentation/Doc-Contributors</dt>
+        <dd>David Herrmann</dd>
+        <dt id="contact">Contact</dt>
+        <dd>dh DOT herrmann AT gmail DOT com</dd>
+      </dl>
+    </div>
+
+    <div id="premises" class="box">
+      <span id="premises_warning">
+        This documentation uses modern techniques to display the information in a standard compliant and user readable mode. If you have no
+        browser with these requirements this document should be readable with few display failures, anyway.
+        Requirements to show this document correctly is a browser compliant to:
+      </span>
+      <ul id="premises_list">
+        <li>XHTML 1.0</li>
+        <li>CSS 2.1</li>
+      </ul>
+    </div>
+
+    <!-- Table of Contents (TOC) -->
+    <div id="table_of_contents">
+      <h1 id="index_table_of_contents">0. Table of Contents</h1>
+      <ol>
+        <li><a href="#index_table_of_contents">0. Table of Contents</a></li>
+        <li><a href="#index_about">1. About Libsaw</a></li>
+        <li><a href="#index_about_license" class="toc_layer1">1.1. Copyright Notice</a></li>
+        <li><a href="#index_about_overview" class="toc_layer1">1.2. Overview</a></li>
+        <li><a href="#index_about_upgrade" class="toc_layer1">1.3. Notes on Upgrading</a></li>
+        <li><a href="#index_install">2. Installation &amp; Compiling</a></li>
+        <li><a href="#index_overview">3. Overview</a></li>
+        <li><a href="#index_inet">4. Internet Protocol Address Interface</a></li>
+        <li><a href="#index_inet_ipv4" class="toc_layer1">4.1. IPv4 Address Interface</a></li>
+        <li><a href="#index_inet_ipv6" class="toc_layer1">4.2. IPv6 Address Interface</a></li>
+        <li><a href="#index_inet_ipvx" class="toc_layer1">4.3. IPvX Address Interface</a></li>
+        <li><a href="#index_local">5. Local Address Interface</a></li>
+        <li><a href="#index_addr">6. Address Interface</a></li>
+        <li><a href="#index_practice">7. Practice</a></li>
+        <li><a href="#index_faq">8. FAQ</a></li>
+      </ol>
+    </div>
+
+    <div id="about">
+      <h1 id="index_about">1. About Libsaw</h1>
+      <h2 id="index_about_license">1.1. Copyright Notice</h2>
+      <div id="about_license">
+        This documentation of Libsaw is licensed under a similar version to the FreeBSD-Doc license.<br />
+        This is NOT the license of Libsaw. Libsaw is licensed under the FreeBSD-License (2-clause BSD License).
+        The Libsaw license is shown below this one.<br />
+        <h4>Documentation License:</h4>
+        Copyright (c) 2008, The Libsaw Team.<br />
+        All rights reserved.<br />
+        <br />
+        Redistribution and use in source (SGML DocBook) and 'compiled' forms (SGML, HTML, PDF, PostScript, RTF and so forth)
+        with or without modification, are permitted provided that the following conditions are met:<br />
+        <br />
+        1. Redistributions of source code (SGML DocBook) must retain the above copyright notice, this list of conditions and
+        the following disclaimer as the first lines of this file unmodified.<br />
+        2. Redistributions in compiled form (transformed to other DTDs, converted to PDF, PostScript, RTF and other formats)
+        must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation
+        and/or other materials provided with the distribution.<br />
+        <br />
+        THIS DOCUMENTATION IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+        INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+        DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+        EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+        LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+        CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+        DOCUMENTATION, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.<br />
+        <h4>Libsaw License:</h4>
+        Copyright (c) 2008, The Libsaw Team.<br />
+        All rights reserved.<br />
+        <br />
+        Redistribution and use in source and binary forms, with or without modification,
+        are permitted provided that the following conditions are met:<br />
+        <br />
+            * Redistributions of source code must retain the above copyright notice,
+              this list of conditions and the following disclaimer.<br />
+            * Redistributions in binary form must reproduce the above copyright notice,
+              this list of conditions and the following disclaimer in the documentation
+              and/or other materials provided with the distribution.<br />
+        <br />
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+        ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+        WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+        DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+        ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+        (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+        LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+        ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+        (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+        SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.<br />
+      </div>
+      <h2 id="index_about_overview">1.2. Overview</h2>
+      <div id="about_overview">
+        <div>
+          <p>
+            If you want to write programs using network connections communicating with other computers, you mostly choose a socket
+            implementation like the <samp title="The common socket implementation on most modern systems.">Berkeley Sockets</samp>.
+            They are available on several operating systems and architectures, including <samp title="Most used modern operating systems">
+            Linux, BSD, MacOS and Windows</samp>.<br />
+            Despite this great spread of the <samp title="The common socket implementation on most modern systems.">Berkeley Sockets</samp>
+            the implementation is a bit tricky and not the same on all machines.<br />
+            There are several <em>annoying</em> things, including: (this only includes address related issues, the socket implementation
+            or other problems are not listed here)
+          </p>
+          <ul>
+            <li>
+              You have to handle <acronym title="Internet Protocol version 4">IPv4</acronym> and
+              <acronym title="Internet Protocol version 6">IPv6</acronym> addresses in different ways.
+            </li>
+            <li>The datatypes do not have the same size on all implementations.</li>
+            <li>Lots of backward compatibility stuff.</li>
+            <li>Passing of the socket-size parameter.</li>
+            <li>Lack of uniform, entire and clear documentation.</li>
+            <li>*_len member is not available on every platform.</li>
+            <li>... much more ...</li>
+          </ul>
+          <p>
+            This results in several ugly hacks or unnecessary operations on socket structures like.<br />
+          </p>
+        </div>
+        <div>
+          <p>
+            Libsaw provides an interface to handle network addresses on all supported systems the same way. It tries to avoid the above
+            design failures and allows you to convert your new address structures into the old one to have a compatibility layer
+            to the classic socket functions.<br />
+          </p>
+          <p class="box">
+            Libsaw is written in C, but uses some features of C99 (eg. stdint.h). We added several fixes for old compilers but
+            if you use an up to date compiler which does not support some requirements of Libsaw, please contact us.
+            We will try to write a fix.<br />
+          </p>
+        </div>
+      </div>
+      <h2 id="index_about_upgrade">1.3. Notes on Upgrading</h2>
+      <div id="about_upgrade">
+        Currently there are no known problems on upgrading Libsaw. The common way is first uninstalling Libsaw, compiling the new version
+        and installing the new binary.<br />
+        Libsaw tries to keep backward compatibility in form of macros. This will not affect the speed of programs using the new
+        API but allows old programs to use this compatibility layer.<br />
+        All in all there is no reason to keep backward compatibility over many years. If you don't want to upgrade to a new version, you should
+        keep the old one. Security patches will be released for all versions currently in use.
+      </div>
+      <div>
+        <h3>Which version to use?</h3><br />
+        Libsaw uses four numbers to specify the version of a Libsaw snapshot. The first number specifys the version of the core. It is
+        incremented on major updates on Libsaw. Mostly, they are not backwards compatible.<br />
+        The second number specifies the version of the interface. This number is increased when the interface changes. All interfaces
+        of one core are backwards compatible.<br />
+        The third number specifies the testing version of one interface. All stable releases have a 0 here, only alpha/beta/rc have
+        another number here.<br />
+        The last number specifies the bugfix version.<br />
+        <br />
+        You should always use the highest core number and the highest interface number if you start using Libsaw. Never use betas in
+        productive use!<br />
+        <br />
+        Due to the heavy macro usage in Libsaw and the fact that macro changes cause an interface update, the interface version
+        is often high. Hence, we maximize the testing time to minimize the amount of recompilations you need on interface updates.<br />
+        <br />
+        The current active stable branches are:<br />
+        <strong>- -v2.0.0.0</strong><br />
+        <br />
+        The current testing branches are:<br />
+        <strong>- [ none ]</strong><br />
+        <br />
+        The old releases which are <strong>UNSTABLE</strong> are:<br />
+        <strong>- v1.0.12.0</strong> and older<br />
+        <br />
+      </div>
+    </div>
+
+    <div id="install">
+      <h1 id="index_install">2. Installation &amp; Compiling</h1>
+      <div id="install_notice">
+        I am currently developing Libsaw alone. Therefore I have not compiled Libsaw on many architectures, yet. I am
+        working on it.<br />
+        If an Arch is listed here, it means, Libsaw compiles fine.<br />
+        If an OS is listed here, it means the compatibility layer to the system specific socket addresses is supported.
+        If you do not use this layer, Libsaw compiles on every OS.<br />
+        If you compiled and used Libsaw fine under any OS or Arch not listed here, please notice us.<br />
+        <br />
+        Tested Operating Systems:<br />
+        <ul>
+          <li>Linux 2.6</li>
+          <li>Windows XP</li>
+        </ul>
+        Tested Architectures:<br />
+        <ul>
+          <li>x86 (i386, i486, i586, i686)</li>
+          <li>x64 (ia64, amd64, em64t)</li>
+        </ul>
+        Supported Operating Systems:<br />
+        <ul>
+          <li>Linux 2.2 and greater.</li>
+          <li>FreeBSD (6.* and greater)</li>
+          <li>OpenBSD (3.7 and greater)</li>
+          <li>NetBSD (2.* and greater)</li>
+          <li>Solaris (9 and greater)</li>
+          <li>Mac OS X (10.* and greater)</li>
+          <li>Windows (All WinSock versions greater than 1.1 (>= WIN-NT))</li>
+        </ul>
+        I don't know any architecture on which Libsaw should not be able to compile, except the following ones:<br />
+        <strong>Un</strong>supported Architectures:<br />
+        <ul>
+          <li>Architectures not beeing Little- or Bigendian.</li>
+          <li>Architectures where 1 byte is not equal to 8 bits.</li>
+          <li>Architectures without 64bit integer support (This does not mean that we require 64Bit Architectures!).</li>
+          <li>Architectures with padding bits in integers (This applys only to rare mobile devices! This has nothing to do with sturcture padding).</li>
+        </ul>
+        <h3>Installing Libsaw</h3>
+        <ul>
+          <li>
+            <h4>Using Binary Distribution</h4>
+            <div>
+              We provide precompiled binaries for many operating systems and architectures. We also provide some packet manager files.<br />
+              Check the following list for provided binary/packet-manager files:<br />
+              (The package-manager-independent precompiled binaries should be useable on more systems than the one where it was created.)<br />
+              ("arch" in the file names is replaced with the name of the architecture.)<br />
+              ("cc" in the file names is replaced with the name and version of the C compiler.)<br />
+              ("libc" in the file names is replaced with the name and version of the standard C library.)<br />
+              ("os" in the file names is replaced with the name of the operating system.)<br />
+              <ul>
+                <li>Debian packet manager file: libsaw-X.X.X.X-arch-os-cc-libc.deb</li>
+                <li>Gentoo ebuild: libsaw-X.X.X.X.ebuild</li>
+                <li>Precompiled binaries for Unixes (eg. with glibc-2.6 and gcc-4.1.2 under linux-2.6 on a i386): libsaw-X.X.X.X-i386-linux-2.6-gcc-4.1.2-glibc-2.6.so</li>
+                <li>Precompiled binaries with Microsoft VS 8.0 under Windows XP/Vista: libsaw-X.X.X.X-i386-XP32-msvc-8.0.dll</li>
+                <li>... (see the ./bin directory for more) ...</li>
+              </ul>
+              If there is no binary for you and you have problems using the other methods to install Saw you can contact us and we will
+              try to add a binary release for your Arch/OS.<br />
+              Please look below in <a href="#install_manually">"Compiling Saw"</a> how to install the headers and the binary only.<br />
+            </div>
+          </li>
+          <li>
+            <h4>Using Saw Directly</h4>
+            <div>
+              <em>This way is not longer supported! You need to edit the autotools correctly to allow the use of the headers in your
+              own directory. Please install the headers and use the source file in your project or compile Saw.</em>
+              <br />
+              <br />
+              Libsaw has currently only one source file. This is a perfect pre-condition to use Libsaw directly in your project without
+              compiling a library. You can simply add the source file to your project and compile it yourself. However you need the headers
+              and you can either copy them into your include directory of your project or install only the headers of Libsaw system wide.<br />
+              Please look below in <a href="#install_manually">"Compiling Libsaw / Install"</a> how to install the headers only.<br />
+            </div>
+          </li>
+          <li>
+            <h4>Compiling Libsaw</h4>
+            <div>
+              You can compile the Libsaw library by yourself and then install the files into your system. If you choosed a prebuild binary or
+              need only the headers, you can skip the "compile" step and continue with <a href="#install_manually">"install"</a>.<br />
+              <h5>Compile</h5>
+              Libsaw comes with <del>4</del> <ins>3</ins> methods to compile it. Please notice that you have to start the MS-Visual Studio prompt on Windows if you want
+              to use the Microsoft Visual Studio to compile Libsaw.<br />
+              On a Unix machine you just have to open your terminal.<br />
+              <br />
+              <ul>
+                <li><a href="#compile_autotools">Use GNU autotools</a></li>
+                <li><del>Use cmake</del></li>
+                <li><a href="#compile_make">Use the enclosed makefiles</a></li>
+                <li><a href="#compile_self">Compile it yourself</a></li>
+              </ul>
+              <h6 id="compile_autotools">Use GNU autotools</h6>
+              Libsaw supports the common GNU autotools. Please run the "./configure &amp;&amp; make &amp;&amp; make install" programs.
+              See the "INSTALL" file for information on the GNU autotools if you are not familiar with them. If the "configure" file
+              does not exist (eg. you use the VCS source) you have to invoke "autoreconf -i" first.<br />
+              "./configure --help=short" lists the configuration options.<br />
+              <h6 id="compile_make">Use the enclosed makefiles</h6>
+              Libsaw comes with one self-created makefile. It uses a Microsoft VS-nmake compatible syntax.
+              Please first open the makefile which you will use and read the comments. Probably you have to change some variables in this file.<br />
+              <div class="shell">
+                Microsoft Visual Studio nmake file:<br />
+                <code>nmake -f makefile.win32</code>
+              </div>
+              The Libsaw binary and probably the example should be created now. On success continue with <a href="#install_manually">"install"</a>, otherwise choose another compile method.<br />
+              <h6 id="compile_self">Compile it yourself</h6>
+              If all other methods failed you can compile SAW yourself. Libsaw uses only one sourcefile, therefore you have to invoke only one simple command.
+              But you have to be familiar with your Compiler and Linker. If you do not know how to compile programs in a terminal, then please read the manual.<br />
+              <div class="shell">
+                Create configuration: ./include/saw/sawconf.h out of ./include/saw/sawconf.tpl (read the file carefully!)<br />
+                You have to compile one sourcefile: ./src/addr.c<br />
+                You need to add one include-directory: ./include<br />
+                Enable C99 support (if not available, try it without). Only few features are used.<br />
+                Compile as shared library.<br />
+                <br />
+                This results in the following command with the GCC:<br />
+                <code>gcc -x c -Wall -std=c99 -shared -fPIC -I./include -o libsaw.so ./src/addr.c</code>
+                If you use another compiler, please try it yourself.<br />
+              </div>
+              <h5>Install</h5>
+              To use Libsaw in your system you should copy the headers and the binary to the system's default directories.<br />
+              <strong>We do not support any install routine on Microsoft Windows.</strong> Windows has no default directory for libraries. Please
+              see on "Install (manually)" for information which files you should copy to your own directories.<br />
+              <br />
+              <h6 id="install_manually">Install (manually)</h6>
+              <div class="box">
+                To install Libsaw manually you have to copy the following files/directories:<br />
+                <em>(The file ./include/saw/sawconf.h must exists! If it does not, create it out of ./include/saw/sawconf.tpl and read
+                     the comments in the file carefully!)</em>
+                <ul>
+                  <li>Copy the <strong>directory</strong> ./include/saw into your default include directory.</li>
+                  <li>Copy the <strong>file</strong> ./libsaw.so (On Windows libsaw.dll) into your default library directory.</li>
+                </ul>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="overview">
+      <h1 id="index_overview">3. Overview</h1>
+      <div id="overview_address">
+        Libsaw is divided into address types. Each of them provides an interface which is used to create/change/delete an object of this address.
+        All interfaces have some concerned functions and their behaviour is the same at each address. Hence, the wrapper for all addresses provides these
+        functions, too.<br />
+        The following section describes each address type and each wrapper. At the end a wrapper for all address types is described.<br />
+        <br />
+        If you need some tutorial or short instruction in using Libsaw you should read the <a href="#practice">7. Practice</a> part, because the following part
+        is only a reference of all functions/types.<br />
+        <br />
+        There are several guidelines we follow in all parts:
+        <ul>
+          <li id="no_padding">No Padding in structures/unions:<br />
+              All our structures and unions are guaranted to use NO padding between and in front of each member. Of course
+              the end of a union can be padded if other members are greater but at no time there won't be no padding in any other case!
+          </li>
+          <li>Typedefs of unions/structs:<br />
+              We remove the "union" or "struct" prefix of every datatype to be compatible to C++ and to allow the change of the
+              type without changing our API. We force the user to use the typedefs so we had various "struct" to "union" changes
+              in the past without any ABI/API incompatibility.
+          </li>
+          <li>Type suffixes:<br />
+              Every datatype defined by Libsaw is suffixed with "_t". Thus, you can directly see if a symbol is a datatype or
+              a variable or ...
+          </li>
+          <li id="c99_suffix">C99 suffix:<br />
+              Every constant that is used for a structure initialization is C89 compatible but has a C99 aequivalent with the
+              suffix "_c99". eg. You can use SAW_ADDR4_ANY for <a href="#init_var">structure initialization</a> or you can use the SAW_ADDR4_ANY_c99
+              as a structure literal available in C99.
+          </li>
+          <li>Parameter order:<br />
+              If a function has only two parameters, source and destination, then source is the first and destination the second
+              parameter. If the function has additional options on how to handle this action, then the first argument is the
+              destination followed by options related to the destination, then the source with it's options and at last the
+              options independent of source and destination.
+          </li>
+          <li>Return codes:<br />
+              Functions returning saw_bool_t return an unsigned integer where zero is false and everything else is true.
+              They return ALWAYS one if they return true, however every othervalue except zero is true, too.
+          </li>
+          <li>Comparisons:<br />
+              Every datatype in Libsaw comes with an own macro to compare two variables of this type. Please use always these macros, because
+              a binary comparison would cause unknown results.
+          </li>
+          <li id="init_var">Initialization variables:<br />
+              We provide many initialization variables for our datatypes. You can use the variables for initialization only!
+              You can use them like:<br />
+              <code>saw_addr4_t my_var = SAW_ADDR4_ANY;</code><br />
+              The C99 equivalents can be used as literals, too, of course only if your compiler supports C99.
+          </li>
+          <li id="predef_var">Predefined variables:<br />
+              We provide a predefined variable for every <a href="#init_var">initialization variable</a>. eg. If you have
+              <code>SAW_ADDR4_ANY</code> the <code>saw_addr4_any</code> variable is initialized by Libsaw and saved in the library. You can access
+              it like any other predefined variable.
+          </li>
+          <li id="ipv6_def">IPv6 Support:<br />
+              If you disabled IPv6 support in the configuration some parts of Libsaw will not be available. These
+              parts are marked with a (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>) in this documentation.
+          </li>
+        </ul>
+        <br />
+        Libsaw uses the GNU Autotools to configure and check the platform it is supposed to run on. If you use the GNU Autotools, too, you must not
+        check the following things if Libsaw is available on the platform. This list is created to reduce the amount of checks done in software
+        dependency lists where each software could skip all checks done by it's dependencies. To get most macros work in your program, simply
+        include the main Libsaw header <code>..xyz../include/saw/saw.h</code>.
+        <ul>
+          <li>Libsaw defines <code>_ALL_SOURCE</code> on AIX systems.</li>
+          <li>Libsaw requires the compiler to halt on compile errors.</li>
+          <li>Libsaw requires the support of indented macros.</li>
+          <li>Libsaw requires all C89 header files.</li>
+          <li>Libsaw requires on all OS except Windows the following headers to be available: arpa/inet.h netinet/in.h sys/socket.h</li>
+          <li>Libsaw defines SAW_CONF_HAVE_UNISTD_H if the header unistd.h is available.</li>
+          <li>Libsaw defines SAW_CONF_HAVE_SYS_UN_H if the header sys/un.h is available.</li>
+          <li>Libsaw defines SAW_CONF_HAVE_XXXX for all of the following headers if they are available: sys/param.h endian.h machine/endian.h
+              byteorder.h machine/byteorder.h arch/byteorder.h arch/endian.h asm/endian.h asm/byteorder.h stdint.h inttypes.h sys/types.h</li>
+          <li>Libsaw provides typedefs for all fixed size integers either through system libraries or through it's own typedefs. This are
+              int16_t / uint16_t for 8, 16, 32 and 64 bit integers.</li>
+          <li>Libsaw defines SAW_CONF_HAVE_LONG_LONG if the datatype "long long" is available.</li>
+          <li>Libsaw requires 1 byte to be exactly 8 bits.</li>
+          <li>Libsaw defines SAW_CONF_HAVE_SOCKADDR_UN if "struct sockaddr_un" is available.</li>
+          <li>Libsaw defines SAW_CONF_PATH_SIZE to the exact length of the "sun_path" member of "struct sockaddr_un".</li>
+          <li>Libsaw defines SAW_CONF_SA_LEN, SAW_CONF_SIN_LEN, SAW_CONF_SIN6_LEN and SAW_CONF_SUN_LEN if the related "struct sockaddr_un/in/in6" has
+              the "sa/sin/sin6/sun_len" member.</li>
+          <li>Libsaw defines SAW_CONF_HAVE_ATTR_PACKED if '__attribute__((__packed__))' is available and IF NOT it defines SAW_CONF_HAVE_PRAGMA_PACK
+              if "#pragma pack" is available.</li>
+          <li>Libsaw requires memset() to be available.</li>
+          <li>Libsaw required an BigEndian or LittleEndian system and defines SAW_CONF_BIG_ENDIAN and SAW_CONF_LITTLE_ENDIAN respectively.</li>
+          <li>Libsaw defines SAW_CONF_SYS_UNIX on unix machines, furthermore SAW_CONF_SYS_BSD on BSD machines.</li>
+          <li>Libsaw defines one of the following constants representing the operating system and defines SAW_CONF_SYSTEM containing a string
+              with this operating system name: SAW_CONF_SYS_LINUX, SAW_CONF_SYS_BEOS, SAW_CONF_SYS_SYSV, SAW_CONF_SYS_AIX, SAW_CONF_SYS_HPUX,
+              SAW_CONF_SYS_DARWIN (is a BSD!), SAW_CONF_SYS_SOLARIS, SAW_CONF_SYS_DRAGONFLY, SAW_CONF_SYS_FREEBSD, SAW_CONF_SYS_NETBSD,
+              SAW_CONF_SYS_OPENBSD, SAW_CONF_SYS_WIN (windows). If none of these systems was detected, it's supposed to be a SAW_CONF_SYS_UNIX.
+              Nothing specific is defined then.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="inet">
+      <h1 id="index_inet">4. Internet Protocol Address Interface</h1>
+      <div id="inet_intro">
+        This part of Libsaw provides an interface to handle addresses of the Internet Protocol in both versions, v4 and v6, better known as IPv4 and IPv6 addresses.
+        The first section of each part describes the syntax of those addresses in a string version.<br />
+        The last part describes a wrapper for v4 and v6 in one interface. With this you can handle both addresses in the same way but do not loose any power.<br />
+        If you want additional information about the Internet Protocol, please consult Wikipedia.<br />
+        The following links can change in the future. There is no guarantee that these links are not broken. Please search for the listed keywords if the
+        articles are not valid and please send us a notice.<br />
+        <ul>
+          <li><a href="http://en.wikipedia.org/wiki/Internet_Protocol">Wikipedia: Internet Protocol</a></li>
+          <li><a href="http://en.wikipedia.org/wiki/IPv4">Wikipedia: IPv4</a></li>
+          <li><a href="http://en.wikipedia.org/wiki/IPv6">Wikipedia: IPv6</a></li>
+          <li><a href="http://en.wikipedia.org/wiki/IP_address">Wikipedia: IP Address</a></li>
+        </ul>
+      </div>
+      <h2 id="index_inet_ipv4">4.1. IPv4 Address Interface</h2>
+      <div id="inet_ipv4">
+        <h3>IPv4 Address Syntax</h3>
+        <div id="inet_ipv4_example">
+          There is no official RFC or standard which defines the written representation of IPv4 addresses like the IPv6 standard has.
+          Therefore we support all common and almost all ways which we know.<br />
+          <br />
+          The dotted notation as string has the following format:<br />
+          <br />
+          <div class="box">
+            &lt;ipv4-address&gt; := &lt;label&gt;.&lt;label&gt;.&lt;label&gt;.&lt;label&gt; | &lt;bin&gt;<br />
+            &lt;label&gt; := &lt;hexa&gt; | &lt;deca&gt; | &lt;octa&gt;<br />
+            &lt;hexa&gt; := Any hexadecimal number prefixed with "0x" and case insensitive.<br />
+            &lt;deca&gt; := Any decimal number without leading zeros which would indicate an octadecimal number.<br />
+            &lt;octa&gt; := Any octadecimal number prefixed with "0".<br />
+            &lt;bin&gt; := Four binary groups of at most 8 digits separated by spaces.<br />
+            <br />
+            The value of each &lt;label&gt; must be smaller than 256.<br />
+            The binary and (hexa/octa)decimal representation must not be mixed. The (hexa/octa)decimal representations
+            can be mixed if you want.<br />
+            An example for binary representation: "00110101 110 10010011 1"<br />
+          </div>
+          <br />
+          Examples:<br />
+          <ul>
+            <li>127.0x0.017.1</li>
+            <li>000.0.0.01</li>
+            <li>255.000.0xff.0x00A2</li>
+            <li>0.0.0.0</li>
+            <li>255.255.255.00255</li>
+          </ul>
+          NOT allowed:<br />
+          <ul>
+            <li>1000.1.1.1</li>
+            <li>0891.0.0.0 because "8" and "9" are not allowed in octadecimal.</li>
+            <li>270.10.10.10</li>
+          </ul>
+        </div>
+        <h3>IPv4 Address Structure</h3>
+        <div id="inet_ipv4_structure">
+          The IPv4 part is a <code>union</code>:<br />
+          <pre>
+          union <strong>saw_addr4_t</strong> {
+              uint32_t addr;
+              uint16_t word[2];
+              uint8_t byte[4];
+          }
+          typedef union saw_addr4_t <strong>saw_addr4_t</strong>;
+          </pre>
+          <code>uint32_t</code> is part of ISO C99 and is a 32 bit integer datatype. Therefore an IPv4 address is stored in a simple integer.
+          Assume an address like "192.168.0.1". "192" will be stored in the lowest byte (.addr[0]) and "1" in the highest byte(.addr[3]). Thus it uses the network
+          byte order and you can modify the addresses if you want.<br />
+          <br />
+          This is a list of all functions and macros defined to handle IPv4 addresses and a description. Of course macros do not declare any datatypes but
+          for a better overview of the macros the parameter's datatypes are listed here.
+          <dl>
+            <dt><code>#define <strong>SAW_ADDR4_FAM</strong></code></dt>
+              <dd>An <strong>signed int</strong> number which contains the address family of IPv4. This is also known as <code>AF_INET</code>.</dd>
+            <dt><code>#define <strong>SAW_ADDR4_DOM</strong></code></dt>
+              <dd>An <strong>signed int</strong> number which contains the protocol family (domain) of IPv4. This is also known as <code>PF_INET</code>.</dd>
+            <dt><code>#define <strong>SAW_ADDR4_STRLEN</strong></code></dt>
+              <dd>An <strong>unsigned int</strong> number which defines the maximal length of a string holding an IPv4 address in dotted notation including the
+                  zero character. This is also known as <code>INET_ADDRSTRLEN</code>.</dd>
+            <dt><code>#define <strong>SAW_ADDR4_SIZE</strong></code></dt>
+              <dd>An <strong>unsigned int</strong> number which defines the size of the saw_addr4_t datatype. It is equivalent to <code>sizeof(saw_addr4_t)</code>.</dd>
+            <dt><code>#define <strong>SAW_ADDR4_ANY</strong></code></dt>
+              <dd>A <strong>saw_addr4_t</strong> <a href="#init_var">initialization variable</a> which represents an IPv4 address which relates to all local interfaces. You can use it if you want
+                  to bind a socket to all local interfaces. You should never connect on it. In some cases it does not refer to all local interfaces, but to
+                  one local interface but this information is not part of an address library. Please see the documentation of your socket library.
+                  This is also known as <code>INADDR_ANY</code>.</dd>
+              <dd><a href="#c99_suffix">C99 equivalent</a>: SAW_ADDR4_ANY_c99<br />
+              <a href="#predef_var">Predefined variables</a>: saw_addr4_any</dd>
+            <dt><code>#define <strong>SAW_ADDR4_LOOPBACK</strong></code></dt>
+              <dd>A <strong>saw_addr4_t</strong> <a href="#init_var">initialization variable</a> which represents an IPv4
+                  address which relates to your local machine. Thus it's called a "loopback" interface.
+                  On unixes the "lo" inteface is refered to here. This is also known as <code>INADDR_LOOPBACK</code>.</dd>
+              <dd><strong>Aliases:</strong> <code>SAW_ADDR4_LO</code><br />
+                  <a href="#c99_suffix">C99 equivalent</a>: SAW_ADDR4_LOOPBACK_c99, SAW_ADDR4_LO_c99<br />
+                  <a href="#predef_var">Predefined variables</a>: saw_addr4_loopback, saw_addr4_lo
+              </dd>
+            <dt><code>#define <strong>SAW_ADDR4_BROADCAST</strong></code></dt>
+              <dd>A <strong>saw_addr4_t</strong> <a href="#init_var">initialization variable</a> which represents an IPv4 address which relates to the broadcast address of your network. Please see
+                  the documentation of your socket library on how to send broadcasts. This is also known as <code>INADDR_BROADCAST</code>.</dd>
+              <dd><strong>Aliases:</strong> <code>SAW_ADDR4_BC</code><br />
+                  <a href="#c99_suffix">C99 equivalent</a>: SAW_ADDR4_BROADCAST_c99, SAW_ADDR4_BC_c99<br />
+                  <a href="#predef_var">Predefined variables</a>: saw_addr4_broadcast, saw_addr4_bc
+              </dd>
+            <dt><code>typedef &lt;undefined&gt; <strong>saw_addr4_local_t</strong>;</code></dt>
+              <dd>This is an alias for the datatype of your local machine which is normally used to store IPv4 addresses. All converter functions (described below)
+                  use this datatype to convert Libsaw addresses into addresses of your local machine. Currently &lt;undefined&gt; is always <code>struct in_addr</code>.</dd>
+            <dt><code>#define <strong>SAW_ADDR4_LOCSIZE</strong></code></dt>
+              <dd>An <strong>unsigned int</strong> number which defines the size of the saw_addr4_local_t datatype. It is
+                  equivalent to <code>sizeof(saw_addr4_local_t)</code>.</dd>
+            <dt><code>Address-Checks</code></dt>
+              <dd>The following functions allow to check an address whether it is in the range of predefined groups.</dd>
+              <dd><dl>
+                <dt><code>#define <strong>saw_addr4_isloopback</strong>(const saw_addr4_t *obj);</code></td>
+                  <dd><strong>Aliases:</strong> <code>saw_addr4_islo()</code></dd>
+                  <dd>Addresses: 127.*.*.*</dd>
+                <dt><code>#define <strong>saw_addr4_isany</strong>(const saw_addr4_t *obj);</code></td>
+                  <dd>Addresses: 0.0.0.0</dd>
+                <dt><code>#define <strong>saw_addr4_isbroadcast</strong>(const saw_addr4_t *obj);</code></dt>
+                  <dd><strong>Aliases:</strong> <code>saw_addr4_isbc()</code></dd>
+                  <dd>Addresses: 255.255.255.255</dd>
+                <dt><code>#define <strong>saw_addr4_isprivatenet</strong>(const saw_addr4_t *obj);</code></dt>
+                  <dd><strong>Aliases:</strong> <code>saw_addr4_ispn()</code></dd>
+                  <dd>Addresses: 10.*.*.* ::: 172.16.*.* - 172.31.*.* ::: 192.168.*.*</dd>
+                <dt><code>#define <strong>saw_addr4_islinklocal</strong>(const saw_addr4_t *obj);</code></dt>
+                  <dd><strong>Aliases:</strong> <code>saw_addr4_isll()</code></dd>
+                  <dd>Addresses: 169.254.*.*</dd>
+                <dt><code>#define <strong>saw_addr4_ismulticast</strong>(const saw_addr4_t *obj);</code></dt>
+                  <dd><strong>Aliases:</strong> <code>saw_addr4_ismc()</code></dd>
+                  <dd>Addresses: 224.*.*.* - 239.*.*.*</dd>
+                <dt><code>#define <strong>saw_addr4_isroutermc</strong>(const saw_addr4_t *obj);</code></dt>
+                  <dd><strong>Aliases:</strong> <code>saw_addr4_isrmc()</code></dd>
+                  <dd>Addresses: 224.*.*.*</dd>
+                <dt><code>#define <strong>saw_addr4_isscopingmc</strong>(const saw_addr4_t *obj);</code></dt>
+                  <dd><strong>Aliases:</strong> <code>saw_addr4_issmc()</code></dd>
+                  <dd>Addresses: 239.*.*.*</dd>
+                <dt><code>#define <strong>saw_addr4_is6to4relay</strong>(const saw_addr4_t *obj);</code></dt>
+                  <dd><strong>Aliases:</strong> <code>saw_addr4_is6to4()</code></dd>
+                  <dd>Addresses: 192.88.99.*</dd>
+                <dt><code>#define <strong>saw_addr4_isexample</strong>(const saw_addr4_t *obj);</code></dt>
+                  <dd><strong>Aliases:</strong> <code>saw_addr4_isdoc()</code></dd>
+                  <dd>Addresses: 192.0.2.*</dd>
+                <dt><code>#define <strong>saw_addr4_isbenchmark</strong>(const saw_addr4_t *obj);</code></dt>
+                  <dd><strong>Aliases:</strong> <code>saw_addr4_isbm()</code></dd>
+                  <dd>Addresses: 168.18.*.* ::: 168.19.*.*</dd>
+                <dt><code>#define <strong>saw_addr4_issubnetmask</strong>(const saw_addr4_t *obj);</code></dt>
+                  <dd><strong>Aliases:</strong> <code>saw_addr4_issnm()</code></dd>
+                  <dd>Addresses: Every address consisting only of one single binary run of zeros followed by one single binary run of ones.</dd>
+              </dl></dd>
+            <dd>
+              Checks whether the variable is of the specific type.<br />
+              <dl>
+                <dt>Return value:</dt>
+                  <dd>saw_bool_t: This function returns "1" on success and "0" on failure.</dd>
+                <dt>Parameter: obj</dt>
+                  <dd>A pointer to a Libsaw IPv4 address.</dd>
+              </dl>
+            </dd>
+            <dt><code>#define <strong>saw_addr4_copy</strong>(const saw_addr4_t *first, saw_addr4_t *second);</code></dt>
+              <dd>
+                Copys an IPv4 Libsaw address.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>void</dd>
+                  <dt>Parameter: first</dt>
+                    <dd>The source address.</dd>
+                  <dt>Parameter: second</dt>
+                    <dd>The destination address.</dd>
+                </dl>
+              </dd>
+              <dd><strong>Aliases:</strong> <code>saw_addr4_cpy()</code></dd>
+            <dt><code>#define <strong>saw_addr4_compare</strong>(const saw_addr4_t *first, const saw_addr4_t *second);</code></dt>
+              <dd>
+                Compares two addresses.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>saw_bool_t: true(1) if they are the same, false(0) if not.</dd>
+                  <dt>Parameter: first</dt>
+                    <dd>The source address.</dd>
+                  <dt>Parameter: second</dt>
+                    <dd>The comparison address.</dd>
+                </dl>
+              </dd>
+              <dd><strong>Aliases:</strong> <code>saw_addr4_cmp()</code></dd>
+            <dt><code>extern saw_bool_t <strong>saw_addr4_pton</strong>(const char *ipstring, saw_addr4_t *dest);</code></dt>
+              <dd>
+                Converts a string holding an IPv4 address in dotted notation into a Libsaw IPv4 address.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>This function returns "1" on success and "0" on failure. Fails only if the string does not contain a valid IPv4 address.</dd>
+                  <dt>Parameter: ipstring</dt>
+                    <dd>A pointer to a zero terminated string containing an IPv4 address in dotted notation.</dd>
+                  <dt>Parameter: dest</dt>
+                    <dd>A pointer to a Libsaw IPv4 address. The result is stored here.</dd>
+                </dl>
+              </dd>
+            <dt><code>extern void <strong>saw_addr4_ntop</strong>(const saw_addr4_t *ip, char *pbuf);</code></dt>
+              <dd>
+                Converts a Libsaw IPv4 address into a string in dotted notation. Thus you can print the result to the user or store it in a database.<br />
+                <dl>
+                  <dt>Parameter: ip</dt>
+                    <dd>Points to a Libsaw IPv4 address which should be converted.</dd>
+                  <dt>Parameter: pbuf</dt>
+                    <dd>A pointer to a buffer where to store the result. This buffer should be <strong>SAW_ADDR4_STRLEN</strong> bytes big. This includes
+                        the zero character which is written by this function.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addr4_to_local</strong>(const saw_addr4_t *ip, saw_addr4_local_t *local)</code></dt>
+              <dd>
+                Converts a Libsaw IPv4 address into the local equivalent of it. Thus you can use it with your local socket functions.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Void.</dd>
+                  <dt>Parameter: ip</dt>
+                    <dd>Points to a Libsaw IPv4 address which should be converted.</dd>
+                  <dt>Parameter: local</dt>
+                    <dd>A pointer to a buffer where to store the result. This buffer should be <strong>SAW_ADDR4_LOCSIZE</strong> bytes big or a pointer
+                        to this local structure.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addr4_from_local</strong>(const saw_addr4_local_t *local, saw_addr4_t *pbuf)</code></dt>
+              <dd>
+                Converts a local IPv4 address into a Libsaw IPv4 address.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Void.</dd>
+                  <dt>Parameter: local</dt>
+                    <dd>Contains the local IPv4 address which should be converted.</dd>
+                  <dt>Parameter: pbuf</dt>
+                    <dd>A pointer to a buffer where to store the result.</dd>
+                </dl>
+              </dd>
+          </dl>
+        </div>
+      </div>
+      <h2 id="index_inet_ipv6">4.2. IPv6 Address Interface (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</h2>
+      <div id="inet_ipv6">
+        <h3>IPv6 Address Syntax (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</h3>
+        <div id="inet_ipv6_example">
+          The dotted notation as string has the following format:<br />
+          <div class="box">
+            &lt;ipv6-address&gt; := &lt;label&gt;:&lt;label&gt;:&lt;label&gt;:&lt;label&gt;:&lt;label&gt;:&lt;label&gt;:[&lt;label&gt;:&lt;label&gt; | &lt;ipv4-address&gt;]<br />
+            &lt;label&gt; := A hexadecimal number between 0 and FFFF. Leading zeros are allowed but at most 4 digits. It is case-INsensitive.<br />
+            A label can also be nothing, but this is only allowed once in an &lt;ipv6-address&gt;.<br />
+            If a label is nothing, you can leave out as many neighbour labels as you want, which will be
+            assumed to be zero. The first label can only be nothing if the second is nothing, too.<br />
+          </div>
+          <br />
+          Examples:<br />
+          <dl>
+            <dt>fe80:0001:3faa:0000:0212:3fff:fe6b:a770</dt>
+              <dd>fe80:1:3faa:0:212:3fff:fe6b:a770</dd>
+              <dd>fe80:1:3faa::212:3fff:fe6b:a770</dd>
+            <dt>fe80:0001:0000:0000:0212:3fff:fe6b:a770</dt>
+              <dd>fe80:1:0:0:212:3fff:fe6b:a770</dd>
+              <dd>fe80:1::212:3fff:fe6b:a770</dd>
+            <dt>fe80:0000:0000:0000:0000:3fff:fe6b:a770</dt>
+              <dd>fe80::3fff:fe6b:a770</dd>
+            <dt>0000:0011:0000:0000:0212:3fff:fe6b:a770</dt>
+              <dd>0:11::212:3fff:fe6b:a770</dd>
+              <dd>:11::212:3fff:fe6b:a770 <strong>(ERROR: NOT ALLOWED!!)</strong></dd>
+            <dt>0000:0000:0000:0000:0212:3fff:fe6b:a770</dt>
+              <dd>::212:3fff:fe6b:a770 <strong>(this is allowed, no error)</strong></dd>
+            <dt>0000:0000:0000:0000:0000:0000:0000:0000</dt>
+              <dd>0:0:0:0:0:0:0:0</dd>
+              <dd>::</dd>
+            <dt>0000:0000:0000:0000:0000:ffff:127.0.0.1</dt>
+              <dd>::ffff:127.0.0.1</dd>
+            <dt>fe80:0000:0000:0000:0000:0000:255.255.255.255</dt>
+              <dd>fe80::255.255.255.255</dd>
+              <dd>fe80::ffff:ffff (this is the internal form)</dd>
+          </dl>
+        </div>
+        <h3>IPv6 Address Structure (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</h3>
+        <div id="inet_ipv6_structure">
+          The IPv6 part is a <code>struct</code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>):<br />
+          <pre>
+          union <strong>saw_addr6_t</strong> {
+              uint8_t addr[16];
+              uint16_t word[8];
+              uint32_t dword[4];
+              uint64_t qword[2];
+          } SAW_ATTR_PACK;
+          typedef struct saw_addr6_t <strong>saw_addr6_t</strong>;
+          </pre>
+          <code>uint8_t</code> is part of ISO C99 and is a 8 bit integer datatype. Therefore an IPv6 address is stored in a simple integer array.
+          Assume an address like "fe80::3fff:fe6b:a770". "fe" will be stored in the lowest byte followed by "80" and 8 bytes with zeros. Then "3f", "ff",
+          and "fe, "6b". The two highest bytes are filled with "a7" and "70.<br />
+          <br />
+          This is a list of all functions and macros defined to handle IPv6 addresses and a description. Of course macros do not declare any datatypes but
+          for a better overview of the macros the parameter's datatypes are listed here.
+          <dl>
+            <dt><code>#define <strong>SAW_ADDR6_FAM</strong></code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>An <strong>signed int</strong> number which contains the address family of IPv6. This is also known as <code>AF_INET6</code>.</dd>
+            <dt><code>#define <strong>SAW_ADDR6_DOM</strong></code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>An <strong>signed int</strong> number which contains the protocol family (domain) of IPv6. This is also known as <code>PF_INET6</code>.</dd>
+            <dt><code>#define <strong>SAW_ADDR6_STRLEN</strong></code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>An <strong>unsigned int</strong> number which defines the maximal length of a string holding an IPv6 address in dotted notation including the
+                  zero character. This is also known as <code>INET6_ADDRSTRLEN</code>.</dd>
+            <dt><code>#define <strong>SAW_ADDR6_SIZE</strong></code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>An <strong>unsigned int</strong> number which defines the size of the saw_addr6_t datatype. It is equivalent to <code>sizeof(saw_addr6_t)</code>.</dd>
+            <dt><code>#define <strong>SAW_ADDR6_ANY</strong></code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>A <strong>saw_addr6_t</strong> <a href="#init_var">initialization variable</a> which represents an IPv6 address which relates to all local interfaces. You can use it if you want
+                  to bind a socket to all local interfaces. You should never connect on it. In some cases it does not refer to all local interfaces, but to
+                  one local interface but this information is not part of an address library. Please see the documentation of your socket library.
+                  This is also known as <code>in6addr_any</code>.</dd>
+              <dd><a href="#c99_suffix">C99 equivalent</a>: SAW_ADDR6_ANY_c99<br />
+              <a href="#predef_var">Predefined variables</a>: saw_addr6_any</dd>
+            <dt><code>#define <strong>SAW_ADDR6_LOOPBACK</strong></code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>A <strong>saw_addr6_t</strong> <a href="#init_var">initialization variable</a> which represents an IPv6 address which relates your to local machine. Thus it's called a "loopback" interface.
+                  On unixes the "lo" inteface is refered to here. This is also known as <code>in6addr_loopback</code>.</dd>
+              <dd><strong>Aliases:</strong> <code>SAW_ADDR6_LO</code><br />
+                  <a href="#c99_suffix">C99 equivalent</a>: SAW_ADDR6_LOOPBACK_c99, SAW_ADDR6_LO_c99<br />
+                  <a href="#predef_var">Predefined variables</a>: saw_addr6_loopback, saw_addr6_lo
+              </dd>
+            <dt><code>#define <strong>SAW_ADDR6_INTERFACE_LOCAL</strong></code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>A <strong>saw_addr6_t</strong> <a href="#init_var">initialization variable</a> which represents an IPv6 multicast address which relates to all addresses on your interface.</dd>
+              <dd><strong>Aliases:</strong> <code>SAW_ADDR6_IFLO</code><br />
+                  <a href="#c99_suffix">C99 equivalent</a>: SAW_ADDR6_INTERFACE_LOCAL_c99, SAW_ADDR6_IFLO_c99<br />
+                  <a href="#predef_var">Predefined variables</a>: saw_addr6_interface_local, saw_addr6_iflo
+              </dd>
+            <dt><code>#define <strong>SAW_ADDR6_LINK_LOCAL</strong></code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>A <strong>saw_addr6_t</strong> <a href="#init_var">initialization variable</a> which represents an IPv6 multicast address which relates to all addresses on your link local network.
+                  This address should be used as the IPv4 broadcast address replacement.</dd>
+              <dd><strong>Aliases:</strong> <code>SAW_ADDR6_LILO</code><br />
+                  <a href="#c99_suffix">C99 equivalent</a>: SAW_ADDR6_LINK_LOCAL_c99, SAW_ADDR6_LILO_c99<br />
+                  <a href="#predef_var">Predefined variables</a>: saw_addr6_link_local, saw_addr6_lilo
+              </dd>
+            <dt><code>#define <strong>SAW_ADDR6_INTERFACE_LOCAL_ROUTERS</strong></code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>A <strong>saw_addr6_t</strong> <a href="#init_var">initialization variable</a> which represents an IPv6 multicast address which relates to all routers on your interface.</dd>
+              <dd><strong>Aliases:</strong> <code>SAW_ADDR6_IFLO_ROUTERS</code><br />
+                  <a href="#c99_suffix">C99 equivalent</a>: SAW_ADDR6_INTERFACE_LOCAL_ROUTERS_c99, SAW_ADDR6_IFLO_ROUTERS_c99<br />
+                  <a href="#predef_var">Predefined variables</a>: saw_addr6_interface_local_routers, saw_addr6_iflo_routers
+              </dd>
+            <dt><code>#define <strong>SAW_ADDR6_LINK_LOCAL_ROUTERS</strong></code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>A <strong>saw_addr6_t</strong> <a href="#init_var">initialization variable</a> which represents an IPv6 multicast address which relates to all routers on your link local network.</dd>
+              <dd><strong>Aliases:</strong> <code>SAW_ADDR6_LILO_ROUTERS</code><br />
+                  <a href="#c99_suffix">C99 equivalent</a>: SAW_ADDR6_LINK_LOCAL_ROUTERS_c99, SAW_ADDR6_LILO_ROUTERS_c99<br />
+                  <a href="#predef_var">Predefined variables</a>: saw_addr6_link_local_routers, saw_addr6_lilo_routers
+              </dd>
+            <dt><code>#define <strong>SAW_ADDR6_SITE_LOCAL_ROUTERS</strong></code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>A <strong>saw_addr6_t</strong> <a href="#init_var">initialization variable</a> which represents an IPv6 multicast address which relates to all routers on your site local network.</dd>
+              <dd><strong>Aliases:</strong> <code>SAW_ADDR6_SILO_ROUTERS</code><br />
+                  <a href="#c99_suffix">C99 equivalent</a>: SAW_ADDR6_SITE_LOCAL_ROUTERS_c99, SAW_ADDR6_SILO_ROUTERS_c99<br />
+                  <a href="#predef_var">Predefined variables</a>: saw_addr6_site_local_routers, saw_addr6_silo_routers
+              </dd>
+            <dt><code>typedef &lt;undefined&gt; <strong>saw_addr6_local_t</strong>;</code></dt>
+              <dd>This is an alias for the datatype of your local machine which is normally used to store IPv6 addresses. All converter functions (described below)
+                  use this datatype to convert Libsaw addresses into addresses of your local machine. Currently &lt;undefined&gt; is always <code>struct in6_addr</code>.</dd>
+            <dt><code>#define <strong>SAW_ADDR6_LOCSIZE</strong></code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>An <strong>unsigned int</strong> number which defines the size of the saw_addr6_local_t datatype. It is
+                  equivalent to <code>sizeof(saw_addr6_local_t)</code>.</dd>
+            <dt id="addr6_t_flag"><code>#define <strong>SAW_ADDR6_MC_T</strong></code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>
+                This is a binary mask you can use to get the T-flag of a multicast address. eg. "arg" is the IPv6 multicast address (saw_addr6_t) then
+                <code>(arg->addr[1] &amp; SAW_ADDR6_MC_T)</code> would return 1 or 0 depending on whether the flag is set (1) or not (0).
+                This flag specifies whether a multicast address is transient (1) or not (0). See your multicast documentation for
+                further information on transient multicast addresses.
+              </dd>
+              <dd><strong>Aliases:</strong> <code>SAW_ADDR6_TRANSIENT</code></dd>
+            <dt><code>#define <strong>SAW_ADDR6_MC_P</strong></code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>
+                Same as <a href="#addr6_t_flag">SAW_ADDR6_MC_T</a> but specifies the P-flag. This flag is only used in multicast
+                extensions. Set it if you need it.
+              </dd>
+            <dt><code>#define <strong>SAW_ADDR6_MC_R</strong></code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>
+                Same as <a href="#addr6_t_flag">SAW_ADDR6_MC_T</a> but specifies the R-flag. This flag is only used in multicast
+                extensions. Set it if you need it.
+              </dd>
+            <dt><code>#define <strong>SAW_ADDR6_SCOPE</strong></code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>
+                This is a bitmask used to get the scope value of a IPv6 multicast address. You can set the following values here:<br />
+                <code><strong>SAW_ADDR6_SCOPE_INTERFACE_LOCAL</strong></code> (Interface-Local scope spans only a single interface on a node
+                      and is useful only for loopback transmission of multicast.)<br />
+                <code><strong>SAW_ADDR6_SCOPE_LINK_LOCAL</strong></code> (Link-Local multicast scope spans the same topological region as
+                      the corresponding unicast scope.)<br />
+                <code><strong>SAW_ADDR6_SCOPE_ADMIN_LOCAL</strong></code> (Admin-Local scope is the smallest scope that must be
+                      administratively configured, i.e., not automatically derived from physical connectivity or
+                      other, non-multicast-related configuration.)<br />
+                <code><strong>SAW_ADDR6_SCOPE_SITE_LOCAL</strong></code> (Site-Local scope is intended to span a single site.)<br />
+                <code><strong>SAW_ADDR6_SCOPE_ORGANISATION_LOCAL</strong></code> (Organization-Local scope is intended to span multiple sites
+                      belonging to a single organization.)<br />
+                <code><strong>SAW_ADDR6_SCOPE_GLOBAL</strong></code> (Global scope spans the whole network, this is obviously the whole internet.)<br />
+                <br />
+                eg. To set a value on the IPv6 multicast address "arg" (saw_addr6_t) you can use:<br />
+                <code>arg->addr[1] = (arg->addr[1] &amp; ~SAW_ADDR6_SCOPE) | SAW_ADDR6_SCOPE_YOUR-SCOPE-VALUE;</code>
+              </dd>
+            <dt><code>extern saw_bool_t <strong>saw_addr6_pton</strong>(const char *ipstring, saw_addr6_t *dest);</code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>
+                Converts a string holding an IPv6 address in dotted notation into a Libsaw IPv6 address.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>This function returns "1" on success and "0" on failure. Fails only if the string does not contain a valid IPv6 address.</dd>
+                  <dt>Parameter: ipstring</dt>
+                    <dd>A pointer to a zero terminated string containing an IPv6 address in dotted notation.</dd>
+                  <dt>Parameter: dest</dt>
+                    <dd>A pointer to a Libsaw IPv6 address. The result is stored here.</dd>
+                </dl>
+              </dd>
+            <dt><code>extern void <strong>saw_addr6_ntop</strong>(saw_addr6_t *ip, char *pbuf);</code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>
+                Converts a Libsaw IPv6 address into a string in dotted notation. Thus you can print the result to the user or store it in a database.<br />
+                <dl>
+                  <dt>Parameter: ip</dt>
+                    <dd>Contains the Libsaw IPv6 address which should be converted.</dd>
+                  <dt>Parameter: pbuf</dt>
+                    <dd>A pointer to a buffer where to store the result. This buffer should be <strong>SAW_ADDR6_STRLEN</strong> bytes big. This includes
+                        the zero character which is written by this function.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addr6_copy</strong>(const saw_addr6_t *first, saw_addr6_t *second);</code></dt>
+              <dd>
+                Copys an IPv6 Libsaw address.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>void</dd>
+                  <dt>Parameter: first</dt>
+                    <dd>The source address.</dd>
+                  <dt>Parameter: second</dt>
+                    <dd>The destination address.</dd>
+                </dl>
+              </dd>
+              <dd><strong>Aliases:</strong> <code>saw_addr6_cpy()</code></dd>
+            <dt><code>#define <strong>saw_addr6_compare</strong>(const saw_addr6_t *first, const saw_addr6_t *second);</code></dt>
+              <dd>
+                Compares two addresses.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>saw_bool_t: true(1) if they are the same, false(0) if not.</dd>
+                  <dt>Parameter: first</dt>
+                    <dd>The source address.</dd>
+                  <dt>Parameter: second</dt>
+                    <dd>The comparison address.</dd>
+                </dl>
+              </dd>
+              <dd><strong>Aliases:</strong> <code>saw_addr6_cmp()</code></dd>
+            <dt><code>Address-Checks</code></dt>
+              <dd>The following functions allow to check an address whether it is in the range of predefined groups.</dd>
+              <dd><dl>
+                <dt><code>#define <strong>saw_addr6_isany</strong>(const saw_addr6_t *obj);</code></td>
+                  <dd>Addresses: 0:0:0:0:0:0:0:0 (::/128) </dd>
+                <dt><code>#define <strong>saw_addr6_isloopback</strong>(const saw_addr6_t *obj);</code></td>
+                  <dd><strong>Aliases:</strong> <code>saw_addr6_islo()</code></dd>
+                  <dd>Addresses: 0:0:0:0:0:0:0:1 (::1/128)</dd>
+                <dt><code>#define <strong>saw_addr6_islinklocal</strong>(const saw_addr6_t *obj);</code></td>
+                  <dd><strong>Aliases:</strong> <code>saw_addr6_isll()</code></dd>
+                  <dd>Addresses: FE80:0:0:0:0:0:0:0 (FE80::/10) - FEBF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF</dd>
+                <dt><code>#define <strong>saw_addr6_ismulticast</strong>(const saw_addr6_t *obj);</code></td>
+                  <dd><strong>Aliases:</strong> <code>saw_addr6_ismc()</code></dd>
+                  <dd>Addresses: FF00:0:0:0:0:0:0:0 (FF00::/8) - FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF</dd>
+                <dt><code>#define <strong>saw_addr6_issolicitedmulticast</strong>(const saw_addr6_t *obj);</code></td>
+                  <dd><strong>Aliases:</strong> <code>saw_addr6_issmc()</code></dd>
+                  <dd>Addresses: 0002:0:0:0:0:1:FF00:0 (0002::1:FF00:0/104) - 0002:0:0:0:0:1:FFFF:FFFF</dd>
+                <dt><code>#define <strong>saw_addr6_is4mapped</strong>(const saw_addr6_t *obj);</code></td>
+                  <dd><strong>Aliases:</strong> <code>saw_addr6_is4m()</code></dd>
+                  <dd>Addresses: 0:0:0:0:0:FFFF:0:0 (::FFFF:0:0/48) - 0:0:0:0:0:FFFF:FFFF:FFFF</dd>
+              </dl></dd>
+            <dd>
+              Checks whether the variable is of the specific type.<br />
+              <dl>
+                <dt>Return value:</dt>
+                  <dd>saw_bool_t: This function returns "1" on success and "0" on failure.</dd>
+                <dt>Parameter: obj</dt>
+                  <dd>A pointer to a Libsaw IPv6 address.</dd>
+              </dl>
+            </dd>
+            <dt><code>#define <strong>saw_addr6_to_local</strong>(saw_addr6_t *ip, saw_addr6_local_t *local)</code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>
+                Converts a Libsaw IPv6 address into the local equivalent of it. Thus you can use it with your local socket functions.
+                Possible flow-info or a scope-id in the local address structure are cleared.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Void.</dd>
+                  <dt>Parameter: ip</dt>
+                    <dd>Contains the Libsaw IPv6 address which should be converted.</dd>
+                  <dt>Parameter: local</dt>
+                    <dd>A pointer to a buffer where to store the result. This buffer should be <strong>SAW_ADDR6_LOCSIZE</strong> bytes big or a pointer
+                        to this local structure.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addr6_from_local</strong>(const saw_addr6_local_t *local, saw_addr6_t *pbuf)</code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>
+                Converts a local IPv6 address into a Libsaw IPv6 address. Possible flow-info or a scope-id in the local address structure are ignored.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Void.</dd>
+                  <dt>Parameter: local</dt>
+                    <dd>Contains the local IPv6 address which should be converted.</dd>
+                  <dt>Parameter: pbuf</dt>
+                    <dd>A pointer to a buffer where to store the result.</dd>
+                </dl>
+              </dd>
+          </dl>
+        </div>
+      </div>
+      <h2 id="index_inet_ipvx">4.3. IPvX Address Interface</h2>
+      <div id="inet_ipvx">
+        <h3>IPvX Address Structure</h3>
+        <div id="inet_ipvx_structure">
+          The IPvX interface is a wrapper of IPv4 and IPv6 addresses. You can use it like the wrapped structures.<br />
+          The IPvX part is a <code>struct</code>:<br />
+          <pre>
+            struct <strong>saw_addrx_t</strong> {
+                uint16_t family;                /* Address family of ".addr". */
+                uint16_t port;                  /* Port number used for communication. */
+                union saw_addrx_raw_t {
+                    saw_addr4_t in4;            /* IPv4 address. */
+            #ifdef SAW_CONF_NO_IPV6
+                    uint8_t raw[4];            /* Raw access to the IP address. */
+            #else (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)
+                    struct saw_addr6_t in6;     /* IPv6 address. */
+                    uint8_t raw[16];            /* Raw access to the IP address. */
+            #endif
+                } addr;
+            };
+            typedef struct saw_addrx_t <strong>saw_addrx_t</strong>;
+          </pre>
+          <code>family</code> contains the current family of the address. It can be <code>SAW_ADDR4_FAM</code> or <code>SAW_ADDR6_FAM</code>. This
+          is set automatically by the macros defined here. But if you modify the structure directly you have to set this, too.<br />
+          <code>port</code> contains the port to use with this address. It is handled independent of the address family. The port is saved in network order.<br />
+          The union <code>addr</code> contains the current address. Dependent on <code>family</code> you have to access it in different ways or you have
+          to use the <code>raw</code> access.<br />
+          Please notice that if you disabled IPv6 functionality there is no <code>in6</code> and the <code>raw</code> array is smaller.<br />
+          <br />
+          This is a list of all functions and macros defined to handle IPvX addresses and a description. Of course macros do not declare any datatypes but
+          for a better overview of the macros the parameter's datatypes are listed here.<br />
+          <br />
+          <div class="box">
+            By default a new IPvX address is an IPv6 address unless you insert/set an IPv4 address or if IPv6 is disabled.<br />
+          </div>
+          <dl>
+            <dt><code>#define <strong>SAW_ADDRX_ANYPORT</strong></code></dt>
+              <dd>An <strong>uint16_t</strong> number which contains a port number which represents any port on the machine.</dd>
+            <dt><code>#define <strong>SAW_ADDRX_STRLEN</strong></code></dt>
+              <dd>An <strong>unsigned int</strong> number which defines the maximal length of a string holding an IPvX address in dotted notation including the
+                  zero character.</dd>
+            <dt><code>#define <strong>SAW_ADDRX_SIZE</strong></code></dt>
+              <dd>An <strong>unsigned int</strong> number which defines the size of the saw_addrx_t datatype. It is equivalent to <code>sizeof(saw_addrx_t)</code>.</dd>
+            <dt><code>typedef &lt;undefined&gt; <strong>saw_addrx_local_t</strong>;</code></dt>
+              <dd>This is an alias for the datatype of your local machine which is normally used to store IPvX addresses. All converter functions (described below)
+                  use this datatype to convert Libsaw addresses into addresses of your local machine.<br />
+                  <div class="box">Be carefull, on many systems
+                  this datatype is too small to hold IPv6 addresses, this is caused by backward compatibility in most of the standard address
+                  libraries used on the common systems (This is one reason why we created Libsaw!). One workaround would be creating a variable of this
+                  type the following way: <code>char raw_addr[SAW_ADDRX_LOCSIZE]; saw_addrx_local_t *p_addr = raw_addr;</code><br />
+                  </div>
+                  Currently &lt;undefined&gt; is always <code>struct sockaddr</code>.<br /></dd>
+            <dt><code>typedef &lt;undefined&gt; <strong>saw_addrx_local4_t</strong>;</code></dt>
+              <dd>This is an alias for the datatype of your local machine which is normally used to store IPvX addresses which represent an IPv4 address.
+                  Currently &lt;undefined&gt; is always <code>struct sockaddr_in</code>.<br /></dd>
+            <dt><code>typedef &lt;undefined&gt; <strong>saw_addrx_local6_t</strong>;</code></dt>
+              <dd>This is an alias for the datatype of your local machine which is normally used to store IPvX addresses which represent an IPv6 address.
+                  Currently &lt;undefined&gt; is always <code>struct sockaddr_in6</code>.<br /></dd>
+            <dt><code>#define <strong>SAW_ADDRX_LOCSIZE</strong></code></dt>
+              <dd>An <strong>unsigned int</strong> number which defines the required size of the saw_addrx_local_t datatype. It is
+                  NOT on all systems equivalent to <code>sizeof(saw_addrx_local_t)</code>. This is a known bug in the glibc and
+                  other standard C libraries.</dd>
+            <dt><code>#define <strong>SAW_ADDRX_LOCSIZE4</strong></code></dt>
+              <dd>An <strong>unsigned int</strong> number which defines the size of the saw_addrx_local4_t datatype. It is
+                  equivalent to <code>sizeof(saw_addrx_local4_t)</code>.</dd>
+            <dt><code>#define <strong>SAW_ADDRX_LOCSIZE6</strong></code></dt>
+              <dd>An <strong>unsigned int</strong> number which defines the size of the saw_addrx_local6_t datatype. It is
+                  equivalent to <code>sizeof(saw_addrx_local6_t)</code>.</dd>
+            <dt><code>#define <strong>saw_addrx_setport</strong>(struct saw_addrx_t *addr, uint16_t port);</code></dt>
+              <dd>
+                Sets the port of the address.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Void.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>A pointer to an address where to set the port.</dd>
+                  <dt>Parameter: port</dt>
+                    <dd>The port number that should be set.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addrx_getport</strong>(const struct saw_addrx_t *addr);</code></dt>
+              <dd>
+                Returns the port of the address.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>uint16_t value containing the port number.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>A pointer to an address whose address should be returned.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addrx_is4</strong>(const struct saw_addrx_t *addr);</code></dt>
+              <dd>
+                Returns whether the address is an IPv4 address.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>unsigned int: 1 on success and 0 on failure.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>A pointer to an address whose address should be checked.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addrx_is6</strong>(const struct saw_addrx_t *addr);</code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>
+                Returns whether the address is an IPv6 address.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>unsigned int: 1 on success and 0 on failure.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>A pointer to an address whose address should be checked.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addr6_copy</strong>(const saw_addrx_t *first, saw_addrx_t *second);</code></dt>
+              <dd>
+                Copys an IPvX Libsaw address.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>void</dd>
+                  <dt>Parameter: first</dt>
+                    <dd>The source address.</dd>
+                  <dt>Parameter: second</dt>
+                    <dd>The destination address.</dd>
+                </dl>
+              </dd>
+              <dd><strong>Aliases:</strong> <code>saw_addr6_cpy()</code></dd>
+            <dt><code>#define <strong>saw_addr6_compare</strong>(const saw_addrx_t *first, const saw_addrx_t *second);</code></dt>
+              <dd>
+                Compares two addresses.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>saw_bool_t: true(1) if they are the same, false(0) if not.</dd>
+                  <dt>Parameter: first</dt>
+                    <dd>The source address.</dd>
+                  <dt>Parameter: second</dt>
+                    <dd>The comparison address.</dd>
+                </dl>
+              </dd>
+              <dd><strong>Aliases:</strong> <code>saw_addr6_cmp()</code></dd>
+            <dt><code>#define <strong>saw_addrx_pton</strong>(const char *addr, struct saw_addrx_t *out);</code></dt>
+              <dd>
+                Parses a string containing an address in dotted form. This function checks whether it is an IPv4 or IPv6 address.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>unsigned int: 1 on success and 0 on parser failure.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>A pointer to a string holding an address which should be parsed.</dd>
+                  <dt>Parameter: out</dt>
+                    <dd>A pointer to an address where to store the result.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addrx_pton4</strong>(const char *addr, struct saw_addrx_t *out);</code></dt>
+              <dd>
+                Parses a string containing an IPv4 address in dotted form.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>unsigned int: 1 on success and 0 on parser failure.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>A pointer to a string holding an IPv4 address which should be parsed.</dd>
+                  <dt>Parameter: out</dt>
+                    <dd>A pointer to an address where to store the result.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addrx_pton6</strong>(const char *addr, struct saw_addrx_t *out);</code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>
+                Parses a string containing an IPv6 address in dotted form.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>unsigned int: 1 on success and 0 on parser failure.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>A pointer to a string holding an IPv6 address which should be parsed.</dd>
+                  <dt>Parameter: out</dt>
+                    <dd>A pointer to an address where to store the result.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addrx_ntop</strong>(const struct saw_addrx_t *addr, char *out);</code></dt>
+              <dd>
+                Writes the Libsaw address in dotted format into a string.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Void.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>A pointer to a string holding an IPvX address which should be converted.</dd>
+                  <dt>Parameter: out</dt>
+                    <dd>A pointer to a string where to store the result. The zero character is written by this function. The buffer should be at least
+                        SAW_ADDRX_STRLEN bytes long.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addrx_default4</strong>(struct saw_addrx_t *addr);</code></dt>
+              <dd>
+                Fills a Libsaw address with the default IPv4 data. The port is set to SAW_ADDRX_ANYPORT and the address to SAW_ADDR4_ANY.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Void.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>A pointer to an address which should be filled.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addrx_default6</strong>(struct saw_addrx_t *addr);</code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>
+                Fills a Libsaw address with the default IPv6 data. The port is set to SAW_ADDRX_ANYPORT and the address to saw_addr6_any.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Void.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>A pointer to an address which should be filled.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addrx_default</strong>(struct saw_addrx_t *addr);</code></dt>
+              <dd>
+                This is an alias for saw_addrx_default6(). If IPv6 is disabled it directs to saw_addrx_default4().<br />
+              </dd>
+            <dt><code>#define <strong>saw_addrx_set_ipv4</strong>(struct saw_addrx_t *addr, saw_addr4_t in);</code></dt>
+              <dd>
+                Sets an IPv4 address into a Libsaw IPvX address.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Void.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>A pointer to an address which should be filled.</dd>
+                  <dt>Parameter: in</dt>
+                    <dd>An IPv4 address which should be stored.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addrx_set_ipv6</strong>(saw_addrx_t *addr, const saw_addr6_t *in);</code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>
+                Sets an IPv6 address into a Libsaw IPvX address.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Void.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>A pointer to an address which should be filled.</dd>
+                  <dt>Parameter: in</dt>
+                    <dd>An IPv6 address which should be stored.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addrx_to_local</strong>(const saw_addrx_t *addr, saw_addrx_local_t *dest);</code></dt>
+              <dd>
+                Converts an IPvX address into the local equivalent of it. Thus you can use it with your local socket functions.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Void.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>Contains the IPvX address which should be converted.</dd>
+                  <dt>Parameter: local</dt>
+                    <dd>A pointer to a buffer where to store the result. This buffer should be <strong>SAW_ADDRX_LOCSIZE</strong> bytes big or a pointer
+                        to this local structure.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addrx_to_local4</strong>(const struct saw_addrx_t *addr, saw_addrx_local4_t *dest);</code></dt>
+              <dd>
+                Converts an IPvX address into the local IPv4 structure. Thus you can use it with your local socket functions.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Void.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>Contains the IPvX address which should be converted.</dd>
+                  <dt>Parameter: local</dt>
+                    <dd>A pointer to a buffer where to store the result. This buffer should be <strong>SAW_ADDRX_LOCSIZE4</strong> bytes big or a pointer
+                        to this local structure.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addrx_to_local6</strong>(const struct saw_addrx_t *addr, saw_addrx_local6_t *dest);</code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>
+                Converts an IPvX address into the local IPv6 structure. Thus you can use it with your local socket functions.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Void.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>Contains the IPvX address which should be converted.</dd>
+                  <dt>Parameter: local</dt>
+                    <dd>A pointer to a buffer where to store the result. This buffer should be <strong>SAW_ADDRX_LOCSIZE6</strong> bytes big or a pointer
+                        to this local structure.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addrx_from_local</strong>(const saw_addrx_local_t *local, struct saw_addrx_t *pbuf)</code></dt>
+              <dd>
+                Converts a local IPvX address into a Libsaw IPvX address. This function checks whether the local address is IPv4 or IPv6.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Unsigned int: 0 if the local address is not known. 1 on success.</dd>
+                  <dt>Parameter: local</dt>
+                    <dd>Contains the local IPvX address which should be converted.</dd>
+                  <dt>Parameter: pbuf</dt>
+                    <dd>A pointer to a buffer where to store the result.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addrx_from_local4</strong>(const saw_addrx_local4_t *local, struct saw_addrx_t *pbuf)</code></dt>
+              <dd>
+                Converts a whole local IPv4 address into a Libsaw IPvX address.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Void.</dd>
+                  <dt>Parameter: local</dt>
+                    <dd>Contains the whole local IPv4 address which should be converted.</dd>
+                  <dt>Parameter: pbuf</dt>
+                    <dd>A pointer to a buffer where to store the result.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addrx_from_local6</strong>(const saw_addrx_local6_t *local, struct saw_addrx_t *pbuf)</code> (<a href="#ipv6_def"><span class="ipv6">IF IPV6</span></a>)</dt>
+              <dd>
+                Converts a whole local IPv6 address into a Libsaw IPvX address.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Void.</dd>
+                  <dt>Parameter: local</dt>
+                    <dd>Contains the whole local IPv6 address which should be converted.</dd>
+                  <dt>Parameter: pbuf</dt>
+                    <dd>A pointer to a buffer where to store the result.</dd>
+                </dl>
+              </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div id="local">
+      <h1 id="index_local">5. Local Address Interface</h1>
+      <div id="local_interface">
+        On many Unixes you can use sockets with a file backend. They are called Unix Sockets and known under PF_UNIX/PF_LOCAL_/PF_FILE. On some
+        operating systems like Windows Unix Sockets are not fully supported. Although we provide an independent interface, our *_to_local and *_from_local
+        functions depend on the system and thus you can use these address converters only on systems supporting this feature. The constant SAW_ADDRLO_NO_LOCAL
+        is set if the converters are not available.<br />
+        <br />
+        Unix Sockets use filenames as addresses and are called "File Addresses" in Libsaw. Please see the documentation of your socket library on further
+        information about Unix Sockets.<br />
+        Please consider that the filename is stored with a fixed size and thus features like abstract namespaces are supported. Also, this is part of the
+        socket library and therefore you have to read it's documentation.<br />
+      </div>
+      <div id="local_content">
+        <h3>Local Address Syntax</h3>
+        <div id="local_example">
+          The syntax depends on your operating system. On most unixes a filename looks like "/home/username/anything/edit.txt" but it can also look
+          like "C:\files\edit.txt" on Windows. The string length is limited to SAW_ADDRLO_STRLEN which is something around 100.<br />
+          Due to the fixed length your string can contain as many zero characters '\0' as you want. But your socket library must be able to handle
+          them correctly, therefore, it is not recommended to use this feature.<br />
+          <br />
+          Some systems support an abstract namespace. This means the file is created in a fake directory and not on your filesystem. The addresses
+          start with a zero characters followed by a name. This name is not terminated with a zero character!<br />
+          And again, this should be described in your socket library's doc.<br />
+        </div>
+        <h3>Local Address Structure</h3>
+        <div id="local_structure">
+          The Local Address part is a <code>struct</code>:<br />
+          <pre>
+          struct <strong>saw_addrlo_t</strong> {
+              uint16_t family;
+              char addr[SAW_ADDRLO_STRLEN];
+          };
+          typedef struct saw_addrlo_t <strong>saw_addrlo_t</strong>;
+          </pre>
+          <code>uint16_t</code> is part of ISO C99 and is a 16 bit integer datatype. The family is stored here. All functions operating on this structure
+          set it correctly. If you manipulate other parts of this address you have to set the family only if you use wrappers around this address. The
+          saw_addrlo_*_local functions set the data correctly independently of this field.<br />
+          But wrappers like <code>saw_addr_t</code> require this field to be set.<br />
+          The <code>addr</code> member contains the filename.<br />
+          The typedef is for compatibility with the <code>saw_addr4_t</code> and C++.<br />
+          <br />
+          This is a list of all functions and macros defined to handle local addresses and a description. Of course macros do not declare any datatypes but
+          for a better overview of the macros the parameter's datatypes are listed here.
+          <dl>
+            <dt><code>#define <strong>SAW_ADDRLO_NO_LOCAL</strong></code></dt>
+              <dd>This constant is set if there is no local structure where to convert this addresses to.</dd>
+            <dt><code>#define <strong>SAW_ADDRLO_FAM</strong></code></dt>
+              <dd>An <strong>signed int</strong> number which contains the address family of file addresses. This is also known as <code>AF_UNIX/AF_LOCAL/AF_FILE</code>.</dd>
+            <dt><code>#define <strong>SAW_ADDRLO_DOM</strong></code></dt>
+              <dd>An <strong>signed int</strong> number which contains the protocol family (domain) of file addresses.
+              This is also known as <code>PF_UNIX/PF_LOCAL/PF_FILE</code>.</dd>
+            <dt><code>#define <strong>SAW_ADDRLO_STRLEN</strong></code></dt>
+              <dd>An <strong>unsigned int</strong> number which defines the maximal length of a string holding a file address address. This is also the length
+              of the array holding the filename.<br /></dd>
+            <dt><code>#define <strong>SAW_ADDRLO_SIZE</strong></code></dt>
+              <dd>An <strong>unsigned int</strong> number which defines the size of the saw_addrlo_t datatype. It is equivalent to <code>sizeof(saw_addrlo_t)</code>.</dd>
+            <dt><code>typedef &lt;undefined&gt; <strong>saw_addrlo_local_t</strong>;</code></dt>
+              <dd>This is an alias for the datatype of your local machine which is normally used to store file addresses. All converter functions (described below)
+                  use this datatype to convert Libsaw addresses into addresses of your local machine. Currently &lt;undefined&gt; is always <code>struct sockaddr_un</code>.</dd>
+            <dt><code>#define <strong>SAW_ADDRLO_LOCSIZE</strong></code></dt>
+              <dd>An <strong>unsigned int</strong> number which defines the size of the saw_addrlo_local_t datatype. It is
+                  equivalent to <code>sizeof(saw_addrlo_local_t)</code>.</dd>
+            <dt><code>#define <strong>saw_addrlo_set</strong>(struct saw_addrlo_t *addr, const char *name, unsigned int namelen)</code></dt>
+              <dd>
+                Sets the filename of a file address. The family field is set correctly, too. If namelen is longer than SAW_ADDRLO_STRLEN, the string
+                is truncated without setting the zero character explicitly.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Void.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>This is a pointer to a file address which should be modified.</dd>
+                  <dt>Parameter: name</dt>
+                    <dd>A pointer to a string which should be copied into the file address.</dd>
+                  <dt>Parameter: namelen</dt>
+                    <dd>The length of the string. It DOES include the possible, not necessary, zero ending character.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addrlo_setfam</strong>(struct saw_addrlo_t *addr)</code></dt>
+              <dd>
+                Sets the family of a local address to SAW_ADDRLO_FAM. This is equal to <code>addr->family = SAW_ADDRLO_FAM;</code>.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Void.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>This is a pointer to a local address which should be modified.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addrlo_copy</strong>(const saw_addrlo_t *first, saw_addrlo_t *second);</code></dt>
+              <dd>
+                Copys an Libsaw file address.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>void</dd>
+                  <dt>Parameter: first</dt>
+                    <dd>The source address.</dd>
+                  <dt>Parameter: second</dt>
+                    <dd>The destination address.</dd>
+                </dl>
+              </dd>
+              <dd><strong>Aliases:</strong> <code>saw_addrlo_cpy()</code></dd>
+            <dt><code>#define <strong>saw_addrlo_compare</strong>(const saw_addrlo_t *first, const saw_addrlo_t *second);</code></dt>
+              <dd>
+                Compares two addresses.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>saw_bool_t: true(1) if they are the same, false(0) if not.</dd>
+                  <dt>Parameter: first</dt>
+                    <dd>The source address.</dd>
+                  <dt>Parameter: second</dt>
+                    <dd>The comparison address.</dd>
+                </dl>
+              </dd>
+              <dd><strong>Aliases:</strong> <code>saw_addrlo_cmp()</code></dd>
+            <dt><code>#define <strong>saw_addrlo_to_local</strong>(const struct saw_addrlo_t *addr, saw_addrlo_local_t *local)</code></dt>
+              <dd>
+                Converts a Libsaw file address into the local equivalent of it. Thus you can use it with your local socket functions.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Void.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>Pointer to a file address which should be converted.</dd>
+                  <dt>Parameter: local</dt>
+                    <dd>A pointer to a buffer where to store the result. This buffer should be <strong>SAW_ADDRLO_LOCSIZE</strong> bytes big or a pointer
+                        to this local file structure.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addrlo_from_local</strong>(const saw_addrlo_local_t *local, struct saw_addrlo_t *addr)</code></dt>
+              <dd>
+                Converts a local file address structure into a Libsaw file address.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Void.</dd>
+                  <dt>Parameter: local</dt>
+                    <dd>Contains the local file address structure which should be converted.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>A pointer to a buffer where to store the result.</dd>
+                </dl>
+              </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div id="addr">
+      <h1 id="index_addr">6. Address Interface</h1>
+      <div id="addr_interface">
+        This interface is a wrapper of all addresses in Libsaw. One object can represent any kind of address. Also binary compatibility is available, thus,
+        you can convert any pointer to a saw_addrx_t or saw_addrlo_t into a saw_addr_t pointer. A function can distinguish them by reading the "family" member.<br />
+        <br />
+        <div class="box">
+          If you need no saw_addrlo_t you should not create objects of saw_addr_t, because the loaddr is considerably bigger than addrx and will allocate
+          unused stack/heap space in the saw_addr_t structure. However, you can still use pointers to saw_addr_t which point to saw_addrx_t.<br />
+        </div>
+      </div>
+      <div id="addr_content">
+        <h3>Address Syntax</h3>
+        <div id="addr_example">
+          This kind of address cannot be represented generally as a string. However, this functions wraps all other string formats and,
+          thus, allows every known format.<br />
+        </div>
+        <h3>Address Structure</h3>
+        <div id="addr_structure">
+          The Address part is a <code>union</code>:<br />
+          <pre>
+          union <strong>saw_addr_t</strong> {
+              struct saw_addr_raw_t {
+                  uint16_t family;
+                  uint8_t raw[SAW_ADDR_SIZE - 2];
+              } raw;
+              struct saw_addrx_t in;
+              struct saw_addrlo_t lo;
+          };
+          typedef union saw_addr_t <strong>saw_addr_t</strong>;
+          </pre>
+          The union contains the different address types and a raw access with a family member. You can check this family member and access the structure
+          the right way. The <code>.raw.raw</code> member is always as big as the whole structure minus the size of the <code>.raw.family</code> member.
+          Don't be confused by the strange declaration.
+          <br />
+          <br />
+          <div class="box">
+            <a href="#no_padding">Remember:</a> This library provides binary compatibility of the "family" member.
+            The "family" member has the same offset in all structures!<br />
+          </div>
+          <br />
+          This is a list of all functions and macros defined to handle local addresses and a description. Of course macros do not declare any datatypes but
+          for a better overview of the macros the parameter's datatypes are listed here.
+          <dl>
+            <dt><code>#define <strong>SAW_ADDR_SIZE</strong></code></dt>
+              <dd>An <strong>unsigned int</strong> number which defines the size of the saw_addr_t datatype. It is equivalent to <code>sizeof(saw_addr_t)</code>.</dd>
+            <dt><code>typedef &lt;undefined&gt; <strong>saw_addr_local_t</strong>;</code></dt>
+              <dd>This is an alias for the datatype of your local machine which is normally used to store addresses. All converter functions (described below)
+                  use this datatype to convert Libsaw addresses into addresses of your local machine. Currently &lt;undefined&gt; is always <code>struct sockaddr</code>.</dd>
+            <dt><code>#define <strong>SAW_ADDR_LOCSIZE</strong></code></dt>
+              <dd>An <strong>unsigned int</strong> number which defines the required size of the saw_addr_local_t datatype. It is
+                  NOT on all systems equivalent to <code>sizeof(saw_addr_local_t)</code>. This is a known bug in the glibc and
+                  other standard C libraries.</dd>
+            <dt><code>#define <strong>saw_addr_to_local</strong>(const saw_addr_t *addr, saw_addr_local_t *dest)</code></dt>
+              <dd>
+                Converts a Libsaw address into the local equivalent of it. This is a wrapper of all *_to_local functions. This function detects the address
+                family automatically.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Void.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>Pointer to an address which should be converted.</dd>
+                  <dt>Parameter: dest</dt>
+                    <dd>A pointer to a buffer where to store the result. This buffer should be <strong>SAW_ADDR_LOCSIZE</strong> bytes big.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addr_from_local</strong>(const saw_addr_local_t *addr, saw_addr_t *dest)</code></dt>
+              <dd>
+                Converts a local address structure into a Libsaw address.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Unsigned int: 0 on failure if the local address is not known and 1 on success.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>Contains the local address structure which should be converted.</dd>
+                  <dt>Parameter: dest</dt>
+                    <dd>A pointer to a buffer where to store the result.</dd>
+                </dl>
+              </dd>
+            <dt><code>#define <strong>saw_addr_locsize</strong>(const saw_addr_local_t *addr)</code></dt>
+              <dd>
+                Returns the real/used size of a local address structure.<br />
+                <dl>
+                  <dt>Return value:</dt>
+                    <dd>Unsigned int: The size in bytes of the local structure. Returns 0 if the local structure is not known.</dd>
+                  <dt>Parameter: addr</dt>
+                    <dd>Pointer to the local structure.</dd>
+                </dl>
+              </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div id="practice">
+      <h1 id="index_practice">7. Practice</h1>
+      <div id="practice_cont">
+        This section tries to explain you the basic processes most people intend to do with socket addresses.
+        We always give an example on how to do this with the common Berkeley sockets.
+        <br /><br />
+        <div class="prac_group">
+          Assume: The user entered some ip address. You don't know what kind of address but you need to convert it
+          into an address datatype and prepare it to connect on port 80. We replace the userstring with "::1"
+          here for simplicity reasons.<br />
+          <br />
+          First, the common Berkeley Sockets way:<br />
+          <code>
+            <pre class="prac_bsd">
+
+            signed int fam = AF_INET;
+            struct sockaddr_in addr;
+            struct sockaddr_in6 addr6;
+            memset(&amp;addr, 0, sizeof(struct sockaddr_in));
+            memset(&amp;addr6, 0, sizeof(struct sockaddr_in6));
+            if(!inet_pton(AF_INET, "::1", &amp;addr.sin_addr)) {
+                if(!inet_pton(AF_INET6, "::1", &amp;addr6.sin6_addr)) {
+                    // FAILURE
+                }
+                fam = AF_INET6;
+            }
+            if(fam == AF_INET) {
+                addr.sin_family = AF_INET;
+                addr.sin_port = htons(80);
+            }
+            else {
+                addr6.sin6_family = AF_INET6;
+                addr6.sin6_port = htons(80);
+            }
+            </pre>
+          </code>
+          Now the recommended way using Libsaw:<br />
+          <code>
+            <pre class="prac_saw">
+
+            saw_addrx_t addr;
+            if(!saw_addrx_pton("::1", &amp;addr)) {
+                // FAILURE
+            }
+            saw_addrx_setport(&amp;addr, 80);
+            </pre>
+          </code>
+          Let's say the attempt failed at the "// FAILURE" place and we need to fill the same address structure with the default
+          values identifying one single local device on port 80. We choose the IPv6 protocol.<br />
+          <br />
+          Again the Berkeley Sockets way first:<br />
+          <code>
+            <pre class="prac_bsd">
+
+            memcpy(&amp;addr.sin6_addr, &amp;in6addr_any, sizeof(in6addr_any));
+            addr6.sin6_family = AF_INET6;
+            addr6.sin6_port = htons(80);
+            </pre>
+          </code>
+          Now the Libsaw way:<br />
+          <code>
+            <pre class="prac_saw">
+
+            saw_addrx_default6(&amp;addr);
+            saw_addrx_setport(&amp;addr, 80);
+            </pre>
+          </code>
+        </div>
+        <br />
+        <div class="prac_group">
+          You want to convert the Libsaw addresses into the local Berkeley Sockets equivalent and vice versa.
+          <code>
+            <pre class="prac_saw">
+
+            saw_addr_t addr;
+            /*
+               ...
+               it is filled with some data
+               ...
+            */
+            char local_addr_buf[SAW_ADDR_LOCSIZE];
+            saw_addr_local_t *loc_addr = (saw_addr_local_t*)&amp;local_addr_buf;
+
+            saw_addr_to_local(&amp;addr, loc_addr);
+            /* or to reread the data out of the local address: */
+            saw_addr_from_local(loc_addr, &amp;addr);
+            </pre>
+          </code>
+        </div>
+      </div>
+    </div>
+
+    <div id="faq">
+      <h1 id="index_faq">8. FAQ</h1>
+      <div id="frequently_asked_questions">
+        <ul>
+          <a href="#faq_1"><li>1. Why not simply using <code>struct sockaddr_storage</code> as provided by glibc and others instead of using Libsaw?</li></a>
+          <a href="#faq_2"><li>2. How do you justify this heavy macro usage in Libsaw?</li></a>
+          <a href="#faq_3"><li>3. Why does the *_ntop function not support octal/hexa/dual?</li></a>
+          <a href="#faq_4"><li>4. How to use abstract filenames in saw_addrlo_t?</li></a>
+          <a href="#faq_5"><li>5. How can I see which local datatype is used on my machine?</li></a>
+          <a href="#faq_6"><li>6. Can I use netmasks and CIDR with Libsaw?</li></a>
+          <a href="#faq_7"><li>7. Why don't you support site-local IPv6 Unicast Addresses?</li></a>
+          <a href="#faq_8"><li>8. Why do you remove any padding in the structures?</li></a>
+        </ul>
+        <dl>
+          <dt id="faq_1">Why not simply using <code>struct sockaddr_storage</code> as provided by glibc and others instead of using Libsaw?</dt>
+          <br />
+          <dd>1: glibc itself comments the structure with:<br />
+              <code>
+              /* Structure large enough to hold any socket address (with the historical exception of AF_UNIX).  We reserve 128 bytes.  */
+              </code><br />
+              We do not want any exception! Why can't we use this structure with AF_UNIX? Sorry, but "historical exception" is no reason
+              to do this crap.
+          </dd><br />
+          <dd>2: Although you can't use this structure with AF_UNIX, it is big, too big. saw_addrx_t is for IPv4/IPv6 wrapping only and is
+                 much smaller and because most people do not need AF_UNIX it should be sufficient to use saw_addrx_t and not saw_addr_t/sockaddr_storage.
+          </dd><br />
+          <dd>3: <code>struct sockaddr_storage</code> is not available on all machines (eg. AIX 4.3).</dd><br />
+          <dd>4: saw_addr_t is almost the same as sockaddr_storage but much better documented. Why not giving it a try?</dd><br />
+
+          <dt id="faq_2">How do you justify this heavy macro usage in Libsaw?</dt><br />
+          <dd>1: Libsaw is a small library and we intended to allow the usage of Libsaw without any linked library. This is currently possible
+                 if you do not use the pton converters.</dd><br />
+          <dd>2: The macro implementation is much faster (10x?) than a function implementation would be.</dd><br />
+          <dd>3: Backwards compatibility is much easier because most libraries simply link to the new library while old macros are still
+                 compiled into the binary. Furthermore we can keep backwards compatibility by providing still the old macros in new libraries
+                 without the problem of a overloaded binary because unused macros are ignored in the compilation.</dd><br />
+          <dd>4: Libsaw is tested for long time and, thus, (almost) all macros are bugfree and the problem of always recompiling a
+                 binary if a macro was buggy is minimized here.</dd><br />
+
+          <dt id="faq_3">Why does the *_ntop function not support octal/hexa/dual?</dt><br />
+          <dd>1: We think that there is no need for it. If you need it, anyway, you can use sprintf.</dd><br />
+          <dd>2: Use sprintf instead: "%u" for decimal representation, "0%o" for octal and "0x%X" for hexadecimal.</dd><br />
+          <dd>3: Example: <br /><code>saw_addr4_t addr;<br />/* fill the structure here */<br />
+                 printf("%u.0%o.0x%x.0x%X\n", addr.byte[0], addr.byte[1], addr.byte[2], addr.byte[3]);</code></dd><br />
+
+          <dt id="faq_4">How to use abstract filenames in saw_addrlo_t?</dt><br />
+          <dd>Due to the dependency to the socket library we do not support abstract filenames here.
+              Nevertheless your socket library may describe the syntax of abtract filenames it supports
+              and you can use them with this library. However, not every socket library supports this.
+              See Libfip for an example of a socket library supporting abstract filenames.
+          </dd><br />
+
+          <dt id="faq_5">How can I see which local datatype is used on my machine?</dt><br />
+          <dd>We currently use always the BSD like datatypes as describe above in the documentation. If we support
+              additional types in the future, we will add mechanisms to get information about the used type.
+          </dd><br />
+
+          <dt id="faq_6">Can I use netmasks and CIDR with Libsaw?</dt><br />
+          <dd>Of course, you can use netmasks. The saw_addr4_t type intentionally supports a saw_addr4_isnetmask() function
+              to check whether this address looks like a valid netmask. However, we considered implementing a new
+              datatype saw_net_t which handles a saw_addrx_t type plus a netmask but we think that there is currently no
+              need for it. If you need such a feature, tell us why and we will reconsider our statement. This new type
+              would also support CIRD. Nevertheless we are working on an improvement of the parser which handles trailing
+              slashes (CIDR) of a string. It will come with a feature which tells you what may be wrong in the string
+              if the parser fails.</dd><br />
+
+          <dt id="faq_7">Why don't you support site-local IPv6 Unicast Addresses?</dt><br />
+          <dd>First, you can use any address you want with Libsaw but we do not provide *_isXX functions for every group to check for
+              special groups of addresses. We do not provide it for site-local IPv6 unicast because the RFC-4291 says:<br />
+              <code>RFC 4291: The special behavior of this prefix defined in [RFC3513] must no longer be supported in new implementations
+                              (i.e., new implementations must treat this prefix as Global Unicast).</code><br />
+              We believe that internet standards like RFCs exist to stick to them, hence, we do treat them as Global Unicast!
+              </dd><br />
+
+          <dt id="faq_8">Why do you remove any padding in the structures?</dt><br />
+          <dd>Address structures need binary compatibility if you want to wrap one over another, otherwise the "family" member
+              would always be at another offset. We decided to remove EVERY padding in the structure to be more consistent and transparent.
+          </dd><br />
+        </dl>
+      </div>
+    </div>
+
+    <div id="w3c">
+      <p>
+        <a href="http://validator.w3.org/check?uri=referer">
+          <img src="http://www.w3.org/Icons/valid-xhtml10"
+               alt="Valid XHTML 1.0 Strict"
+               height="31"
+               width="88" />
+        </a>
+      </p>
+      <p>
+        <a href="http://jigsaw.w3.org/css-validator/">
+          <img style="border:0;width:88px;height:31px"
+               src="http://jigsaw.w3.org/css-validator/images/vcss"
+               alt="Valid CSS!" />
+        </a>
+      </p>
+    </div>
+
+  </body>
+</html>

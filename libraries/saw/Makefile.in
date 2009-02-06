@@ -1,0 +1,115 @@
+#
+#  (COPYRIGHT) Copyright (C) 2008, 2009, The ONS Team.
+#  This file is part of ONS, see COPYING for details.
+#
+
+#
+# File information:
+# - Created: 17. January 2009
+# - Lead-Dev: - David Herrmann
+# - Contributors: /
+# - Last-Change: 17. January 2009
+#
+
+
+#
+# Global configuration.
+#
+
+prefix = @prefix@
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+RM = @RMPROG@
+INSTALL = @INSTALL@
+MKDIR = mkdir
+@SET_MAKE@
+
+SUBMAKE = ${MAKE} --no-print-directory
+
+CC = @CC@
+CFLAGS = @CFLAGS@
+LFLAGS = @LFLAGS@
+
+COMPILE = ${CC} ${CFLAGS} -Iinclude -I../ons/include -c
+LIBNAME = saw
+LIB_DEP = ${top_srcdir}/ons/libons.so
+LIBS = -L${top_srcdir}/ons -lons
+
+INC_PATH = ${srcdir}/include/${LIBNAME}
+SRC_PATH = ${srcdir}/src
+
+
+#
+# Source and header files.
+#
+
+SRC = \
+	${SRC_PATH}/addr.c
+
+HEADERS = \
+	${INC_PATH}/misc.h \
+	${INC_PATH}/saw.h \
+	${INC_PATH}/addr4.h \
+	${INC_PATH}/addr6.h \
+	${INC_PATH}/addrx.h \
+	${INC_PATH}/addrlo.h \
+	${INC_PATH}/addr.h \
+	${INC_PATH}/net.h
+
+BINFILE = lib${LIBNAME}.so
+BINARY = ${srcdir}/${BINFILE}
+
+OBJS = ${SRC:%.c=%.o}
+
+
+#
+# Global rules.
+#
+
+all: build
+
+.PHONY: all build clean distclean install uninstall
+
+
+#
+# Build routines.
+#
+
+build: ${BINARY}
+
+${BINARY}: ${OBJS}
+	${CC} ${OBJS} ${LFLAGS} -o ${BINARY} ${LIBS}
+
+
+#
+# Clean routines.
+#
+
+clean:
+	@${RM} -vf ${SRC_PATH}/*.o ${BINARY}
+
+distclean: clean
+	@${RM} -vf ${srcdir}/Makefile
+
+
+#
+# Install routines.
+#
+
+install: build
+	@test -d ${prefix} || mkdir -vp ${prefix}
+	@${INSTALL} -m 755 -vd ${prefix}/include/${LIBNAME}
+	@${INSTALL} -m 644 -v ${HEADERS} ${prefix}/include/${LIBNAME}/
+	@${INSTALL} -m 755 -v ${BINARY} ${prefix}/lib/
+
+uninstall:
+	@${RM} -vRf ${prefix}/include/${LIBNAME} ${prefix}/lib/${BINFILE}
+
+
+#
+# Source file dependencies.
+#
+
+${SRC_PATH}/addr.o: ${SRC_PATH}/addr.c ${HEADERS} ${LIB_DEP}
+	${COMPILE} $< -o $@
+

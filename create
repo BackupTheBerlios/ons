@@ -1,0 +1,60 @@
+#!/bin/sh
+
+#
+#  (COPYRIGHT) Copyright (C) 2008, 2009, The ONS Team.
+#  This file is part of ONS, see COPYING for details.
+#
+
+#
+# File information:
+# - Created: 22. December 2008
+# - Lead-Dev: - David Herrmann
+# - Contributors: /
+# - Last-Change: 1. January 2009
+#
+
+#
+# You can create the autoconf tools with "./create".
+#
+
+# We try to find the directory of this script and change
+# into the "libraries" subdir.
+if test -d ./libraries ; then
+    cd ./libraries
+fi
+if test -d ../libraries ; then
+    cd ../libraries
+fi
+if test -d ../../libraries ; then
+    cd ../../libraries
+fi
+if test -d ../../../libraries ; then
+    cd ../../../libraries
+fi
+
+# Check whether we are in the right directory
+if test $(basename `pwd`) != "libraries" ; then
+    echo "Invalid directory."
+    exit 1;
+fi
+
+# Check for the configure template.
+if test -f ./configure.in ; then
+    # Validate the configure.in file.
+    CREATION_TIME=$(grep Created ../create | grep -v TIME)
+    if test "$CREATION_TIME" != "# - Created: 22. December 2008" ; then
+        echo "Invalid directory."
+        exit 1;
+    else
+        # Copy required files and then call autoreconf and configure
+        cp /usr/share/automake-1.10/install-sh .
+        cp /usr/share/automake-1.10/config.sub .
+        cp /usr/share/automake-1.10/config.guess .
+        autoreconf && ./configure --enable-warnings --enable-debug
+        echo "Successfully created autotools."
+        echo "This script should not be used to compile ONS for productive use!"
+    fi
+else
+    echo "Invalid directory."
+fi
+

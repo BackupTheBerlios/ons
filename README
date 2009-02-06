@@ -1,0 +1,57 @@
+
+  Welcome to ONS, the "Open Network Suite".
+
+0. Copyright notice
+  ONS is developed by the ONS Team.
+  This file is part of ONS, see COPYING for details.
+
+
+                           Table of Contents
+
+                           1. Useful notes
+                            2. About ONS
+                          3. Installing ONS
+                            4. Using ONS
+                          5. Developing ONS
+                              6. Contact
+
+
+1. Useful notes
+  We are looking for developers which help us improving ONS. If you are
+  interested, just contact us (See "6. Contact").
+
+2. About ONS
+  The Open Network Suite is an attempt to create a bundle of softwares
+  providing well documented access to all network issues. Each software allows
+  to use one single network issue and conforms to the Unix ideology to do only
+  one thing but do it best. Thus, the softwares provide simple ways to do simple
+  things but also complex ways to do complex thing.
+
+3. Installing ONS
+  See INSTALL or documentation for install instructions.
+
+4. Using ONS
+  See the documentation of ONS and the references of each library to get an
+  introduction into ONS. There is also a tutorial available. Though, the
+  documentation is the right place for the first steps.
+
+5. Developing ONS
+  Please don't hesitate to send patches, hints, ideas or whatever you think
+  would enhance ONS to us. We are glad about every submission. Even critics are
+  welcome. See 6. Contact for email addresses.
+  If you want to help us improving ONS continuosly, just contact us, too.
+  You see, we are glad about every feedback we get.
+
+6. Contact
+  Please send a mail to:
+    ons@xccd.eu
+  You can also contact us on an unofficial way by going on IRC and talk
+  with one of us in either the query or one of the listed channels. Our nicks
+  are listed in COPYING behind the real names.
+  (sorted in descending availability)
+  - irc.onlinegamesnet.net - #linux
+  - irc.quakenet.org - #c or #c.de
+  - irc.gamesurge.net - #c or #coders
+  We are neither operators nor well known regulars on most of these channels.
+  Best way is just querying us.
+
