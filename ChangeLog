@@ -42,6 +42,8 @@ TODO =1.0:
     - writev and readv
 
 [ ONS v0.1.1.0 (TESTING) ]
+    * David Herrmann 2009/02/06
+        - Use git as VCS.
     * David Herrmann 2009/01/31
         - Add CGI API.
     * David Herrmann 2009/01/17

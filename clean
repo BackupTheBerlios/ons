@@ -48,8 +48,8 @@ fi
 # Remove every file which is not under revision control.
 # "hg status -nu0" does not list empty directory. We remove
 # them manually.
-if test -d .hg ; then
-    hg status -nu0 | xargs -0r rm -v
+if test -d .git ; then
+    git clean
     rm -vRf ./libraries/autom4te.cache
     echo "Successfully cleaned the directory."
 else
