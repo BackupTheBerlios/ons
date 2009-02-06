@@ -86,8 +86,7 @@ clean: sub-clean
 distclean: sub-distclean
 	@${RM} -Rvf ${srcdir}/Makefile ${srcdir}/aclocal.m4 ${srcdir}/autom4te.cache \
 				${srcdir}/config.log ${srcdir}/config.status ${srcdir}/ltmain.sh \
-				${srcdir}/configure ${srcdir}/libtool ${srcdir}/missing ${srcdir}/stamp-h \
-				${srcdir}/config.sub ${srcdir}/config.guess ${srcdir}/install-sh
+				${srcdir}/configure ${srcdir}/libtool ${srcdir}/missing ${srcdir}/stamp-h
 
 
 #
