@@ -15,15 +15,18 @@ TODO >1.0:
  - nothing
 
 TODO =1.0:
- - complete rules and guidelines
- - add FAQ
- - better overview of ONS
- - Update documentation (replace libsaw with SAW).
- - ROADMAP
- - Better sorting algorithms in mem_array and mem_llist.
- - Dynamic hash tables (linear hashing?).
- - Update Makefile.win32.
- - DECLARE_ARRAY_* should be DEFINE_ARRAY_*.
+ - general:
+    - Update Makefile.win32.
+ - Documentation:
+    - complete rules and guidelines
+    - add FAQ
+    - better overview of ONS
+    - Update documentation.
+    - ROADMAP
+ - memoria:
+    - Better sorting algorithms in mem_array and mem_llist.
+    - Dynamic hash tables (linear hashing?).
+    - DECLARE_ARRAY_* should be DEFINE_ARRAY_*.
  - FIP:
     - Add network interface handling (if.h)
     - Add control message handling (cmsg.h)
@@ -46,6 +49,7 @@ TODO =1.0:
         - Use git as VCS.
         - Correct distclean in makefile.
         - Remove CGI module.
+        - Fix configure script to compile only the modules the user requested.
     * David Herrmann 2009/01/31
         - Add CGI API.
     * David Herrmann 2009/01/17

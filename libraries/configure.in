@@ -477,7 +477,73 @@ dnl
 dnl [[ MODULE COMPILATION ]]
 dnl
 
-subdirs="ons memoria saw fip yaadns"
+ons_enable_memoria="no"
+ons_enable_saw="no"
+ons_enable_fip="no"
+ons_enable_yaadns="no"
+ons_modules="ons"
+ons_makefiles="Makefile ons/Makefile"
+
+AC_MSG_CHECKING(for module list)
+AC_ARG_ENABLE(modules,
+[  --enable-modules=list,of,modules   List of modules which should be compiled.],
+[
+    IFS_BACK="$IFS"
+    IFS=','
+    for module in $enableval ; do
+        case "$module" in
+            ons)
+                dnl Do nothing.
+                ;;
+            memoria)
+                if test $ons_enable_memoria = "no" ; then
+                    ons_enable_memoria="yes"
+                    ons_modules="$ons_modules memoria"
+                    ons_makefiles="$ons_makefiles memoria/Makefile"
+                fi
+                ;;
+            saw)
+                if test $ons_enable_saw = "no" ; then
+                    ons_enable_saw="yes"
+                    ons_modules="$ons_modules saw"
+                    ons_makefiles="$ons_makefiles saw/Makefile"
+                fi
+                ;;
+            fip)
+                if test $ons_enable_fip = "no" ; then
+                    ons_enable_fip="yes"
+                    ons_modules="$ons_modules fip"
+                    ons_makefiles="$ons_makefiles fip/Makefile"
+                fi
+                ;;
+            yaadns)
+                if test $ons_enable_yaadns = "no" ; then
+                    ons_enable_yaadns="yes"
+                    ons_modules="$ons_modules yaadns"
+                    ons_makefiles="$ons_makefiles yaadns/Makefile"
+                fi
+                ;;
+            *)
+                ;;
+        esac
+    done
+    IFS="$IFS_BACK"
+],
+[
+    ons_enable_memoria="yes"
+    ons_enable_saw="yes"
+    ons_enable_fip="yes"
+    ons_enable_yaadns="yes"
+    ons_modules="ons memoria saw fip yaadns"
+    ons_makefiles="Makefile ons/Makefile memoria/Makefile saw/Makefile fip/Makefile yaadns/Makefile"
+])
+AC_MSG_RESULT($ons_modules)
+
+if test "x$srvx_cv_modules" = "x" ; then
+    srvx_cv_modules=" none"
+fi
+
+subdirs="$ons_modules"
 AC_SUBST([subdirs])
 AC_SUBST([CFLAGS])
 AC_SUBST([LFLAGS])
@@ -489,7 +555,7 @@ dnl
 dnl Generate makefiles / config.h output.
 dnl
 
-AC_OUTPUT([Makefile ons/Makefile memoria/Makefile saw/Makefile fip/Makefile yaadns/Makefile], [echo timestamp > stamp-h])
+AC_OUTPUT($ons_makefiles, [echo timestamp > stamp-h])
 
 
 dnl
@@ -575,6 +641,7 @@ ONS is now configured for your system.
     Prefix:                     $prefix
     Endianness:                 $ons_cv_endianness
 
+    Modules:                    $ons_modules
     Compiler warnings:          $ons_cv_enable_warnings
     Debug mode:                 $ons_cv_enable_debug
     Anonymous mmap():           $ons_cv_map_anon

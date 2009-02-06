@@ -49,8 +49,7 @@ fi
 # "hg status -nu0" does not list empty directory. We remove
 # them manually.
 if test -d .git ; then
-    git clean
-    rm -vRf ./libraries/autom4te.cache
+    git clean -df
     echo "Successfully cleaned the directory."
 else
     echo "You do not use a development repository."
