@@ -45,6 +45,7 @@ TODO =1.0:
     * David Herrmann 2009/02/06
         - Use git as VCS.
         - Correct distclean in makefile.
+        - Remove CGI module.
     * David Herrmann 2009/01/31
         - Add CGI API.
     * David Herrmann 2009/01/17

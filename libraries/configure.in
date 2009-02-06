@@ -477,7 +477,7 @@ dnl
 dnl [[ MODULE COMPILATION ]]
 dnl
 
-subdirs="ons memoria saw fip yaadns protofcgi"
+subdirs="ons memoria saw fip yaadns"
 AC_SUBST([subdirs])
 AC_SUBST([CFLAGS])
 AC_SUBST([LFLAGS])
@@ -489,7 +489,7 @@ dnl
 dnl Generate makefiles / config.h output.
 dnl
 
-AC_OUTPUT([Makefile ons/Makefile memoria/Makefile saw/Makefile fip/Makefile yaadns/Makefile protofcgi/Makefile], [echo timestamp > stamp-h])
+AC_OUTPUT([Makefile ons/Makefile memoria/Makefile saw/Makefile fip/Makefile yaadns/Makefile], [echo timestamp > stamp-h])
 
 
 dnl
