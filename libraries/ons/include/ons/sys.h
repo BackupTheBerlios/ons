@@ -8,7 +8,7 @@
  * - Created: 22. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 31. January 2009
+ * - Last-Change: 7. February 2009
  */
 
 /* ONS system wrapper header.
@@ -32,7 +32,9 @@ ONS_EXTERN_C_BEGIN
 #ifdef ONS_CONF_HAVE_MMAP
     #ifndef ONS_CONF_HAVE_DECL_MAP_ANONYMOUS
         #ifdef ONS_CONF_HAVE_DECL_MAP_ANON
-            #define MAP_ANONYMOUS MAP_ANON
+            #ifndef MAP_ANONYMOUS
+                #define MAP_ANONYMOUS MAP_ANON
+            #endif
         #endif
     #endif
 #endif
@@ -56,13 +58,12 @@ typedef uint8_t ons_bitset8_t;
 typedef uint16_t ons_bitset16_t;
 typedef uint32_t ons_bitset32_t;
 typedef uint64_t ons_bitset64_t;
-typedef ons_bitset32_t ons_bitset_t;
 
 /* Bit manipulation.
  * These macros manipulate the single bits of a value.
  * ONS_ROT(bit, val, k) rotates the \bit bit value \val for \k bytes to the left.
  * - ONS_ROT(32, 0x1, 4) would rotate the 32bit value 0x1 for 4 bits to the left and, hence, return 0x10.
- * ONS_BIT(x) returns a value with the \x. bit set.
+ * ONS_BIT(x) returns a value with the \x'th bit set.
  */
 #define ONS_ROT(bit, val, k) (( (val) << (k) ) | ( (val) >> ((bit) - (k)) ))
 #define ONS_BIT(x) (0x1 << (x))
@@ -76,6 +77,9 @@ typedef signed int ons_comp_t;
 #define ONS_SMALLER -1
 #define ONS_EQUAL 0
 #define ONS_GREATER 1
+
+/* Sleeps for \s seconds. */
+extern void ons_sleep(unsigned int s);
 
 /* Structure packing mechanism.
  * If __attribute__((__packed__)) is supported, we declare ONS_ATTR_PACK
@@ -135,10 +139,10 @@ typedef signed int ons_comp_t;
  * If the system does not support microseconds but milliseconds,
  * the \t_usec is appended with "000".
  * If the system does not supported any mechanism to get milliseconds
- * the \t_usec contains 0.
+ * the \t_usec contains always 0.
  *
- * This structure does not support negative values. Though, some system
- * support negative values in time_t, we do not to disallow weird
+ * This structure does not support negative values. Though, some systems
+ * support negative values in time_t, we do not. This disallows weird
  * behaviour if the function does not check this. If you need negative
  * values AND positive values, you should pass an additional parameter.
  */
@@ -173,71 +177,6 @@ extern void ons_time(ons_time_t *buf);
     extern void ons_mutex_unlock(ons_mutex_t *mutex);
     extern bool ons_mutex_trylock(ons_mutex_t *mutex);
     extern bool ons_mutex_timedlock(ons_mutex_t *mutex, ons_time_t *timeout);
-#endif
-
-/* Windows error code definitions.
- * Due to the miss of POSIX error codes in Windows we wrap them
- * here. We wrap only the codes which are used in libraries
- * of ONS.
- * All error codes which are not available on Windows get an
- * randomly low (<0) number.
- * Defines the codes only if ONS_CONF_ECODES is defined (off by default).
- */
-#if defined(ONS_CONF_WINDOWS) && defined(ONS_CONF_ECODES)
-    #define EPERM WSAEACCESS
-    #define EACCESS WSAEACCESS
-    #define EINTR WSAEINTR
-    #define EBADF WSAEBADF
-    #define ENOTSOCK WSAENOTSOCK
-    #define ENOMEM WSA_NOT_ENOUGH_MEMORY
-    #define ENOBUFS WSAENOBUFS
-    #define EMFILE WSAEMFILE
-    #define EFAULT WSAEFAULT
-    #define EINVAL WSAEINVAL
-    #define EINPROGRESS WSAEINPROGRESS
-    #define EWOULDBLOCK WSAEWOULDBLOCK
-    #define EAGAIN EWOULDBLOCK
-    #define EALREADY WSAEALREADY
-    #define EDESTADDRREQ WSAEDESTADDRREQ
-    #define ENOPROTOOPT WSAENOPROTOOPT
-    #define EPROTONOSUPPORT WSAEPROTONOSUPPORT
-    #define ESOCKTNOSUPPORT WSAESOCKTNOSUPPORT
-    #define EPROTOTYPE WASEPROTOTYPE
-    #define EOPNOTSUPP WSAEOPNOTSUPP
-    #define EPFNOSUPPORT WSAEPFNOSUPPORT
-    #define EAFNOSUPPORT WSAEAFNOSUPPORT
-    #define EADDRINUSE WSAEADDRINUSE
-    #define EADDRNOTAVAIL WSAEADDRNOTAVAIL
-    #define ENETDOWN WSAENETDOWN
-    #define ENETUNREACH WSAENETUNREACH
-    #define ENETRESET WSAENETRESET
-    #define ECONNABORTED WSAECONNABORT
-    #define ECONNRESET WSAECONNRESET
-    #define ESHUTDOWN WSAESHUTDOWN
-    #define EISCONN WSAEISCONN
-    #define ENOTCONN WSAENOTCONN
-    #define ETIMEDOUT WSAETIMEDOUT
-    #define ECONNREFUSED WSAECONNREFUSED
-    #define EHOSTDOWN WSAEHOSTDOWN
-    #define EHOSTUNREACH WSAEHOSTUNREACH
-    #define EMSGSIZE WSAEMSGSIZE
-    #define EPIPE WSAEDISCON
-    #define EDQUOT WSAEUSERS
-    #define ENOSPC WSAEDQUOT
-    #define ELOOP WSAELOOP
-    #define ENAMETOOLONG WSAENAMETOOLONG
-    #define ENFILE -1
-    #define ENOPKG -2
-    #define ENXIO -3
-    #define ENODEV -4
-    #define EPROTO -5
-    #define EIO -6
-    #define ENOENT -7
-    #define ENOTDIR -8
-    #define EISDIR -9
-    #define EMLINK -10
-    #define EFBIG -11
-    #define EROFS -12
 #endif
 
 

@@ -8,7 +8,7 @@
  * - Created: 22. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 1. January 2009
+ * - Last-Change: 7. February 2009
  */
 
 /* Main and public header of ONS.
@@ -24,6 +24,7 @@ ONS_EXTERN_C_BEGIN
 
 
 #include <ons/sys.h>
+#include <ons/err.h>
 #include <ons/main.h>
 
 

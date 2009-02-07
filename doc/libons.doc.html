@@ -9,7 +9,7 @@
   - Created: 3. January 2009
   - Lead-Dev: - David Herrmann
   - Contributors: /
-  - Last-Change: 7. February 2009
+  - Last-Change: 4. January 2009
   -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -41,7 +41,7 @@
                     subgroups are referred here with or without the prefix "lib" (eg., "memoria" or "libmemoria").<br />
                     The main library is called "libons". It does not provide any special functionality but contains wrappers for some system
                     dependent functions which are needed in more than one ONS library. This library is required for all other libraries of ONS.
-                    Moreover, if this library runs on you system, all other libraries are guaranteed to run on your system, too. Though, there
+                    Moreover, if this library runs on you system, all other libraries are guaranteed to run on you system, too. Though, there
                     is no need to install all libraries. You can choose the libraries you need and install only them into your system.
                 </p>
                 <p>
@@ -51,11 +51,11 @@
                     socket layer.<br />
                     However, the main reason to use ONS is that ONS is totally operating system independent. If you use ONS and ONS is available
                     for your platform, you don't have to care for any system dependent issues. Moreover, you can even handle really ONS dependent
-                    issues in a uniform manner. Libons additionally provides some wrappers for network unrelated functionality.
+                    issues in a uniform manner. Libons provides even some wrappers for networkless functionality.
                 </p>
                 <p>
-                    This documentation is divided into several parts. You can skip all parts you don't need, however, I recommend to every developer,
-                    who uses ONS, reading this file completely. For all others it is sufficient to read the installation guide.
+                    This documentation is divided into several parts. You can skip all parts you don't need, however, I recommend every developer
+                    who uses ONS to read this file completely. For all others it is sufficient to read the installation guide.
                 </p>
             </div>
 
@@ -119,12 +119,11 @@
                     <br />
                     You can contact us here:<br />
                     <ul>
-                        <li>Visit us at: <a href="http://ons.berlios.de">ons.berlios.de</a></li>
                         <li>Send a mail to: ons@xccd.eu</li>
                     </ul>
                     You can also contact us on an unofficial way by going on IRC and talk
                     with one of us either in the query or in one of the listed channels. Our nicks
-                    are listed in COPYING behind the real names.<br />
+                    are listed in COPYING behind the real names.
                     (sorted in descending availability)
                     <ul>
                         <li>irc.onlinegamesnet.net - #linux or #c++</li>
@@ -152,6 +151,29 @@
                     if you want to have a detailed function reference of a library, please read the reference documentations in this directory of the library
                     you want to get information of.
                 </p>
+                <p>
+                    Following a list of guidelines and rules all ONS software conforms to:
+                    <ul>
+                        <li>Use as less external dependencies as possible.</li>
+                        <li>Allow the user to access everything and provide him sufficient information.</li>
+                        <li>Write the source ISO-C89 compatible and use as less C99 features as possible. Try to give alternatives for C99 features for systems
+                            like Microsoft Windows which do not support C99 in any form (at least not MSVSC++).</li>
+                        <li>The code should be transparent and not hide anything.</li>
+                        <li>All structures/datatypes ought to be the same at any platform. This does not explicitely include padding, though, some types are
+                            even guaranteed to have the same padding on all platforms. This is noted in the documentation.</li>
+                        <li>No tabs in the source!</li>
+                        <li>Indentation is exactly 4 spaces!</li>
+                        <li>Every library uses always the functionality of other ONS libraries instead of reimplementing it (eg., all libraries call
+                            mem_malloc() of libmemoria instead of malloc() of libc).</li>
+                        <li>A function must always be threadsafe, although, the context it operates on does not have to be threadsafe.</li>
+                        <li>(TODO) To be continued...</li>
+                    </ul>
+                </p>
+                <p>
+                    All ONS software follows these rules in every form. If there is an exception it is marked explicitly in the documentation. If you have critic
+                    or suggestions to these rules and guidelines, please don't hesitate and contact us. We are glad about every feedback
+                    (Have I already said this before?).
+                </p>
             </div>
 
             <div id="tutorials">
@@ -164,7 +186,7 @@
                     <h2>Libons - Functionality</h2>
                     <p>
                         The main functions which are provided by Libons are configuration of your system and macros providing such information in the source code.
-                        One example are macros providing unpadded structures. Either "#pragma pack" or a structure attribute is supported, thus, simply use
+                        One example are macros providing you unpadded structures. Either "#pragma pack" or a structure attribute is supported, thus, simply use
                         both like:<br />
                         <code>
                             <pre>
@@ -200,6 +222,9 @@
             #include &lt;ons/ons.h&gt;
             #include &lt;stdio.h&gt;
 
+            /* Include for sleep(); Check your system for such a function. */
+            #include &lt;unistd.h&gt;
+
             ons_mutex_t mutex;
             unsigned int val;
             void *callback(void *arg);
@@ -207,7 +232,6 @@
             void *callback(void *arg) {
                 unsigned int *begin = arg;
 
-                val = *begin;
                 while(1) {
                     /* Do we need to return? */
                     if(!ons_mutex_trylock(&amp;mutex)) {
@@ -221,14 +245,20 @@
 
             int main() {
                 ons_thread_t thread;
-                unsigned int begin = 10;
+
+                if(!ons_mutex_init(&amp;mutex)) {
+                    /* Mutex creation failed; fatal error. */
+                    return 1;
+                }
 
                 /* Start thread an let him count from 10 upwards. */
-                ons_mutex_init(&amp;mutex);
-                ons_thread_run(&amp;thread, callback, &amp;begin);
+                if(!ons_thread_run(&amp;thread, callback, 10)) {
+                    /* Thread creation failed; fatal error. */
+                    return 1;
+                }
 
-                /* Now sleep 1 second and then lock the mutex and wait for the thread to exit. */
-                ons_sleep(1);
+                /* Now sleep 3 seconds and then lock the mutex and wait for the thread to exit. */
+                sleep(3);
                 ons_mutex_lock(&amp;mutex);
                 ons_thread_join(&amp;thread);
 
@@ -339,30 +369,6 @@
                         TODO: tutorials
                     </p>
                 </div>
-            </div>
-            <div>
-                <h1>Rules &amp; Guidelines</h1>
-                <p>
-                    Following a list of guidelines and rules all ONS software conforms to:
-                    <ul>
-                        <li>Use as less external dependencies as possible.</li>
-                        <li>Allow the user to access everything and provide him sufficient information.</li>
-                        <li>Write the source ISO-C89 compatible.</li>
-                        <li>The code should be transparent and should not hide anything to the user.</li>
-                        <li>All structures/datatypes ought to be the same at any platform. This does not explicitely include padding, though, some types are
-                            even guaranteed to have the same padding on all platforms. This is noted in the documentation.</li>
-                        <li>No tabs in the source!</li>
-                        <li>Indentation is exactly 4 spaces!</li>
-                        <li>Every library uses always the functionality of other ONS libraries instead of reimplementing it (eg., all libraries call
-                            mem_malloc() of libmemoria instead of malloc() of libc).</li>
-                        <li>A function must always be threadsafe, although, the context it operates on does not have to be threadsafe.</li>
-                        <li>(TODO) To be continued...</li>
-                    </ul>
-                </p>
-                <p>
-                    All ONS software follows these rules in every form. If there is an exception it is marked explicitly in the documentation. If you have critiques
-                    or suggestions to these rules and guidelines, please don't hesitate and contact us. We are glad about every feedback (Have I already said this before?).
-                </p>
             </div>
         </div>
     </body>

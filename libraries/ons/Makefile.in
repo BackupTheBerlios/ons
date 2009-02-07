@@ -41,12 +41,14 @@ SRC_PATH = ${srcdir}/src
 #
 
 SRC = \
-	${SRC_PATH}/ons.c
+	${SRC_PATH}/ons.c \
+	${SRC_PATH}/err.c
 
 HEADERS = \
 	${INC_PATH}/setup.h \
 	${INC_PATH}/misc.h \
 	${INC_PATH}/sys.h \
+	${INC_PATH}/err.h \
 	${INC_PATH}/main.h \
 	${INC_PATH}/ons.h
 
@@ -106,5 +108,8 @@ uninstall:
 #
 
 ${SRC_PATH}/ons.o: ${SRC_PATH}/ons.c ${HEADERS}
+	${COMPILE} $< -o $@
+
+${SRC_PATH}/err.o: ${SRC_PATH}/err.c ${HEADERS}
 	${COMPILE} $< -o $@
 

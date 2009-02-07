@@ -45,6 +45,9 @@ TODO =1.0:
     - writev and readv
 
 [ ONS v0.1.1.0 (TESTING) ]
+    * David Herrmann 2009/02/07
+        - Add ons_sleep().
+        - Add global error handling into ONS.
     * David Herrmann 2009/02/06
         - Use git as VCS.
         - Correct distclean in makefile.

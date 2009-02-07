@@ -8,7 +8,7 @@
  * - Created: 23. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 2. January 2009
+ * - Last-Change: 7. February 2009
  */
 
 /* ONS main functions.
@@ -22,6 +22,9 @@
 ONS_EXTERN_C_BEGIN
 
 
+#include <ons/sys.h>
+#include <ons/err.h>
+
 /* Options which can be passed to ons_(de)init(). */
 enum {
     ONS_INIT_WSA,   /* init: Calls the WSA initialization routines on Windows. On other machines it has no effect.
@@ -30,19 +33,15 @@ enum {
     #define ONS_INIT_WSA ONS_BIT(ONS_INIT_WSA)
 };
 
-/* Error codes returned by ons_init() and ons_deinit(). */
-#define ONS_E_NONE 0 /* No error. */
-#define ONS_E_WSAFAIL 1 /* ONS_INIT_WSA was set and WSAStartup() failed. */
-
 /* Initialize the core library.
- * ons_init() returns 0 on success, otherwise an error code defined above.
+ * ons_init() returns ONS_E_SUCCESS on success, otherwise an error code is returned.
  * ons_deinit() always succeeds.
  * The \opts argument specifys the operations which should be done by the
  * functions.
  * Both functions are not threadsafe. Please call them once before/after
  * having created/deleted all other threads which could also call them.
  */
-extern signed int ons_init(ons_bitset8_t opts);
+extern ons_err_t ons_init(ons_bitset8_t opts);
 extern void ons_deinit(ons_bitset8_t opts);
 
 

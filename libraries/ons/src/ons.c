@@ -8,7 +8,7 @@
  * - Created: 22. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 2. January 2009
+ * - Last-Change: 7. February 2009
  */
 
 /* Main source file of ONS.
@@ -25,13 +25,22 @@
     #include <sys/time.h>
 #endif
 
+#ifdef ONS_CONF_HAVE_UNISTD_H
+    #include <unistd.h>
+#endif
+
+/* Sleeps for \s seconds. */
+void ons_sleep(unsigned int s) {
+    sleep(s);
+}
+
 /* Initializes the core library. Does not have to be threadsafe.
  * Returns 0 on success, otherwise an error code.
  */
-signed int ons_init(ons_bitset8_t opts) {
+ons_err_t ons_init(ons_bitset8_t opts) {
     static unsigned int called = 0;
 
-    if(called) return 0;
+    if(called) return ONS_E_SUCCESS;
 
 #ifdef ONS_CONF_WINDOWS
     if(opts & ONS_INIT_WSA) {
@@ -44,7 +53,7 @@ signed int ons_init(ons_bitset8_t opts) {
 #endif
 
     called = 1;
-    return ONS_E_NONE;
+    return ONS_E_SUCCESS;
 }
 
 /* Deinitializes the core library. Does not have to be threadsafe. */
