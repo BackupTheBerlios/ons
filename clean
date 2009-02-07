@@ -10,7 +10,7 @@
 # - Created: 19. April 2008
 # - Lead-Dev: - David Herrmann
 # - Contributors: /
-# - Last-Change: 1. January 2009
+# - Last-Change: 7. February 2009
 #
 
 #
@@ -32,7 +32,7 @@ fi
 
 
 # We check whether we are in the right directory. I guess there
-# is a builtin way to do this but I don't know bash this well
+# is a builtin way to do this but I don't know bash very well
 # and this works, too.
 if test -f ./clean ; then
     CREATION_TIME=$(grep Created ./clean | grep -v TIME)
@@ -46,8 +46,6 @@ else
 fi
 
 # Remove every file which is not under revision control.
-# "hg status -nu0" does not list empty directory. We remove
-# them manually.
 if test -d .git ; then
     git clean -df
     echo "Successfully cleaned the directory."
