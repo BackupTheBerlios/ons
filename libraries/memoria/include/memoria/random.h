@@ -8,7 +8,7 @@
  * - Created: 28. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 1. January 2009
+ * - Last-Change: 8. February 2009
  */
 
 /* Random Number Generators (RNGs).
@@ -69,6 +69,8 @@ void mem_isaac_seed(mem_isaac_t *r);
 void mem_isaac_gen(mem_isaac_t *r);
 
 static inline uint32_t mem_isaac_rand(mem_isaac_t *r) {
+    assert(r != NULL);
+
     if(!r->randcnt--) {
         mem_isaac_gen(r);
         r->randcnt = MEM_RANDSIZ - 1;
@@ -90,6 +92,8 @@ typedef struct mem_rand_t {
 } mem_rand_t;
 
 static inline uint32_t mem_rand(mem_rand_t *x) {
+    assert(x != NULL);
+
     uint32_t e = x->a - ONS_ROT(32, x->b, 27);
     x->a = x->b ^ ONS_ROT(32, x->c, 17);
     x->b = x->c + x->d;
@@ -99,6 +103,8 @@ static inline uint32_t mem_rand(mem_rand_t *x) {
 }
 
 static inline void mem_seed(mem_rand_t *x, uint32_t seed) {
+    assert(x != NULL);
+
     uint32_t i;
     x->a = 0xf1ea5eed;
     x->b = x->c = x->d = seed;

@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 1. January 2009
+ * - Last-Change: 8. February 2009
  */
 
 /* Dynamic length arrays.
@@ -58,10 +58,10 @@ ONS_EXTERN_C_BEGIN
  * The real size of the array is in \size. \reserve contains the padding which is used when
  * reallocating new space. \element contains the size of a single element.
  * \opt_free and \opt_double are options which can be set (1) or unset (0). See mem_array_init()
- * for their describtion.
+ * for their description.
  */
 typedef struct mem_array_t {
-    mem_index_t reserve;            /* Number of elements we allocate in one malloc() call. */
+    mem_index_t reserve;            /* Number of elements we allocate in one mem_malloc() call. */
     mem_index_t size;               /* Current number of available elements. */
     mem_index_t used;               /* Current number of used elements. */
     size_t element;                 /* Size of one element. */
@@ -108,6 +108,8 @@ typedef struct mem_array_t {
  * If \reserve or \element are 0, they are set to 1.
  */
 static inline void mem_array_init(struct mem_array_t *array, size_t element, mem_index_t reserve) {
+    assert(array != NULL);
+
     if(reserve == 0) reserve = 1;
     if(element == 0) element = 1;
 
@@ -122,11 +124,13 @@ static inline void mem_array_init(struct mem_array_t *array, size_t element, mem
 
 /* Removes all elements of the array \array and frees all allocated space.
  * If you add again elements to the array, new space will be allocated.
- * If you want to use the \list array still but do not need the array functionality
+ * If you still want to use the \list array but do not need the array functionality
  * you can simply use the pointer in \list and delete the mem_array_t object yourself
  * without calling this function.
  */
 static inline void mem_array_clean(struct mem_array_t *array) {
+    assert(array != NULL);
+
     mem_free(array->list);
     array->list = NULL;
     array->size = 0;
@@ -140,23 +144,19 @@ static inline void mem_array_clean(struct mem_array_t *array) {
 
 /* Pushes a new element at the top of the array.
  * \array should point to an initialized array. This function
- * returns a pointer to the new element or NULL if memory allocation failed.
+ * returns a pointer to the new element.
  * Pushing is the fastest way to insert new elements.
  */
 static inline void *mem_array_push(struct mem_array_t *array) {
-    void *tmp;
-    mem_index_t size;
+    assert(array != NULL);
+
     if(array->size == 0) {
         array->list = mem_malloc(array->reserve * array->element);
-        if(!array->list) return NULL;
         array->size = array->reserve;
     }
     else if(array->used == array->size) {
-        size = _mem_array_inc_size(array);
-        tmp = mem_realloc(array->list, size * array->element);
-        if(!tmp) return NULL;
-        array->list = tmp;
-        array->size = size;
+        array->size = _mem_array_inc_size(array);
+        array->list = mem_realloc(array->list, array->size * array->element);;
     }
 
     /* Return pointer and increase \used. */
@@ -169,8 +169,9 @@ static inline void *mem_array_push(struct mem_array_t *array) {
  * The other elements are not changed.
  */
 static inline void mem_array_pop(struct mem_array_t *array) {
-    void *tmp;
     mem_index_t size;
+
+    assert(array != NULL);
 
     --array->used;
 
@@ -179,14 +180,8 @@ static inline void mem_array_pop(struct mem_array_t *array) {
         if(array->used <= size) {
             if(size == 0) mem_array_clean(array);
             else {
-                tmp = mem_realloc(array->list, size * array->element);
-                /* Reallocation should never fail if the size is smaller as before.
-                 * However, if it fails, just leave it as it is.
-                 */
-                if(tmp) {
-                    array->list = tmp;
-                    array->size = size;
-                }
+                array->list = mem_realloc(array->list, size * array->element);
+                array->size = size;
             }
         }
     }
@@ -197,11 +192,13 @@ static inline void mem_array_pop(struct mem_array_t *array) {
  * one element further. Thus, all elements with an index greater or equal than \index
  * get an increased index and address.
  * This memory move is much slower than pushing an element at the top.
- * The function returns a pointer to the new element or NULL if memory allocation failed or
- * \index is an invalid index.
+ * The function returns a pointer to the new element or NULL if \index is an invalid index.
  */
 static inline void *mem_array_insert(struct mem_array_t *array, mem_index_t index) {
-    if(index >= array->used || !mem_array_push(array)) return NULL;
+    assert(array != NULL);
+
+    if(index >= array->used) return NULL;
+    mem_array_push(array);
     memmove(array->list + array->element * (index + 1),
             array->list + array->element * index,
             (array->used - index - 1) * array->element);
@@ -217,6 +214,8 @@ static inline void *mem_array_insert(struct mem_array_t *array, mem_index_t inde
  * After that, the tip is poped.
  */
 static inline void mem_array_remove(struct mem_array_t *array, mem_index_t index) {
+    assert(array != NULL);
+
     if(array->used == 0 || index >= array->used) return;
     memmove(array->list + array->element * index,
             array->list + array->element * (index + 1),
@@ -232,22 +231,22 @@ static inline void mem_array_remove(struct mem_array_t *array, mem_index_t index
 /** Template Dynamic Array
  ************************************************************************************************
  * The second dynamic array implementation uses macros which define the functions which         *
- * operate on the array. You need to call MEM_ARRAY_DECLARE in your source or header            *
+ * operate on the array. You need to call MEM_ARRAY_DEFINE in your source or header             *
  * to declare the functions which operate on the array. The advantage of this implementation    *
  * is that the base structure is really small. Furthermore you can access the elements          *
  * directly without any macro with the [] operator.                                             *
- * But to keep this array small and fast there is no way to change the options of the array.    *
- * The array does never free() any memory and doubles the size of the padding at every          *
- * reallocation. free() is only called if you clear the whole array. You can still add new      *
- * elements after clearing it, new space will be allocated. This makes this dynamic array       *
- * implementation perfect for small arrays with probably only 10 elements.                      *
+ * This makes this dynamic array implementation perfect for small arrays with probably only 10  *
+ * elements.                                                                                    *
  ************************************************************************************************
  */
 
-/* Declares a new array type.
+/* Defines a new array type.
  * Call this macro in your header or at the top of your source. \ARR_NAME will be the name
  * of the array structure, \ELE_TYPE is the element type which is saved in the array and
- * \INITIAL_VAR is the number or \elements which get allocated first.
+ * \INITIAL_VAR is the number of elements which get allocated first.
+ * \FREE specifies whether to shrink the allocated space if an element gets deleted and
+ * \DOUBLE specifies whether \INITIAL_VAR should be doubled or simple added to the currently
+ * allocated elements.
  *
  * This macro defins the same functions as the generic dynamic array implementation. However,
  * they are prefixed with ARR_NAME instead of "mem_array".
@@ -266,51 +265,67 @@ static inline void mem_array_remove(struct mem_array_t *array, mem_index_t index
  *  - void ARR_NAME_remove(ARR_NAME *array, mem_index_t index): Removes the the element at \index. (mem_array_remove)
  *  - void ARR_NAME_shift(ARR_NAME *array): Removes the first element. (mem_array_shift)
  */
-#define MEM_ARRAY_DECLARE(ARR_NAME, ELE_TYPE, INITIAL_VAR) \
+#define MEM_ARRAY_DEFINE(ARR_NAME, ELE_TYPE, INITIAL_VAR, FREE, DOUBLE) \
     typedef struct ARR_NAME { \
         mem_index_t used; \
         mem_index_t size; \
         ELE_TYPE *list; \
     } ARR_NAME; \
     static inline void ARR_NAME##_init(ARR_NAME *array) { \
+        assert(array != NULL); \
         array->used = 0; \
         array->size = 0; \
         array->list = NULL; \
     } \
-    static inline void ARR_NAME##_clean(ARR_NAME *array) {\
-        array->used = array->size = 0;\
-        mem_free(array->list);\
-        array->list = NULL;\
+    static inline void ARR_NAME##_clean(ARR_NAME *array) { \
+        assert(array != NULL); \
+        array->used = array->size = 0; \
+        mem_free(array->list); \
+        array->list = NULL; \
     } \
     static inline ELE_TYPE *ARR_NAME##_push(ARR_NAME *array) { \
-        ELE_TYPE *tmp; \
-        mem_index_t nsize; \
+        assert(array != NULL); \
         if(array->used == array->size) { \
-            nsize = array->size ? (array->size << 1) : (INITIAL_VAR); \
-            tmp = mem_realloc(array->list, nsize * sizeof(ELE_TYPE)); \
-            if(!tmp) return NULL; \
-            array->size = nsize; \
-            array->list = tmp; \
+            if(DOUBLE) array->size = array->size ? (array->size << 1) : (INITIAL_VAR); \
+            else array->size = array->size ? (array->size + INITIAL_VAR) : (INITIAL_VAR); \
+            array->list = mem_realloc(array->list, array->size * sizeof(ELE_TYPE)); \
         } \
         return &array->list[array->used++]; \
     } \
     static inline void ARR_NAME##_pop(ARR_NAME *array) { \
+        assert(array != NULL); \
+        mem_index_t size; \
         --array->used; \
+        if(FREE) { \
+            if(DOUBLE) size = array->size >> 1; \
+            else size = array->size - INITIAL_VAR; \
+            if(array->used <= size) { \
+                if(size == 0) ARRNAME##_clean(array); \
+                else { \
+                    array->list = mem_realloc(array->list, size * sizeof(ELE_TYPE)); \
+                    array->size = size; \
+                } \
+            } \
+        } \
     } \
     static inline ELE_TYPE *ARR_NAME##_insert(ARR_NAME *array, mem_index_t index) { \
+        assert(array != NULL); \
         if(index >= array->used || !ARR_NAME##_push(array)) return NULL; \
         memmove(array->list + index + 1, array->list + index, (array->used - index - 1) * sizeof(ELE_TYPE)); \
         return &array->list[index]; \
     } \
     static inline ELE_TYPE *ARR_NAME##_thrust(ARR_NAME *array) { \
+        assert(array != NULL); \
         return ARR_NAME##_insert(array, 0); \
     } \
     static inline void ARR_NAME##_remove(ARR_NAME *array, mem_index_t index) { \
+        assert(array != NULL); \
         if(array->used == 0 || index >= array->used) return; \
         memmove(array->list + index, array->list + index + 1, (array->used - index - 1) * sizeof(ELE_TYPE)); \
         ARR_NAME##_pop(array); \
     } \
     static inline void ARR_NAME##_shift(ARR_NAME *array) { \
+        assert(array != NULL); \
         ARR_NAME##_remove(array, 0); \
     }
 

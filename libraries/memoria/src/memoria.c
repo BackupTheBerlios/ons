@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 2. January 2009
+ * - Last-Change: 8. February 2009
  */
 
 /* Main source file of ONS.
@@ -35,11 +35,13 @@ void (*mem_outofmem)(void) = NULL;
  * if not present, from malloc.
  */
 void *mem_block_alloc(size_t size) {
+    assert(size > 0);
+
 #if defined(ONS_CONF_HAVE_MMAP) && defined(MAP_ANONYMOUS)
     void *ptr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if(ptr == MAP_FAILED) {
         if(mem_outofmem) mem_outofmem();
-        return NULL;
+        ONS_ABORT("mmap() memory allocation failed; Out of memory!");
     }
     else return ptr;
 #else
@@ -52,30 +54,10 @@ void *mem_block_alloc(size_t size) {
  */
 void mem_block_free(void *ptr, size_t size) {
 #if defined(ONS_CONF_HAVE_MMAP) && defined(MAP_ANONYMOUS)
+    assert(size > 0);
     if(ptr) munmap(ptr, size);
 #else
     mem_free(ptr);
 #endif
-}
-
-/* The sample outofmem handler. It sets an internal state
- * to terminate the process only when the handler is called
- * twice.
- * This mechanism allows to call cleanup routines but prevents
- * endless loops when cleanup routines allocate memory themself.
- */
-/** In multithreaded environments there can be two threads at
- * the same time in this handler. There is no case in which this
- * could lead to unknown behaviour.
- */
-void mem_outofmem_handler(void) {
-    static int called = 0;
-
-    if(called) {
-        fprintf(stderr, "Memory allocation failed, exiting...");
-        abort();
-    }
-    called = 1;
-    fprintf(stderr, "Memory allocation failed, calling cleanup routines...");
 }
 

@@ -27,6 +27,7 @@ TODO =1.0:
     - Better sorting algorithms in mem_array and mem_llist.
     - Dynamic hash tables (linear hashing?).
     - DECLARE_ARRAY_* should be DEFINE_ARRAY_*.
+    - mem_str_t and mem_strlist_t
  - FIP:
     - Add network interface handling (if.h)
     - Add control message handling (cmsg.h)
@@ -50,6 +51,12 @@ TODO =1.0:
         - Finish libons reference documentation.
         - configure.in: Set -DNDEBUG if debug mode is not enabled.
         - Add assert()'s to libons.
+        - Add libmemoria reference documentation.
+        - Remove outofmem_handler and do not return NULL in memory
+          functions anymore.
+        - Add assert()'s to libmemoria.
+        - Rename MEM_ARRAY_DECLARE to MEM_ARRAY_DEFINE and add two
+          more options: FREE and DOUBLE.
     * David Herrmann 2009/02/07
         - Add ons_sleep().
         - Add global error handling into ONS.

@@ -8,7 +8,7 @@
  * - Created: 28. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 1. January 2009
+ * - Last-Change: 8. February 2009
  */
 
 /* This file is based on:
@@ -48,6 +48,9 @@
 
 void mem_isaac_gen(mem_isaac_t *ctx) {
     register uint32_t a, b, x, y, *m, *mm, *m2, *r, *mend;
+
+    assert(ctx != NULL);
+
     mm = ctx->randmem;
     r = ctx->randrsl;
     a = ctx->randa;
@@ -84,6 +87,9 @@ void mem_isaac_seed(mem_isaac_t *ctx) {
     signed int i;
     uint32_t a, b, c, d, e, f, g, h;
     uint32_t *m, *r;
+
+    assert(ctx != NULL);
+
     ctx->randa = ctx->randb = ctx->randc = 0;
     m = ctx->randmem;
     r = ctx->randrsl;

@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 1. January 2009
+ * - Last-Change: 8. February 2009
  */
 
 /* Non-standard string manipulating functions. Most
@@ -36,6 +36,9 @@ ONS_EXTERN_C_BEGIN
 #else
     static inline size_t mem_strnlen(const char *string, size_t len) {
         unsigned int i;
+
+        assert(string != NULL);
+
         for(i = 0; i < len; ++i) if(string[i] == '\0') return i;
         return len;
     }

@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 1. January 2009
+ * - Last-Change: 8. February 2009
  */
 
 /* Linked lists.
@@ -40,8 +40,6 @@ ONS_EXTERN_C_BEGIN
 
 
 #include <memoria/mem.h>
-/* offsetof() is declared here. */
-#include <stddef.h>
 
 /* Function prototype.
  * If the linked list is sorted, a function of this type is called if two
@@ -96,6 +94,8 @@ typedef struct mem_node_t {
  */
 #define MEM_LL_INIT(list, type, name) mem_ll_init((list), offsetof(type, name))
 static inline void mem_ll_init(mem_list_t *list, size_t offset) {
+    assert(list != NULL);
+
     list->offset = offset;
     list->nodes = NULL;
     list->count = 0;
@@ -119,6 +119,8 @@ static inline void mem_ll_init(mem_list_t *list, size_t offset) {
 
 /* Returns a pointer to a real structure if you have only the mem_node_t pointer \node. */
 static inline void *mem_ll_entry(const mem_node_t *node) {
+    assert(node != NULL);
+
     return ((void*)node) - node->head->offset;
 }
 
@@ -126,6 +128,8 @@ static inline void *mem_ll_entry(const mem_node_t *node) {
  * \list is empty, NULL is returned.
  */
 static inline void *mem_ll_first(const mem_list_t *list) {
+    assert(list != NULL);
+
     if(!mem_ll_empty(list)) return ((void*)list->nodes) - list->offset;
     else return NULL;
 }
@@ -134,6 +138,8 @@ static inline void *mem_ll_first(const mem_list_t *list) {
  * NULL is returned.
  */
 static inline void *mem_ll_last(const mem_list_t *list) {
+    assert(list != NULL);
+
     if(!mem_ll_empty(list)) return ((void*)list->nodes->prev) - list->offset;
     else return NULL;
 }
@@ -145,6 +151,10 @@ static inline void *mem_ll_last(const mem_list_t *list) {
  */
 static inline void *mem_ll_prepend(mem_list_t *list, void *raw_member, void *raw_newm) {
     mem_node_t *member, *newm;
+
+    assert(list != NULL);
+    assert(raw_member != NULL);
+    assert(raw_newm != NULL);
 
     member = raw_member + list->offset;
     newm = raw_newm + list->offset;
@@ -168,6 +178,10 @@ static inline void *mem_ll_prepend(mem_list_t *list, void *raw_member, void *raw
 static inline void *mem_ll_append(mem_list_t *list, void *raw_member, void *raw_newm) {
     mem_node_t *member, *newm;
 
+    assert(list != NULL);
+    assert(raw_member != NULL);
+    assert(raw_newm != NULL);
+
     member = raw_member + list->offset;
     newm = raw_newm + list->offset;
 
@@ -187,6 +201,9 @@ static inline void *mem_ll_append(mem_list_t *list, void *raw_member, void *raw_
 static inline void *mem_ll_thrust(mem_list_t *list, void *raw_newm) {
     mem_node_t *newm;
 
+    assert(list != NULL);
+    assert(raw_newm != NULL);
+
     if(!mem_ll_empty(list)) return mem_ll_prepend(list, list->nodes, raw_newm);
     else {
         newm = raw_newm + list->offset;
@@ -201,6 +218,9 @@ static inline void *mem_ll_thrust(mem_list_t *list, void *raw_newm) {
  */
 static inline void *mem_ll_push(mem_list_t *list, void *raw_newm) {
     mem_node_t *newm;
+
+    assert(list != NULL);
+    assert(raw_newm != NULL);
 
     if(!mem_ll_empty(list)) return mem_ll_append(list, list->nodes->prev, raw_newm);
     else {
@@ -218,6 +238,9 @@ static inline void *mem_ll_push(mem_list_t *list, void *raw_newm) {
  */
 static inline void *mem_ll_extract(mem_list_t *list, void *raw_member) {
     mem_node_t *member;
+
+    assert(list != NULL);
+    assert(raw_member != NULL);
 
     member = raw_member + list->offset;
     if(member->next == member) {
@@ -237,12 +260,16 @@ static inline void *mem_ll_extract(mem_list_t *list, void *raw_member) {
  * otherwise a pointer to the removed element is returned.
  */
 static inline void *mem_ll_shift(mem_list_t *list) {
+    assert(list != NULL);
+
     if(mem_ll_empty(list)) return NULL;
     else return mem_ll_extract(list, ((void*)list->nodes) - list->offset);
 }
 
 /* Same as mem_ll_shift but removes the last node. */
 static inline void *mem_ll_pop(mem_list_t *list) {
+    assert(list != NULL);
+
     if(mem_ll_empty(list)) return NULL;
     else return mem_ll_extract(list, ((void*)list->nodes->prev) - list->offset);
 }
@@ -255,6 +282,8 @@ static inline void *mem_ll_pop(mem_list_t *list) {
  */
 static inline void mem_ll_sort(mem_list_t *list) {
     mem_node_t *iter, *iiter, *ilist;
+
+    assert(list != NULL);
 
     /* Sorting possible? */
     if(mem_ll_empty(list) || list->nodes->next == list->nodes) return;
@@ -311,6 +340,9 @@ static inline void mem_ll_sort(mem_list_t *list) {
 static inline void *mem_ll_srtd_prepend(mem_list_t *list, void *raw_member) {
     mem_node_t *iter;
 
+    assert(list != NULL);
+    assert(raw_member != NULL);
+
     if(mem_ll_empty(list)) return mem_ll_thrust(list, raw_member);
 
     iter = list->nodes;
@@ -325,6 +357,9 @@ static inline void *mem_ll_srtd_prepend(mem_list_t *list, void *raw_member) {
 /* Same as mem_ll_srtd_prepend() but inserts the element after all equal elements. */
 static inline void *mem_ll_srtd_append(mem_list_t *list, void *raw_member) {
     mem_node_t *iter;
+
+    assert(list != NULL);
+    assert(raw_member != NULL);
 
     if(mem_ll_empty(list)) return mem_ll_thrust(list, raw_member);
 

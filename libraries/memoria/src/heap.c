@@ -8,7 +8,7 @@
  * - Created: 22. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 1. January 2009
+ * - Last-Change: 8. February 2009
  */
 
 /* Manual Heap Management.
@@ -71,8 +71,9 @@ mem_heap_t *mem_heap_create(size_t node_size, unsigned long nodes_per_block) {
     void *mem;
     mem_heap_node_t *node;
 
-    if(node_size == 0 || nodes_per_block == 0) return NULL;
-    if(!(heap = mem_malloc(sizeof(mem_heap_t) + sizeof(mem_heap_block_t)))) return NULL;
+    if(node_size == 0) node_size = 1;
+    if(nodes_per_block == 0) nodes_per_block = 1;
+    heap = mem_malloc(sizeof(mem_heap_t) + sizeof(mem_heap_block_t));
 
     /* initialize heap */
     heap->node_size = node_size;
@@ -84,10 +85,6 @@ mem_heap_t *mem_heap_create(size_t node_size, unsigned long nodes_per_block) {
     /* initialize block */
     heap->blocks->next = heap->blocks;
     heap->blocks->mem = mem_block_alloc(nodes_per_block * (node_size + sizeof(mem_heap_node_t)));
-    if(!heap->blocks->mem) {
-        mem_free(heap);
-        return NULL;
-    }
     heap->blocks->free = nodes_per_block;
     heap->blocks->nodes = heap->blocks->mem;
 
@@ -107,12 +104,14 @@ mem_heap_t *mem_heap_create(size_t node_size, unsigned long nodes_per_block) {
 void mem_heap_destroy(mem_heap_t *heap) {
     mem_heap_block_t *iter;
 
+    assert(heap != NULL);
+
     iter = heap->blocks->next;
     while(iter != heap->blocks) {
         iter = heap->blocks->next;
         heap->blocks->next = heap->blocks->next->next;
         mem_block_free(iter->mem, heap->nodes_per_block * (heap->node_size + sizeof(mem_heap_node_t)));
-        free(iter);
+        mem_free(iter);
     }
     mem_block_free(heap->blocks->mem, heap->nodes_per_block * (heap->node_size + sizeof(mem_heap_node_t)));
     /* first block is allocated with the heap */
@@ -124,6 +123,8 @@ void *mem_heap_alloc(mem_heap_t *heap) {
     mem_heap_node_t *node;
     unsigned int i;
     void *mem;
+
+    assert(heap != NULL);
 
     /* Either we have free nodes left or we need to allocate a new block. */
     if(heap->free > 0) {
@@ -155,14 +156,10 @@ void *mem_heap_alloc(mem_heap_t *heap) {
     }
     else {
         /* create a new block */
-        if(!(iter = mem_malloc(sizeof(mem_heap_block_t)))) return NULL;
+        iter = mem_malloc(sizeof(mem_heap_block_t));
 
         /* initialize block */
         iter->mem = mem_block_alloc(heap->nodes_per_block * (heap->node_size + sizeof(mem_heap_node_t)));
-        if(!iter->mem) {
-            mem_free(iter);
-            return NULL;
-        }
 
         /* insert it behind the root node */
         iter->next = heap->blocks->next;
@@ -198,6 +195,9 @@ void *mem_heap_alloc(mem_heap_t *heap) {
 void mem_heap_free(mem_heap_t *heap, void *mem) {
     mem_heap_node_t *node;
     mem_heap_block_t *block;
+
+    assert(heap != NULL);
+    assert(mem != NULL);
 
     node = mem - sizeof(mem_heap_node_t);
     if(node->block != heap->blocks && node->block->free == heap->nodes_per_block - 1) {

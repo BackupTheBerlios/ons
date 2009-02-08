@@ -8,13 +8,12 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 2. January 2009
+ * - Last-Change: 8. February 2009
  */
 
 /* This file wraps the common memory allocation functions
  * and allows to set an handler to catch out-of-memory
- * exceptions. However, the allocation functions still
- * return NULL if they fail.
+ * exceptions.
  */
 
 #include <memoria/misc.h>
@@ -27,46 +26,50 @@ ONS_EXTERN_C_BEGIN
 #include <stdlib.h>
 #include <string.h>
 
-/* A sample out-of-mem handler.
- * This handler sets an internal state to 1 and returns.
- * If it is called twice and the internal is 1, it terminates
- * the process.
- * This allows to call clean-up routines if the memory allocation
- * failed but if the clean-up routines themself allocate memory
- * the process gets terminated.
- */
-extern void mem_outofmem_handler(void);
-
-/* Set this variable to the out of mem handler you want to have.
+/* Set this variable to the out of mem handler.
  * It is initialized with NULL and if it is NULL, no out-of-mem
  * handler is called.
  * Please be aware that the handler can be called parallel in
  * multithreaded programs.
+ *
+ * This handler should never return. If it returns, libmemoria
+ * will abort with a default error message.
  */
 extern void (*mem_outofmem)(void);
 
 /* Allocates a memory block of \size bytes and returns a pointer
- * to it. If the memory allocation fails and either no out-of-mem
- * handler is set or the handler returned, NULL is returned.
+ * to it. Never fails.
+ * \size cannot be 0.
  * The returned value can be freed with mem_free().
  */
 static inline void *mem_malloc(size_t size) {
-    void *ret = malloc(size);
+    void *ret;
 
-    if(ret == NULL && mem_outofmem) {
-        mem_outofmem();
+    assert(size > 0);
+
+    ret = malloc(size);
+
+    if(ret == NULL) {
+        if(mem_outofmem) mem_outofmem();
+        ONS_ABORT("Memory allocation failed; Out of memory!");
     }
     return ret;
 }
 
 /* Same as mem_malloc() but initializes the allocated memory to 0.
  * The returned value can be freed with mem_free().
+ * \size cannot be 0.
  */
 static inline void *mem_zmalloc(size_t size) {
-    void *ret = malloc(size);
+    void *ret;
 
-    if(ret == NULL && mem_outofmem) {
-        mem_outofmem();
+    assert(size > 0);
+
+    ret = malloc(size);
+
+    if(ret == NULL) {
+        if(mem_outofmem) mem_outofmem();
+        ONS_ABORT("Memory allocation failed; Out of memory!");
     }
     memset(ret, 0, size);
     return ret;
@@ -78,24 +81,37 @@ static inline void *mem_zmalloc(size_t size) {
  * still available in the new block but probably at another position.
  * If the old size was bigger than \size, the first \size bytes of the old
  * data are preserved.
- * mem_realloc() never fails if \size is smaller than the size before.
+ * mem_realloc() never fails.
  * The returned value can be freed with mem_free().
+ * \size cannot be 0.
  */
 static inline void *mem_realloc(void *mem, size_t size) {
-    void *ret = realloc(mem, size);
+    void *ret;
 
-    if(ret == NULL && mem_outofmem) {
-        mem_outofmem();
+    assert(mem != NULL);
+    assert(size > 0);
+
+    ret = realloc(mem, size);
+
+    if(ret == NULL) {
+        if(mem_outofmem) mem_outofmem();
+        ONS_ABORT("Memory allocation failed; Out of memory!");
     }
     return ret;
 }
 
 /* Duplicates the memory \mem of size \len.
  * The returned value can be freed with mem_free().
+ * mem_dup() never fails.
+ * \len cannot be 0.
  */
 static inline void *mem_dup(const void *mem, size_t len) {
-    void *ret = mem_malloc(len);
-    if(!ret) return NULL;
+    void *ret;
+
+    assert(mem != NULL);
+    assert(len > 0);
+
+    ret = mem_malloc(len);
     memcpy(ret, mem, len);
     return ret;
 }
@@ -129,6 +145,9 @@ static inline void mem_free(void *mem) {
  * I suggest not using this "block" interface in favour of the malloc()
  * interface. Nevertheless if you still want to use it, have a look
  * on the heap implementation in this library.
+ *
+ * This function never fails.
+ * \size cannot be 0.
  */
 extern void *mem_block_alloc(size_t size);
 
@@ -136,6 +155,7 @@ extern void *mem_block_alloc(size_t size);
  * You need to pass the same \size parameter as you have passen to
  * mem_block_alloc().
  * \ptr should be the pointer returned by mem_block_alloc().
+ * \size cannot be 0.
  */
 extern void mem_block_free(void *ptr, size_t size);
 

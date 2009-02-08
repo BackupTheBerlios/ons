@@ -24,12 +24,12 @@ ONS_EXTERN_C_BEGIN
 
 
 #include <memoria/mem.h>
-#include <memoria/string.h>
 #include <memoria/array.h>
 #include <memoria/llist.h>
 #include <memoria/heap.h>
 #include <memoria/hash.h>
 #include <memoria/random.h>
+#include <memoria/string.h>
 
 
 ONS_EXTERN_C_END
