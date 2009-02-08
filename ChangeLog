@@ -26,7 +26,6 @@ TODO =1.0:
  - memoria:
     - Better sorting algorithms in mem_array and mem_llist.
     - Dynamic hash tables (linear hashing?).
-    - DECLARE_ARRAY_* should be DEFINE_ARRAY_*.
     - mem_str_t and mem_strlist_t
  - FIP:
     - Add network interface handling (if.h)
