@@ -218,7 +218,6 @@ void ons_time(ons_time_t *buf) {
 
     void ons_thread_join(ons_thread_t *thread) {
         assert(thread != NULL);
-        assert(*thread != NULL);
 
         pthread_join(*thread, NULL);
     }
