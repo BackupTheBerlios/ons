@@ -27,9 +27,12 @@
  */
 void ons_fatal_error(const char *format, ...) {
     va_list list;
-    va_start(list, format);
-    vprintf(format, list);
-    va_end(list);
+    if(format) {
+        va_start(list, format);
+        vfprintf(stderr, format, list);
+        va_end(list);
+    }
+    else fprintf(stderr, "ONS discovered a fatal error. No Error message specified; Exiting...");
     abort();
 }
 

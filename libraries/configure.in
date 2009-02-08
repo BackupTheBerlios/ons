@@ -158,14 +158,14 @@ if test x"$ons_cv_enable_warnings" = xyes; then
     if test x"$ons_cv_enable_debug" = xyes; then
         CFLAGS="-fPIC -g -O0 -Wall"
     else
-        CFLAGS="-fPIC -O2 -Wall"
+        CFLAGS="-fPIC -O2 -Wall -DNDEBUG"
         ons_cv_enable_debug="no"
     fi
 elif test x"$ons_cv_enable_debug" = xyes; then
     CFLAGS="-fPIC -g -O0"
     ons_cv_enable_warnings="no"
 else
-    CFLAGS="$CFLAGS -fPIC"
+    CFLAGS="$CFLAGS -fPIC -DNDEBUG"
     ons_cv_enable_debug="no"
     ons_cv_enable_warnings="no"
 fi
