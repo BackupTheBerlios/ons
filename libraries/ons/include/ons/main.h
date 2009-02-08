@@ -27,6 +27,7 @@ ONS_EXTERN_C_BEGIN
 
 /* Options which can be passed to ons_(de)init(). */
 enum {
+    ONS_INIT_NONE = 0,
     ONS_INIT_WSA,   /* init: Calls the WSA initialization routines on Windows. On other machines it has no effect.
                      * deinit: Calls the WSA deinitialization routines on Windows. On other machines it has no effect.
                      */

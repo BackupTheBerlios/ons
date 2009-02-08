@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  - (COPYRIGHT) Copyright (C) 2008, The ONS Team.
+  - This file is part of ONS, see COPYING for details.
+  -->
+
+<!--
+  - File Information:
+  - Created: 3. January 2009
+  - Lead-Dev: - David Herrmann
+  - Contributors: /
+  - Last-Change: 4. January 2009
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Libons - Open Network Suite - Official Documentation</title>
+        <meta name="author" content="The ONS Team" />
+        <meta name="description" content="Reference documentation of libons." />
+        <meta name="keywords" content="ons, open network suite, network, internet, open source, public domain" />
+        <meta name="robots" content="index" />
+        <style type="text/css">
+        body {
+            padding: 0px;
+            margin: 50px;
+            border: 0px;
+            text-align: justify;
+        }
+        p {
+            padding-left: 20px;
+        }
+        code {
+            background-color: #FFBBBB;
+        }
+        </style>
+    </head>
+    <body>
+        <div id="main">
+            <div id="overview">
+                <h1>Libons</h1>
+                <p>
+                    The main functions which are provided by Libons are configuration of your system and macros providing such information
+                    in the source code.
+                </p>
+                <p>
+                    To use libons, simply include <code>&lt;ons/ons.h&gt;</code> in your source code.
+                </p>
+            </div>
+            <div>
+                <h2>Macro constants</h2>
+                <p>
+                    Libons guarantees that the following headers are available and included:<br />
+                    <p>
+                        <h3>ISO-C Headers</h3>
+                        <p>
+                            <code>stddef.h</code> is included by default with all it's definitions.<br />
+                            <code>assert.h</code> is included by default with all it's definitions.<br />
+                            <code>stdbool.h</code> is included or, if not available, all constants of <code>stdbool.h</code> are made available.
+                            This includes:<br />
+                            <ul>
+                                <li><code>bool</code> which expands to a boolean type, probably <code>_Bool</code>.</li>
+                                <li><code>true</code> which expands to 1</li>
+                                <li><code>false</code> which expands to 0</li>
+                                <li><code>__bool_true_false_are_defined</code> which expands to 1</li>
+                            </ul>
+                        </p>
+                    </p>
+                    <p>
+                        <h3>Windows Headers</h3>
+                        <p>
+                            If <code>ONS_CONF_WINDOWS</code> is defined, <code>windows.h</code> and <code>winsock2.h</code> are included.
+                        </p>
+                    </p>
+                    <p>
+                        <h3>Threading</h3>
+                        <p>
+                            <code>pthread.h</code> is included if <code>ONS_CONF_HAVE_PTHREAD_H</code> is defined.
+                        </p>
+                    </p>
+                    <p>
+                        <h3>Fixed size Integers</h3>
+                        <p>
+                            The following datatypes, relating to the C99 standard, are made available through the system header files:<br />
+                            <ul>
+                                <li><code>int8_t</code> and <code>uint8_t</code></li>
+                                <li><code>int16_t</code> and <code>uint16_t</code></li>
+                                <li><code>int32_t</code> and <code>uint32_t</code></li>
+                                <li><code>int64_t</code> and <code>uint64_t</code></li>
+                            </ul>
+                        </p>
+                    </p>
+                </p>
+            </div>
+            <div>
+                <h2>Macro constants</h2>
+                <p>
+                    <h3>Code Endianness</h3>
+                    <p>
+                        Either <code>ONS_CONF_BIG_ENDIAN</code> or <code>ONS_CONF_LITTLE_ENDIAN</code> is <strong>guaranteed</strong> to be defined.<br />
+                        <code>ONS_CONF_BIG_ENDIAN</code>: The system libons was compiled on is BigEndian.<br />
+                        <code>ONS_CONF_LITTLE_ENDIAN</code>: The system libons was compiled on is LittleEndian.<br />
+                    </p>
+                </p>
+                <p>
+                    <h3>mmap()</h3>
+                    <p>
+                        <code>ONS_CONF_HAVE_MMAP</code> is defined if <code>mmap()</code> and <code>sys/mmap.h</code> are available.<br />
+                        <code>ONS_CONF_HAVE_DECL_MAP_ANON</code> is defined if <code>ONS_CONF_HAVE_MMAP</code> is defined and
+                            <code>MAP_ANON</code> is defined in <code>sys/mmap.h</code>.<br />
+                        <code>ONS_CONF_HAVE_DECL_MAP_ANONYMOUS</code> is defined if <code>ONS_CONF_HAVE_MMAP</code> is defined and
+                            <code>MAP_ANONYMOUS</code> is defined in <code>sys/mmap.h</code>.<br />
+                        If <code>ONS_CONF_HAVE_DECL_MAP_ANON</code> is not available but <code>ONS_CONF_HAVE_DECL_MAP_ANONYMOUS</code> is defined,
+                        then <code>ONS_CONF_HAVE_DECL_MAP_ANON</code> is defined as <code>ONS_CONF_HAVE_DECL_MAP_ANONYMOUS</code>.
+                    </p>
+                </p>
+                <p>
+                    <h3>strnlen()</h3>
+                    <p>
+                        <code>ONS_CONF_HAVE_STRNLEN</code> is defined if <code>strnlen()</code> is available in your Standard-C-Library.<br />
+                        <em>Libmemoria provides an own <code>strnlen()</code> if this is not set.</em>
+                    </p>
+                </p>
+                <p>
+                    <h3>System Header Files</h3>
+                    <p>
+                        <code>ONS_CONF_HAVE_SYS_UN_H</code> is defined if <code>sys/un.h</code> is available.<br />
+                        <code>ONS_CONF_HAVE_SYS_SOCKET_H</code> is defined if <code>sys/socket.h</code> is available.<br />
+                        <code>ONS_CONF_HAVE_NETINET_IN_H</code> is defined if <code>netinet/in.h</code> is available.<br />
+                        <code>ONS_CONF_HAVE_UNISTD_H</code> is defined if <code>unistd.h</code> is available.<br />
+                        <code>ONS_CONF_HAVE_SYS_IOCTL_H</code> is defined if <code>sys/ioctl.h</code> is available.<br />
+                        <code>ONS_CONF_HAVE_FCNTL_H</code> is defined if <code>fcntl.h</code> is available.<br />
+                        <code>ONS_CONF_HAVE_SYS_TYPES_H</code> is defined if <code>sys/types.h</code> is available.<br />
+                        <code>ONS_CONF_HAVE_PTHREAD_H</code> is defined if <code>pthread.h</code> is available and the library is linked to -lpthread.<br />
+                    </p>
+                </p>
+                <p>
+                    <h3>Unix Sockets</h3>
+                    <p>
+                        <code>ONS_CONF_HAVE_UNIX_SOCKETS</code> is defined if file/unix sockets aka <code>struct sockaddr_un</code> are available.<br />
+                        <code>ONS_CONF_PATH_SIZE</code> is defined to the size of the <code>sun_path</code> member of <code>struct sockaddr_un</code> if
+                            <code>ONS_CONF_HAVE_UNIX_SOCKETS</code> is defined.<br />
+                    </p>
+                </p>
+                <p>
+                    <h3>Address: *_len Member</h3>
+                    <p>
+                        <code>ONS_CONF_HAVE_SA_LEN</code> is defined if <code>struct sockaddr</code> has a <code>sa_len</code> member.<br />
+                        <code>ONS_CONF_HAVE_SIN_LEN</code> is defined if <code>struct sockaddr_in</code> has a <code>sin_len</code> member.<br />
+                        <code>ONS_CONF_HAVE_SIN6_LEN</code> is defined if <code>struct sockaddr_in6</code> has a <code>sin6_len</code> member.<br />
+                        <code>ONS_CONF_HAVE_SUN_LEN</code> is defined if <code>struct sockaddr_un</code> has a <code>sun_len</code> member and
+                            <code>ONS_CONF_HAVE_UNIX_SOCKETS</code> is defined.<br />
+                    </p>
+                </p>
+                <p>
+                    <h3>Structure Padding</h3>
+                    <p>
+                        <code>ONS_CONF_HAVE_ATTR_PACKED</code> is defined if <code>__attribute__((__packed__))</code> is supported.<br />
+                        <code>ONS_CONF_HAVE_PRAGMA_PACK</code> is defined if <code>#pragma pack</code> is supported.<br />
+                        Use it like:<br />
+                        <code>
+                            <pre>
+            #include &lt;ons/ons.h&gt;
+
+            #ifdef ONS_CONF_HAVE_PRAGMA_PACK
+                #pragma pack(push)
+                #pragma pack(1)
+            #endif
+            struct sample_structure {
+                uint8_t val1;
+                uint16_t val2;
+                uint32_t val3;
+                uint64_t val4;
+            } ONS_ATTR_PACK;
+            #ifdef ONS_CONF_HAVE_PRAGMA_PACK
+                #pragma pack(pop)
+            #endif
+                            </pre>
+                        </code>
+                        This would create the structure <code>struct sample_structure</code> without any padding between the members.
+                        If the structure attribute is not supported
+                        then <code>ONS_ATTR_PACK</code> is defined as nothing.<br />
+                        <strong>At least one of them is guaranteed to be defined.</strong>
+                    </p>
+                </p>
+                <p>
+                    <h3>IPv6</h3>
+                    <p>
+                        <code>ONS_CONF_NO_IPV6</code> is defined if all IPv6 support should be disabled.
+                    </p>
+                </p>
+                <p>
+                    <h3>Extended linux socket functions</h3>
+                    <p>
+                        <code>ONS_CONF_HAVE_EXT_SOCKET</code> is defined if <code>socket()</code> supports bitflags as second parameter.<br />
+                        <code>ONS_CONF_HAVE_ACCEPT4</code> is defined if <code>accept4()</code> is available.<br />
+                    </p>
+                </p>
+                <p>
+                    <h3>Nonblocking mechanism</h3>
+                    <p>
+                        <code>ONS_CONF_NONBLOCK_POSIX</code> is defined if POSIX socket nonblocking mode is available.<br />
+                        <code>ONS_CONF_NONBLOCK_BSD</code> is defined if BSD socket nonblocking mode is available.<br />
+                        <code>ONS_CONF_NONBLOCK_SYSV</code> is defined if SYSV socket nonblocking mode is available.<br />
+                    </p>
+                </p>
+                <p>
+                    <h3>Time functions</h3>
+                    <p>
+                        <code>ONS_CONF_HAVE_GETTIMEOFDAY</code> is defined if <code>gettimeofday()</code> and <code>sys/time.h</code> are available.
+                    </p>
+                </p>
+                <p>
+                    <h3>Windows constants</h3>
+                    <p>
+                        <code>ONS_CONF_WINDOWS</code> is defined on windows machines.
+                    </p>
+                </p>
+                <p>
+                    <h3>Threading</h3>
+                    <p>
+                        <code>ONS_CONF_THREADED</code> is defined if the threading subsystem is available.
+                    </p>
+                </p>
+                <p>
+                    <h3>Extern 'C'</h3>
+                    <p>
+                        <code>ONS_EXTERN_C</code>: Defined as <code>extern 'C'</code> if <code>_cplusplus</code> is defined.<br />
+                        <code>ONS_EXTERN_C_BEGIN</code>: Defined as <code>extern 'C' {</code> if <code>_cplusplus</code> is defined.<br />
+                        <code>ONS_EXTERN_C_END</code>: Defined as <code>}</code> if <code>_cplusplus</code> is defined.<br />
+                        Otherwise all of them are defined as nothing.
+                    </p>
+                </p>
+            </div>
+            <div>
+                <h2>Miscellaneous</h2>
+                <p>
+                    <p>
+                        <h3>Bitset manipulators</h3>
+                        <p>
+                            The following typedefs are included in Libons:<br />
+                            <ul>
+                                <li><code>typedef uint8_t ons_bitset8_t;</code></li>
+                                <li><code>typedef uint16_t ons_bitset16_t;</code></li>
+                                <li><code>typedef uint32_t ons_bitset32_t;</code></li>
+                                <li><code>typedef uint64_t ons_bitset64_t;</code></li>
+                            </ul>
+                        </p>
+                        <p>
+                            The following macros are defined:<br />
+                            <code>ONS_ROT(bit, val, k)</code> rotates the integer <code>val</code> for <code>k</code> bits to the left. <code>val</code>
+                            has to be a <code>bit</code> bit sized integer.<br />
+                            For example: <code>ONS_ROT(32, var, 3);</code> rotates the 32 bit integer <code>var</code> for 3 bits to the left.<br />
+                            <code>ONS_BIT(x)</code> returns an integer with only the <code>x</code>'th bit set.
+                        </p>
+                    </p>
+                    <p>
+                        <h3>Comparison Constants</h3>
+                        <p>
+                            Libons defines three constants which are returned in every comparison in ONS.<br />
+                            The datatype is <code>typedef signed int ons_comp_t;</code><br />
+                            <code>#define ONS_SMALLER -1</code> is returned if the compared element is smaller than the original.<br />
+                            <code>#define ONS_EQUAL 0</code> is returned if the compared element is equal to the original.<br />
+                            <code>#define ONS_GREATER 1</code> is returned if the compared element is greater than the original.<br />
+                        </p>
+                    </p>
+                    <p>
+                        <h3>Sleep functions</h3>
+                        <p>
+                            The following function sleeps for the given amount of seconds and returns then:<br />
+                            <code>extern void ons_sleep(unsigned int seconds);</code>
+                        </p>
+                    </p>
+                    <p>
+                        <h3>ByteOrder Functions</h3>
+                        <p>
+                            The following functions transform fixed sized integers between HostByteOrder and NetworkByteOrder.<br />
+                            On BigEndian machines the functions do nothing, on LittleEndian machines they transform between HostByteOrder,
+                            which is LittleEndian, and NetworkByteOrder, which is BigEndian.<br />
+                            <p>
+                                <code>#define ons_hton16(input)</code>: Converts <code>input</code> from HostByteOrder into NetworkByteOrder and returns
+                                                                        the new integer (16bit).<br />
+                                <code>#define ons_hton32(input)</code>: Converts <code>input</code> from HostByteOrder into NetworkByteOrder and returns
+                                                                        the new integer (32bit).<br />
+                                <code>#define ons_hton64(input)</code>: Converts <code>input</code> from HostByteOrder into NetworkByteOrder and returns
+                                                                        the new integer (64bit).<br />
+                                <code>#define ons_ntoh16(input)</code>: Converts <code>input</code> from NetworkByteOrder into HostByteOrder and returns
+                                                                        the new integer (16bit).<br />
+                                <code>#define ons_ntoh32(input)</code>: Converts <code>input</code> from NetworkByteOrder into HostByteOrder and returns
+                                                                        the new integer (32bit).<br />
+                                <code>#define ons_ntoh64(input)</code>: Converts <code>input</code> from NetworkByteOrder into HostByteOrder and returns
+                                                                        the new integer (64bit).<br />
+                            </p>
+                        </p>
+                    </p>
+                    <p>
+                        <h3>ONS Initialization</h3>
+                        <p>
+                            Some functions in ONS need a global initialization. This is mentioned in their documentation. However, the best way is
+                            initializing ONS before using any ONS function and deinitializing ONS when ONS is no longer used.<br />
+                            <code>
+                                <pre>
+                                    #define ONS_INIT_NONE
+                                    #define ONS_INIT_WSA
+
+                                    ons_err_t ons_init(ons_bitset8_t opts);
+                                    void ons_deinit(ons_bitset8_t opts);
+                                </pre>
+                            </code><br />
+                            The parameter <code>opts</code> is a bitset with the flags defined above.<br />
+                            <ul>
+                                <li><code>ONS_INIT_NONE</code>: Has no special meaning. Defined as 0.</li>
+                                <li><code>ONS_INIT_WSA</code>: (De)Initializes WSA. Has no meaning on systems other than Windows.</li>
+                            </ul>
+                            <code>ons_init()</code> returns <code>ONS_E_SUCCESS</code> on success, otherwise one of the following errors is returned:<br />
+                            <ul>
+                                <li>
+                                    <code>ONS_E_WSAFAIL</code>: If <code>ONS_INIT_WSA</code> was specified and the system does not provide a proper
+                                    Winsock2 library.
+                                </li>
+                            </ul>
+                        </p>
+                    </p>
+                </p>
+            </div>
+            <div>
+                <h2>Time Functions</h2>
+                <p>
+                    <p>
+                        Libons provides an interface to access the current time with high precision. Furthermore, it has an API to compare/sum/subtract
+                        two times.<br />
+                        The structure is defined as:<br />
+                        <code>
+                            <pre>
+                                typedef struct ons_time_t {
+                                    uint64_t t_sec;
+                                    uint64_t t_usec;
+                                } ons_time_t;
+                            </pre>
+                        </code>
+                        <br />
+                        <code>t_sec</code> contains the seconds and <code>t_usec</code> contains the <strong>microseconds</strong>. The latter one is
+                        interpreted as the microseconds since the last second. All functions of ONS check for <code>t_usec</code> overflows and increase
+                        <code>t_sec</code> then.
+                    </p>
+                    <p>
+                        You can get the current system time with:<br />
+                        <code>void ons_time(ons_time_t *buf);</code><br />
+                        Where <code>buf</code> must point to a buffer where to write the time into. This function does always succeed.
+                    </p>
+                    <p>
+                        You can compare two functions with:<br />
+                        <code>ons_comp_t ons_compare_time(const ons_time_t *orig, const ons_time_t *comp);</code><br />
+                        <code>comp</code> is compared with <code>orig</code> here, therefore, if <code>comp</code> is bigger than <code>orig</code>,
+                        then <code>ONS_GREATER</code> is returned. If they are equal <code>ONS_EQUAL</code> is returned, otherwise
+                        <code>ONS_SMALLER</code>.
+                    </p>
+                    <p>
+                        You can sum up two times with:<br />
+                        <code>void ons_sum(const ons_time_t *addend1, const ons_time_t *addend2, ons_time_t *sum);</code><br />
+                        This adds <code>addend1</code> and <code>addend2</code> and saves the result in <code>sum</code>. You can pass the same pointers
+                        to all three parameters, e.g., <code>ons_sum(var, var, var);</code> would double the time in <code>var</code>.<br />
+                        This function does not check for integer overflows in <code>sum</code>, though, it correctly checks whether the microseconds
+                        are greater than one second and increases the seconds then.
+                    </p>
+                    <p>
+                        You can sum up two times with:<br />
+                        <code>void ons_sub(const ons_time_t *minuend, const ons_time_t *subtrahend, ons_time_t *diff);</code><br />
+                        This subtracts <code>subtrahend</code> from <code>minuend</code> and saves the result in <code>diff</code>. You can pass the
+                        same pointers to all three parameters.<br />
+                        If <code>subtrahend</code> is greater than <code>minuend</code>, the result is undefined.
+                    </p>
+                </p>
+            </div>
+            <div>
+                <h2>Thread Functions</h2>
+                <p>
+                    Libons wrapps the system's threads library and provides a simple API to handle threads and mutexes.
+                </p>
+                <p>
+                    <h3>Threads</h3>
+                    <p>
+                        Threads are saved in a <code>ons_thread_t</code> which is a structure with OS dependent content. The thread starts always
+                        a function of the following type:<br />
+                        <code>typedef void *(*ons_thread_handler_t)(void *arg);</code><br />
+                        Though, return values are not supported, yet.<br />
+                        You can start a new thread with:<br />
+                        <code>
+                            <pre>
+                                ons_thread_t thread;
+                                ons_thread_run(&amp;thread, function, arg);
+                            </pre>
+                        </code><br />
+                        The <code>run</code> function is declared as:<br />
+                        <code>void ons_thread_run(ons_thread_t *thread, ons_thread_handler_t function, void *arg);</code><br />
+                        <code>thread</code> is a pointer to an uninitialized <code>ons_thread_t</code> variable. <code>function</code> is the function
+                        which is executed with the parameter <code>arg</code>.<br />
+                    </p>
+                    <p>
+                        You can join the thread with:<br />
+                        <code>void ons_thread_join(ons_thread_t *thread);</code><br />
+                        which blocks the calling process until the thread returns. The thread option is automatically freed here. Though, if the process
+                        exits, all currently running threads are aborted with undefined behaviour.
+                    </p>
+                </p>
+                <p>
+                    <h3>Mutexes</h3>
+                    <p>
+                        A Mutex is used for thread synchronization. The functions which try to lock a mutex are always threadsafe, however, the
+                        initializer and deinitializer are not.
+                    </p>
+                    <p>
+                        You can create a mutex with:<br />
+                        <code>extern void ons_mutex_init(ons_mutex_t *mutex);</code><br />
+                        <code>mutex</code> points to an uninitialized mutex structure which can be freed with:<br />
+                        <code>void ons_mutex_free(ons_mutex_t *mutex);</code><br />
+                        You should not free a locked mutex nor should you free a mutex in two threads at the same time.
+                    </p>
+                    <p>
+                        You can lock a mutex several ways. Only one thread can lock a mutex at one time. The locking functions differ in the behaviour
+                        what to do, if the mutex is already locked:<br />
+                        The first function blocks until it can lock the mutex. The second function returns <code>true</code> if the mutex was locked
+                        successfully, otherwise <code>false</code> and the third function tries a given amount of time to lock the mutex and returns
+                        <code>true</code> when it succeeded, otherwise it returns <code>false</code>.<br />
+                        <code>
+                            <pre>
+                                void ons_mutex_lock(ons_mutex_t *mutex);
+                                bool ons_mutex_trylock(ons_mutex_t *mutex);
+                                bool ons_mutex_timedlock(ons_mutex_t *mutex, ons_time_t *timeout);
+                            </pre>
+                        </code><br />
+                        You can unlock a mutex with:<br />
+                        <code>void ons_mutex_unlock(ons_mutex_t *mutex);</code>.
+                    </p>
+                </p>
+            </div>
+            <div>
+                <h2>Error handling</h2>
+                <p>
+                    <p>
+                        ONS provides routines for error handling which are used in all ONS functions. Error handling follows these rules:<br />
+                        <ul>
+                            <li>An error is always expressed with an integer of type <code>ons_err_t</code> or <code>NULL</code>.</li>
+                            <li>
+                                An error code can have different meanings in each function it is returned, but must have a unique reason in each
+                                function.
+                            </li>
+                            <li>
+                                Fatal errors, which are not worth to be returned to the user, are signaled with <code>ONS_ERR()</code> or similar
+                                which prints a message with <code>__FILE__</code> and <code>__LINE__</code> and termiantes the process.
+                            </li>
+                            <li>
+                                Every function uses assert() to check the validity of it's parameters. Though, <code>-DNDEBUG</code> should deactivate
+                                all those checks.
+                            </li>
+                        </ul>
+                    </p>
+                    <p>
+                        All errors are stored in <code>ons_err_t</code> which is of type <code>uint64_t</code>.
+                    </p>
+                </p>
+            </div>
+        </div>
+    </body>
+</html>

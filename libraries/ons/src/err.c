@@ -17,4 +17,12 @@
 
 #include "ons/ons.h"
 #include <errno.h>
+#include <stdarg.h>
+
+/* Function which is called on fatal error.
+ * Calls abort().
+ * If \msg is NULL, a default msg is printed.
+ */
+void ons_fatal_error(const char *format, ...) {
+}
 

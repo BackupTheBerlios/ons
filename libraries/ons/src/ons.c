@@ -8,7 +8,7 @@
  * - Created: 22. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 7. February 2009
+ * - Last-Change: 8. February 2009
  */
 
 /* Main source file of ONS.
@@ -63,6 +63,32 @@ void ons_deinit(ons_bitset8_t opts) {
 #endif
 }
 
+ons_comp_t ons_compare_time(const ons_time_t *orig, const ons_time_t *comp) {
+    if(comp->t_sec > orig->t_sec) return ONS_GREATER;
+    else if(comp->t_sec < orig->t_sec) return ONS_SMALLER;
+    else if(comp->t_usec > orig->t_usec) return ONS_GREATER;
+    else if(comp->t_usec < orig->t_usec) return ONS_SMALLER;
+    else return ONS_EQUAL;
+}
+
+void ons_sum(const ons_time_t *addend1, const ons_time_t *addend2, ons_time_t *sum) {
+    sum->t_usec = addend1->t_usec + addend2->t_usec;
+    sum->t_sec = addend1->t_sec + addend2->t_sec;
+    if(sum->t_usec >= 1000000ULL) {
+        sum->t_usec -= 1000000ULL;
+        sum->t_sec += 1;
+    }
+}
+
+void ons_sub(const ons_time_t *minuend, const ons_time_t *subtrahend, ons_time_t *diff) {
+    diff->t_sec = minuend->t_sec - subtrahend->t_sec;
+    if(minuend->t_usec >= subtrahend->t_usec) diff->t_usec = minuend->t_usec - subtrahend->t_usec;
+    else {
+        diff->t_usec = 1000000ULL + minuend->t_usec - subtrahend->t_usec;
+        diff->t_sec -= 1;
+    }
+}
+
 void ons_time(ons_time_t *buf) {
 #ifdef GETTIMEOFDAY
     struct timeval tv;
@@ -99,9 +125,9 @@ void ons_time(ons_time_t *buf) {
 }
 
 #ifdef ONS_CONF_WINDOWS
-    bool ons_thread_run(ons_thread_t *thread, ons_thread_handler_t function, void *arg) {
+    void ons_thread_run(ons_thread_t *thread, ons_thread_handler_t function, void *arg) {
         *thread = CreateThread(NULL, 0, function, arg, 0, NULL);
-        return (*thread != NULL);
+        if(*thread == NULL) ONS_ABORT("Windows function 'CreateThread()' returned NULL.");
     }
 
     void ons_thread_join(ons_thread_t *thread) {
@@ -109,9 +135,9 @@ void ons_time(ons_time_t *buf) {
         CloseHandle(*thread);
     }
 
-    bool ons_mutex_init(ons_mutex_t *mutex) {
+    void ons_mutex_init(ons_mutex_t *mutex) {
         *mutex = CreateMutex(NULL, FALSE, NULL);
-        return (*mutex != NULL);
+        if(*mutex == NULL) ONS_ABORT("Windows function 'CreateMutex()' returned NULL.");
     }
 
     void ons_mutex_free(ons_mutex_t *mutex) {
@@ -134,12 +160,12 @@ void ons_time(ons_time_t *buf) {
         return (WaitForSingleObject(*mutex, (timeout.tv_usec / 1000) + (timeout.tv_sec * 1000)) == WAIT_OBJECT_0);
     }
 #elif defined(ONS_CONF_HAVE_PTHREAD_H)
-    bool ons_thread_run(ons_thread_t *thread, ons_thread_handler_t function, void *arg) {
+    void ons_thread_run(ons_thread_t *thread, ons_thread_handler_t function, void *arg) {
         pthread_attr_t attribute;
         signed int ret;
 
         /* Create attributes and set thread joinable. */
-        if(pthread_attr_init(&attribute) != 0) return false;
+        if(pthread_attr_init(&attribute) != 0) ONS_ABORT("PThread attr_init failed.");
         pthread_attr_setdetachstate(&attribute, PTHREAD_CREATE_JOINABLE);
 
         /* Launch the threaded function. */
@@ -147,15 +173,15 @@ void ons_time(ons_time_t *buf) {
 
         /* Cleanup. */
         pthread_attr_destroy(&attribute);
-        return (ret == 0);
+        if(ret != 0) ONS_ABORT("PThread thread creation failed.");
     }
 
     void ons_thread_join(ons_thread_t *thread) {
         pthread_join(*thread, NULL);
     }
 
-    bool ons_mutex_init(ons_mutex_t *mutex) {
-        return (pthread_mutex_init(mutex, NULL) == 0);
+    void ons_mutex_init(ons_mutex_t *mutex) {
+        if(pthread_mutex_init(mutex, NULL) != 0) ONS_ABORT("PThread mutex creation failed.");
     }
 
     void ons_mutex_free(ons_mutex_t *mutex) {

@@ -113,6 +113,16 @@ extern 'C' {
     #define ONS_CONF_THREADED
 #endif
 
+/* We use assert() everywhere. Include it here! */
+#include <assert.h>
+
+/* Function which is called on fatal error.
+ * Calls abort().
+ * If \msg is NULL, a default msg is printed.
+ */
+extern void ons_fatal_error(const char *format, ...);
+#define ONS_ABORT(msg) ons_fatal_error("ONS failed in %s at %u: %s\n", __FILE__, __LINE__, msg)
+
 
 #ifdef __cplusplus
 }

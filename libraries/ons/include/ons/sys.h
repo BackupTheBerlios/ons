@@ -8,7 +8,7 @@
  * - Created: 22. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 7. February 2009
+ * - Last-Change: 8. February 2009
  */
 
 /* ONS system wrapper header.
@@ -39,7 +39,7 @@ ONS_EXTERN_C_BEGIN
     #endif
 #endif
 
-/* Fixed size inetegers are heavily used in ONS.
+/* Fixed size integers are heavily used in ONS.
  * We include this header here to allow the usage in
  * every other header without including it again.
  */
@@ -141,15 +141,21 @@ extern void ons_sleep(unsigned int s);
  * If the system does not supported any mechanism to get milliseconds
  * the \t_usec contains always 0.
  *
- * This structure does not support negative values. Though, some systems
- * support negative values in time_t, we do not. This disallows weird
- * behaviour if the function does not check this. If you need negative
- * values AND positive values, you should pass an additional parameter.
+ * This structure does not support negative values.
  */
 typedef struct ons_time_t {
     uint64_t t_sec;
     uint64_t t_usec;
 } ons_time_t;
+
+/* Compares two ons_time_t structures. */
+extern ons_comp_t ons_compare_time(const ons_time_t *orig, const ons_time_t *comp);
+
+/* Sums/subtracts two ons_time_t values.
+ * No overflow/underflow protection! Check before with ons_compare_time().
+ */
+extern void ons_sum(const ons_time_t *addend1, const ons_time_t *addend2, ons_time_t *sum);
+extern void ons_sub(const ons_time_t *minuend, const ons_time_t *subtrahend, ons_time_t *diff);
 
 /* Saves the current time in \buf. */
 extern void ons_time(ons_time_t *buf);
@@ -169,9 +175,9 @@ extern void ons_time(ons_time_t *buf);
         typedef pthread_mutex_t ons_mutex_t;
     #endif
     typedef void *(*ons_thread_handler_t)(void *arg);
-    extern bool ons_thread_run(ons_thread_t *thread, ons_thread_handler_t function, void *arg);
+    extern void ons_thread_run(ons_thread_t *thread, ons_thread_handler_t function, void *arg);
     extern void ons_thread_join(ons_thread_t *thread);
-    extern bool ons_mutex_init(ons_mutex_t *mutex);
+    extern void ons_mutex_init(ons_mutex_t *mutex);
     extern void ons_mutex_free(ons_mutex_t *mutex);
     extern void ons_mutex_lock(ons_mutex_t *mutex);
     extern void ons_mutex_unlock(ons_mutex_t *mutex);
