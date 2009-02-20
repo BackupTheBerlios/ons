@@ -45,6 +45,9 @@ TODO =1.0:
     - writev and readv
 
 [ ONS v0.1.1.0 (TESTING) ]
+    * David Herrmann 2009/02/20
+        - Fix: generic array returns wrong indexes.
+        - Write memoria documentation.
     * David Herrmann 2009/02/08
         - Implement ons_fatal_error().
         - Finish libons reference documentation.

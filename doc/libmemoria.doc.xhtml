@@ -9,7 +9,7 @@
   - Created: 8. February 2009
   - Lead-Dev: - David Herrmann
   - Contributors: /
-  - Last-Change: 8. February 2009
+  - Last-Change: 20. February 2009
   -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -40,10 +40,259 @@
             <div id="overview">
                 <h1>Libmemoria</h1>
                 <p>
-                    Libmemoria is a memory library which provides memory allocators as well as memory structure like linked lists or hash tables.
+                    Libmemoria is a memory library which provides memory allocators as well as memory structures like linked lists or hash tables.
                 </p>
                 <p>
                     To use libmemoria, simply include <code>&lt;memoria/memoria.h&gt;</code> in your source code.
+                </p>
+                <p>
+                    Libmemoria depends on libons and a ISO-C library.
+                </p>
+            </div>
+            <div>
+                <h2>Memory Allocators</h2>
+                <p>
+                    Libmemoria provides two different memory allocators. Each allocator can, like <code>malloc()</code>, allocate memory and later be
+                    freed. All allocators never fail. If the backend fails, a callback is called and when this callback returns, the application is
+                    aborted with a message to <code>stderr</code>. If the callback is <code>NULL</code>, no callback is called. It is declared the
+                    following:<br />
+                    <code>
+                        <pre>
+                            extern void (*mem_outofmem)(void);
+                        </pre>
+                    </code>
+                    You should set the handler at the beginning of your program. But take into account that the handler must be reentrant if you call
+                    the allocators in multiple threads. ONS itself is never multithreaded if you do not explicitly requests an operation to be
+                    done in an extra thread.
+                </p>
+                <p>
+                    If you allocated memory with one allocator, you have to free it with the same allocator. Never mix two allocators!
+                </p>
+                <p>
+                    <h3><code>malloc()</code> based</h3>
+                    <p>
+                        This allocator is a simple wrapper for the <code>malloc()</code> interface. The following functions are available:<br />
+                        <p>
+                            <code>
+                                <pre>
+                                    void *mem_malloc(size_t size);
+                                </pre>
+                            </code>
+                            <p>
+                                Returns a pointer to the allocated space of <code>size</code> bytes. The global callback is called on failure. However,
+                                this function never returns <code>NULL</code>. The behaviour is undefined if <code>size</code> is zero.
+                            </p>
+                        </p>
+                        <p>
+                            <code>
+                                <pre>
+                                    void *mem_zmalloc(size_t size);
+                                </pre>
+                            </code>
+                            <p>
+                                Exactly the same as <code>mem_malloc</code> but it initializes all the space to zero.
+                            </p>
+                        </p>
+                        <p>
+                            <code>
+                                <pre>
+                                    void *mem_realloc(void *mem, size_t size);
+                                </pre>
+                            </code>
+                            <p>
+                                Resizes the space where <code>mem</code> points to, to <code>size</code> bytes. The behaviour is unknown if
+                                <code>size</code> is zero. This function calls the global callback on failure. However, it never returns NULL.<br />
+                                It returns a pointer to the new space. <code>size</code> bytes of the old data are preserved. If <code>size</code>
+                                is bigger than the current size of <code>mem</code>, all data in <code>mem</code> is copied to the new space.
+                            </p>
+                        </p>
+                        <p>
+                            <code>
+                                <pre>
+                                    void *mem_dup(const void *mem, size_t len);
+                                </pre>
+                            </code>
+                            <p>
+                                Duplicates the memory at <code>mem</code>. <code>len</code> is the length of <code>mem</code>. This function returns
+                                a pointer to an exact memory copy of <code>mem</code>.
+                            </p>
+                        </p>
+                    </p>
+                </p>
+                <p>
+                    <h3><code>mmap()</code> based</h3>
+                    <p>
+                        <p>
+                            The <code>mmap()</code> interface uses this system call to allocate a huge memory block with the <code>MAP_ANON</code>
+                            functionality. The advantage is, that after freeing the allocated space the memory is guaranteed to be totally returned
+                            to the OS. Though, modern <code>malloc()</code> implementations are much faster than this and should be preferred.<br />
+                            This interface is considered obsolete. Please see the comments in <em>mem.h</em>, <em>heap.h</em> and
+                            especially <em>heap.c</em> for more information and benchmarks.
+                        </p>
+                        <p>
+                            <code>
+                                <pre>
+                                    void *mem_block_alloc(size_t size);
+                                </pre>
+                            </code>
+                            <p>
+                                Returns a memory block of <code>size</code> bytes. Calls the global callback on failure. It never returns NULL, however.
+                                If <code>size</code> is 0, the behaviour is unknown.
+                            </p>
+                        </p>
+                        <p>
+                            <code>
+                                <pre>
+                                    void mem_block_free(void *ptr, size_t size);
+                                </pre>
+                            </code>
+                            <p>
+                                Frees a previously allocated memory block. It is important to pass the same size argument as in the allocator.
+                            </p>
+                        </p>
+                    </p>
+                </p>
+            </div>
+            <div>
+                <h2>Dynamic Memory Structures (linear)</h2>
+                <p>
+                    Libmemoria provides several structures which can be used to manage a linear list of elements. This includes linked lists,
+                    dynamic arrays, hash tables, ...<br />
+                    <em>linear</em> means that all elements are ordered in a linear way in these structures. Therefore, you can iterate through all
+                    elements like iterating through list. The other type is a <em>tree</em> structure and we will probably implement more types
+                    in the future.
+                </p>
+                <p>
+                    All linear types have some common behaviour. That is, the elements are saved in a linear list and you can insert and delete
+                    elements. Inserting an element at the beginning of the list is called <strong>*_thrust()</strong>, inserting at the end is called
+                    <strong>*_push()</strong> and inserting at an arbitrary position is called <strong>*_insert()</strong>.<br />
+                    Removing the first elements is called <strong>*_shift()</strong>, removing the last elements is called <strong>*_pop()</strong> and
+                    removing an arbitrary element is called <strong>*_remove()</strong>.<br />
+                    Each implementation may provide some aliases for these functions which represent the functionality in a better way.<br />
+                </p>
+                <p>
+                    <h3>Dynamic Array</h3>
+                    <p>
+                        The dynamic array is implemented as a normal array whose size is dynamically adjusted to the number of used elements. Therefore,
+                        the physical address of an element is not constant and may change when the array needs to be reallocated to a bigger/smaller
+                        size. You should always refer to an element with it's index and not with a pointer unless you know that the array is not touched
+                        while you use this pointer. However, if you add/delete an element in the middle of the array, the indexes of the higher elements
+                        increase/decrease.<br />
+                        The fastest way is always pushing or poping the elements.<br />
+                        Additionally, you can set two different options on each array. The first option <em>free</em> controls whether the memory should
+                        be reallocated to a smaller size when you remove elements in the array. If this options is <em>false</em>, then the allocated
+                        space is never decreased.<br />
+                        The second option <em>double</em> controls the allocation behaviour. To prevent many memory allocations, the implementation
+                        allocates always a specified amount of elements and keeps the unused elements at the top of the stack, so if you add a new
+                        element to the list, we do not need to allocate memory and can just use the unused elements at the top. This option now controls
+                        how many elements are allocated at once. You can specify a number of elements which are allocated when the array is created.
+                        The normal behaviour is, that this number is always added to the current number of elements when the array needs to be
+                        incremented. So if you specified 4 as the first number of elements, the array is reallocated every 4 elements:<br />
+                        4, 4 + 4, 8 + 4, 12 + 4, 16 + 4, ...<br />
+                        But if this option is true, the number of elements is always doubled. In this case this would be:<br />
+                        4, 4 * 2, 8 * 2, 16 * 2, 32 * 2, ...<br />
+                        The advantage of each method should be clear, though, you should decide on a per case basis which one is best.
+                    </p>
+                    <p>
+                        <h4>Generic Array</h4>
+                        <p>
+                            This is the reference implementation of the dynamic array. It is based on the following array structure:<br />
+                            <code>
+                                <pre>
+                                    typedef struct mem_array_t {
+                                        mem_index_t reserve;
+                                        mem_index_t size;
+                                        mem_index_t used;
+                                        size_t element;
+                                        void *list;
+
+                                        unsigned int opt_free : 1;
+                                        unsigned int opt_double : 1;
+                                    } mem_array_t;
+                                </pre>
+                            </code>
+                            Create a <code>mem_array_t</code> structure on the stack/heap and initialize it with the following function:<br />
+                            <code>void mem_array_init(struct mem_array_t *array, size_t element, mem_index_t reserve)</code><br />
+                            This sets <code>reserve</code> and <code>element</code> to the given values.<br />
+                            <code>mem_array_t.reserve</code> is the number of elements which are allocated when the array is created.<br />
+                            <code>mem_array_t.size</code> is the current size of allocated elements. This can be greater or equal to the current
+                            number of used elements.<br />
+                            <code>mem_array_t.used</code> is the current number of used elements.<br />
+                            <code>mem_array_t.element</code> is the size of the type which is stored in this array.<br />
+                            <code>mem_array_t.list</code> is <code>NULL</code> if <code>used</code> is 0, otherwise it points to the first element
+                            in the array.<br />
+                            <code>opt_free</code> and <code>opt_double</code> are the options as described above.<br />
+                            <em>You should never modify any of these values directly, except the options, however, you can access the array with the
+                            <code>list</code> pointer. The options <strong>can safely</strong> be modified at any time.</em>
+                            If <code>element</code> or <code>reserve</code> are 0, they are automatically set to 1.
+                        </p>
+                        <p>
+                            <code><pre>void mem_array_clear(struct mem_array_t *array);</pre></code><br />
+                            This function frees all elements in the array and sets the <code>list</code> pointer to <code>NULL</code>. You can safely
+                            allocate new elements in this array after clearing it.
+                        </p>
+                        <p>
+                            Several macros are available to access an element at an index.<br />
+                            <code><pre>#define MEM_ARRAY_INDEX(mem_array_t *array, void *ele)</pre></code><br />
+                            <code>ele</code> should point to an element in <code>array</code>. This macro returns the related index.<br />
+                            <code><pre>#define MEM_ARRAY(mem_array_t *array, mem_index_t index)</pre></code><br />
+                            Returns a pointer to the element at the given index. The returned pointer is of type <code>void*</code>.<br />
+                            <code><pre>#define MEM_TYPE(mem_array_t *array, mem_index_t index, TYPE)</pre></code><br />
+                            Same as <code>MEM_ARRAY</code> but casts the returned <code>void*</code> pointer to <code>TYPE</code>. Obviously,
+                            <code>TYPE</code> should also be an pointer type.<br />
+                            <code><pre>#define MEM_DEREF(mem_array_t *array, mem_index_t index, TYPE)</pre></code><br />
+                            Same as <code>MEM_TYPE</code>, but it returns directly the dereferenced object and not a pointer. Therefore,
+                            <code>TYPE</code> should not be a pointer type unless you save pointers in this array.
+                        </p>
+                        The following functions are available to insert an element to the array. All these functions return a <code>void*</code>
+                        pointer to the new element. These functions never fail.
+                        <p>
+                            <code><pre>
+                                void *mem_array_push(struct mem_array_t *array);
+                                void *mem_array_insert(struct mem_array_t *array, mem_index_t index);
+                                void *mem_array_thrust(struct mem_array_t *array);
+                            </pre></code><br />
+                            <code>*_push()</code> inserts at the end, <code>*_thrust()</code> at the beginning and <code>*_insert()</code> adds the
+                            element at the index <code>index</code>.
+                        </p>
+                        The following functions are used to delete elements from the array. They never fail.
+                        <p>
+                            <code><pre>
+                                void mem_array_pop(struct mem_array_t *array);
+                                void mem_array_remove(struct mem_array_t *array, mem_index_t index);
+                                void mem_array_shift(struct mem_array_t *array);
+                            </pre></code>
+                            <code>*_pop()</code> removes the last element, <code>*_shift()</code> removes the first element and <code>*_remove()</code>
+                            removes the element at the position <code>index</code>.
+                        </p>
+                    </p>
+                    <p>
+                        <h4>Template Array</h4>
+                        <p>
+                            This array implementation is nearly the same as the generic one, but is adjusted to a specific datatype. This means, instead
+                            of using <code>void*</code> you can use a macro to define all the functions described above with a specific datatype.<br />
+                        </p>
+                        <p>
+                            <code><pre>MEM_ARRAY_DEFINE(ARR_NAME, ELE_TYPE, INITIAL_VAR, FREE, DOUBLE)</pre></code><br />
+                            Declares all the necessary functions and datatypes. <code>ARR_NAME</code> will be the name of the array structure and the
+                            prefix of the functions. <code>ELE_TYPE</code> should be the datatype of the element you want to store in the array.
+                            <code>INITIAL_VAR</code> is an unsigned integer value which specifies the initial amount of elements. <code>FREE</code>
+                            and <code>DOUBLE</code> are the boolean options as described above.<br />
+                            This defines the following structure:<br />
+                            <code><pre>
+                                    typedef struct ARR_NAME {
+                                        mem_index_t used;
+                                        mem_index_t size;
+                                        ELE_TYPE *list;
+                                    } ARR_NAME;
+                            </pre></code>
+                            The members have the same meaning as in the structure of the generic implementation.
+                            Furthermore, it declares the same six functions as described above, but with the array name as the prefix. This would be
+                            for instance: <code>ARR_NAME_push(... parameters ...)</code>.<br />
+                            The macros to access a special element cannot be used here, however, you can use the <code>[]</code> brackets directly on
+                            the <code>list</code> member.
+                        </p>
+                    </p>
                 </p>
             </div>
         </div>

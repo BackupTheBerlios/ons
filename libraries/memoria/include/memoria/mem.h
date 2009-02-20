@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 8. February 2009
+ * - Last-Change: 19. February 2009
  */
 
 /* This file wraps the common memory allocation functions
@@ -26,7 +26,7 @@ ONS_EXTERN_C_BEGIN
 #include <stdlib.h>
 #include <string.h>
 
-/* Set this variable to the out of mem handler.
+/* Set this variable to the out-of-mem handler.
  * It is initialized with NULL and if it is NULL, no out-of-mem
  * handler is called.
  * Please be aware that the handler can be called parallel in
@@ -63,15 +63,9 @@ static inline void *mem_malloc(size_t size) {
 static inline void *mem_zmalloc(size_t size) {
     void *ret;
 
-    assert(size > 0);
-
-    ret = malloc(size);
-
-    if(ret == NULL) {
-        if(mem_outofmem) mem_outofmem();
-        ONS_ABORT("Memory allocation failed; Out of memory!");
-    }
+    ret = mem_malloc(size);
     memset(ret, 0, size);
+
     return ret;
 }
 

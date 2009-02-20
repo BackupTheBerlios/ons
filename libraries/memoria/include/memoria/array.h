@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 8. February 2009
+ * - Last-Change: 20. February 2009
  */
 
 /* Dynamic length arrays.
@@ -40,7 +40,7 @@ ONS_EXTERN_C_BEGIN
  * The first array implementation uses a structure which can be used with any type      *
  * and without any macros. It allows optimization through options but has a huge        *
  * base structure. If it is used with hundreds of elements, this doesn't matter but     *
- * if you want to save only 10 small elements, the array-base structure would probably  *
+ * if you want to save only 10 small elements, the array base-structure would probably  *
  * be bigger than the elements. In this case you should look at the second array        *
  * implementation below this one.                                                       *
  ****************************************************************************************
@@ -78,15 +78,17 @@ typedef struct mem_array_t {
 /* This macro returns the index of a pointer to an element. \array must point to the array structure
  * and \ele to the element. Returns a mem_index_t.
  */
-#define MEM_ARRAY_INDEX(array, ele) ((mem_index_t)(((void*)(ele)) - ((array)->list)))
+#define MEM_ARRAY_INDEX(array, ele) (assert(array != NULL), \
+                                     assert(ele != NULL), \
+                                     ((mem_index_t)(((void*)(ele)) - ((array)->list))) / (array)->element)
 /* This macro returns a pointer to the element at index \index of array \array. */
-#define MEM_ARRAY(array, index) ((array)->list+(index)*(array)->element)
+#define MEM_ARRAY(array, index) (assert(array != NULL), (array)->list+(index)*(array)->element)
 /* This macro returns the pointer to the element at index \index of array \array and
  * casts the returned pointer to \type.
  */
-#define MEM_TYPE(array, index, type) ((type)MEM_ARRAY((array), (index)))
+#define MEM_TYPE(array, index, type) (assert(array != NULL), (type)MEM_ARRAY((array), (index)))
 /* Same as MEM_TYPE but \type is the dereferenced type. Thus, the dereferenced value is returned. */
-#define MEM_DEREF(array, index, type) (*(type*)MEM_ARRAY((array), (index)))
+#define MEM_DEREF(array, index, type) (assert(array != NULL), *(type*)MEM_ARRAY((array), (index)))
 
 /* Initializes an allocated array structure.
  * This should be called on every array you created, before accessing the array. \array should point to
@@ -128,7 +130,7 @@ static inline void mem_array_init(struct mem_array_t *array, size_t element, mem
  * you can simply use the pointer in \list and delete the mem_array_t object yourself
  * without calling this function.
  */
-static inline void mem_array_clean(struct mem_array_t *array) {
+static inline void mem_array_clear(struct mem_array_t *array) {
     assert(array != NULL);
 
     mem_free(array->list);
@@ -178,7 +180,7 @@ static inline void mem_array_pop(struct mem_array_t *array) {
     if(array->opt_free) {
         size = _mem_array_dec_size(array);
         if(array->used <= size) {
-            if(size == 0) mem_array_clean(array);
+            if(size == 0) mem_array_clear(array);
             else {
                 array->list = mem_realloc(array->list, size * array->element);
                 array->size = size;
@@ -232,7 +234,7 @@ static inline void mem_array_remove(struct mem_array_t *array, mem_index_t index
  ************************************************************************************************
  * The second dynamic array implementation uses macros which define the functions which         *
  * operate on the array. You need to call MEM_ARRAY_DEFINE in your source or header             *
- * to declare the functions which operate on the array. The advantage of this implementation    *
+ * to define the functions which operate on the array. The advantage of this implementation     *
  * is that the base structure is really small. Furthermore you can access the elements          *
  * directly without any macro with the [] operator.                                             *
  * This makes this dynamic array implementation perfect for small arrays with probably only 10  *
@@ -257,7 +259,7 @@ static inline void mem_array_remove(struct mem_array_t *array, mem_index_t index
  *    - \list: Pointer to the first member.
  * Functions:
  *  - void ARR_NAME_init(ARR_NAME *array): Initializes the array. (mem_array_init)
- *  - void ARR_NAME_clean(ARR_NAME *array): Cleans the array. (mem_array_clean)
+ *  - void ARR_NAME_clear(ARR_NAME *array): Clears the array. (mem_array_clear)
  *  - ELE_TYPE *ARR_NAME_push(ARR_NAME *array): Adds a new element at the tip. (mem_array_push)
  *  - void ARR_NAME_pop(ARR_NAME *array): Removes the tip. (mem_array_pop)
  *  - ELE_TYPE *ARR_NAME_insert(ARR_NAME *array, mem_index_t index): Adds a new element at \index. (mem_array_insert)
@@ -277,7 +279,7 @@ static inline void mem_array_remove(struct mem_array_t *array, mem_index_t index
         array->size = 0; \
         array->list = NULL; \
     } \
-    static inline void ARR_NAME##_clean(ARR_NAME *array) { \
+    static inline void ARR_NAME##_clear(ARR_NAME *array) { \
         assert(array != NULL); \
         array->used = array->size = 0; \
         mem_free(array->list); \
@@ -300,7 +302,7 @@ static inline void mem_array_remove(struct mem_array_t *array, mem_index_t index
             if(DOUBLE) size = array->size >> 1; \
             else size = array->size - INITIAL_VAR; \
             if(array->used <= size) { \
-                if(size == 0) ARRNAME##_clean(array); \
+                if(size == 0) ARRNAME##_clear(array); \
                 else { \
                     array->list = mem_realloc(array->list, size * sizeof(ELE_TYPE)); \
                     array->size = size; \
