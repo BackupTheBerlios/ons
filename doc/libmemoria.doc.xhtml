@@ -293,6 +293,13 @@
                             the <code>list</code> member.
                         </p>
                     </p>
+                    <p>
+                        Both dynamic array implementations force you to allocate the base structure yourself. However, this has one advantage. If you
+                        want to return an array in a function, you can use this interface by allocating the base structure on the stack and filling
+                        the array. When you want to return the array, you simply return the <code>list</code> pointer. The structure is dynamically
+                        deallocated by the stack and you simply have to call <code>mem_free()</code> on the returned pointer to free all memory still
+                        related to this array.
+                    </p>
                 </p>
             </div>
         </div>

@@ -46,6 +46,10 @@ TODO =1.0:
 
 [ ONS v0.1.1.0 (TESTING) ]
     * David Herrmann 2009/02/20
+        - Add "array return" to memoria documentation. It describes how to use the
+          dynamic array implementation to return a single array in a function without
+          returning the dynamic array base structure.
+    * David Herrmann 2009/02/20
         - Fix: generic array returns wrong indexes.
         - Write memoria documentation.
     * David Herrmann 2009/02/08
