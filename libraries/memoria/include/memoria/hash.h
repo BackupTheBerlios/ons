@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 1. January 2009
+ * - Last-Change: 22. February 2009
  */
 
 /* Hash Table implementation.
@@ -40,23 +40,23 @@ ONS_EXTERN_C_BEGIN
 extern mem_hash_t mem_hash(const char *str, size_t len);
 
 /* Example implementation of an hash table with array.h and mem_hash().
- * mem_hash_t is guaranteed to be 32bit wide, hence, we can use it to
- * get four 255bit values. We make the hash table 255 byte big and search
+ * mem_hash_t is guaranteed to be 32byte wide, hence, we can use it to
+ * get four 256bit values. We make the hash table 256 byte big and search
  * up to four times for a key.
  * The hash table would be:
  * > MEM_ARRAY_DECLARE(test_hash_t, test_type_t, 1);
- * > test_hash_t hash_table[255];
+ * > test_hash_t hash_table[256];
  * If you want to insert a new value, you just create the hash:
  * > my_hash = mem_hash(key, sizeof(key));
- * Now we got one hash value of four 255 hashes. We take the first 255 value
+ * Now we got one hash value of four 256bit hashes. We take the first 256bit value
  * with my_hash & 0xff. We check whether this array is empty. If it is, we insert
  * the value here.
- * > test_hash_t_empty(&hash_table[my_hash & 0xff]
+ * > test_hash_t_empty(&hash_table[my_hash & 0xff])
  * If it is not empty, we check the next array:
- * > test_hash_t_empty(&hash_table[my_hash & 0xff00]
+ * > test_hash_t_empty(&hash_table[my_hash & 0xff00])
  * If this is not empty, too, we check also the third and fourth array:
- * > test_hash_t_empty(&hash_table[my_hash & 0xff0000]
- * > test_hash_t_empty(&hash_table[my_hash & 0xff000000]
+ * > test_hash_t_empty(&hash_table[my_hash & 0xff0000])
+ * > test_hash_t_empty(&hash_table[my_hash & 0xff000000])
  * If even the last array is not empty, we insert it in the last array:
  * > test_type_t *p = test_hash_t_push(&hash_table[my_hash & 0xff000000]);
  * Now we can fill *p with data.
@@ -68,8 +68,8 @@ extern mem_hash_t mem_hash(const char *str, size_t len);
  * a linked list in the test_type_t and add the elements to this list, too.
  *
  * If your hash table gets bigger you could even increase the hash table size from
- * 255 to another arbitrary value, but I recommend using powers of two. With up to
- * 65535 it is possible to get 2 hash values out of an mem_hash_t. But 65535 would
+ * 256 to another arbitrary value, but I recommend using powers of two. With up to
+ * 65536 it is possible to get 2 hash values out of an mem_hash_t. But 65536 would
  * even be too big for the biggest hash tables.
  *
  * You could also replace the array with a linked list to be more flexible with many

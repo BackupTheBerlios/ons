@@ -24,8 +24,7 @@ TODO =1.0:
     - Update documentation.
     - ROADMAP
  - memoria:
-    - Better sorting algorithms in mem_array and mem_llist.
-    - Dynamic hash tables (linear hashing?).
+    - Better sorting algorithms in mem_list_t.
     - mem_str_t and mem_strlist_t
     - unlimited bitset
  - FIP:
@@ -52,6 +51,7 @@ TODO =1.0:
         - memoria/misc.h: Change "mem_index_t" to "size_t".
         - libmemoria.doc.xhtml: Finish llist documentation.
         - COPYING: License ONS under a second license: ISC license.
+        - memoria/hash.h: Fix hash table comments.
     * David Herrmann 2009/02/20
         - Add "array return" to memoria documentation. It describes how to use the
           dynamic array implementation to return a single array in a function without

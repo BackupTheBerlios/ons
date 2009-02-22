@@ -206,6 +206,10 @@
                         The advantage of each method should be clear, though, you should decide on a per case basis which one is best.
                     </p>
                     <p>
+                        Sorting functions are not provided by libmemoria, though, you should use the <code>qsort()</code> function as provided by the
+                        ISO-C89 standard.
+                    </p>
+                    <p>
                         <h4>Generic Array</h4>
                         <p>
                             This is the reference implementation of the dynamic array. It is based on the following array structure:<br />
@@ -477,6 +481,43 @@
                         already an element in the list which equals <code>raw_member</code>. <code>*_prepend()</code> will insert it before all other
                         equal elements and <code>*_append()</code> will insert it after all equal elements.
                     </p>
+                </p>
+            </div>
+            <div>
+                <h2>Dynamic Memory Structures (block based)</h2>
+                <p>
+                    Libmemoria provides one block-based memory structure called <em>heap</em>. This heap works the following way:<br />
+                    You create a new heap which is used to store elements of a specified datatype. The size of the datatype must be fixed. Now, you can
+                    allocate such elements from this heap and use them. They are neither linked in a list nor ordered in an array, quite contrary, they
+                    have as much information as if you requested them with <code>mem_malloc()</code> => nothing.<br />
+                    However, the heap allocates huge memory blocks and if you request a new element, it does not have to allocate new memory but can
+                    just return one of the temporary objects it holds. If one such block is full, it allocates a new block and if one block gets empty,
+                    it deletes the whole block.<br />
+                    You may ask what the benefits are when you use this interface. Well, this is hard to say, because this interface is when used
+                    instead of <code>mem_malloc()</code> almost twice as slow and not recommended here. However, this interface has some advantages.
+                    If you want to allocate many objects for a short time and then delete all of them, you can allocate them with this interface,
+                    without keeping track if the elements and then, if you do not need them, anymore, you just delete the whole heap which deallocates
+                    all objects.<br />
+                    Another advantage is, that this interface uses the <code>mmap()</code> backend as described above. That is, the memory is returned
+                    to the operating system when a block gets freed.<br />
+                    The file <em>heap.c</em> contains benchmarks and shows that this interface is obsolete if you want to replace
+                    <code>mem_malloc()</code>, though, you can use it, as I said, if you don't want to care for free()'ing the objects.<br />
+                </p>
+                <p>
+                    To use this heap you have to create a new heap object. This is done with:<br />
+                    <code>mem_heap_t *mem_heap_create(size_t node_size, unsigned long nodes_per_block);</code><br />
+                    Whereas <code>node_size</code> is the size of a single object you want to store in this heap and <code>nodes_per_block</code>
+                    specifies how many elements are allocated at once. It never fails! Both values are set to 1 if you specified 0.<br />
+                    You can delete such an heap object with:<br />
+                    <code>void mem_heap_destroy(mem_heap_t *heap);</code><br />
+                    This frees all allocated objects in this heap and finally frees the heap itself.<br />
+                </p>
+                <p>
+                    If you created an heap object you can allocate elements with:<br />
+                    <code>void *mem_heap_alloc(mem_heap_t *heap);</code><br />
+                    This returns a pointer to a new element. It never fails, though, <code>heap</code> must not be <code>NULL</code>. You can manually
+                    free it with:<br />
+                    <code>void mem_heap_free(mem_heap_t *heap, void *mem);</code><br />
                 </p>
             </div>
         </div>
