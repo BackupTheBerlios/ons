@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 1. January 2009
+ * - Last-Change: 22. February 2009
  */
 
 /* This file contains global declarations for the memoria library.
@@ -23,7 +23,7 @@ ONS_EXTERN_C_BEGIN
 
 
 /* Type of the index which is used to access elements directly. */
-typedef unsigned long mem_index_t;
+typedef size_t mem_index_t;
 
 /* Type used for hashes. */
 typedef uint32_t mem_hash_t;
