@@ -520,6 +520,86 @@
                     <code>void mem_heap_free(mem_heap_t *heap, void *mem);</code><br />
                 </p>
             </div>
+            <div>
+                <h2>Hash Functions</h2>
+                <p>
+                    Libmemoria provides no hash tables, but it provides hash functions. Currently, only one hash algorithm is implemented, but in
+                    future other algorithms may be available.<br />
+                    If you don't know how to create a hashtable out of a hashfunction, you're probably at the wrong place here. However, the tutorials
+                    contain a reference hash table implementation. This is probably what you search.<br />
+                </p>
+                <p>
+                    If you want to hash an arbitrary dataset, you can use our hash function:<br />
+                    <code>mem_hash_t mem_hash(const char *str, size_t len);</code><br />
+                    <code>str</code> must point to the data of size <code>len</code>. It does not have to be terminated by a zero character and can
+                    contain as many zero characters as you want.<br />
+                    The returned hash value is a 32bit integer.<br />
+                    <em>This function is not cryptographically secure.</em>
+                </p>
+            </div>
+            <div>
+                <h2>RNGs - Random Number Generators</h2>
+                <p>
+                    Libmemoria provides some cryptographically secure and insecure (but faster) pseudo random number generators.
+                </p>
+                <p>
+                    <h3>ISAAC+</h3>
+                    <p>
+                        ISAAC+ was invented by Bob Jenkins and the algorithm is under the public domain. You can create this RNG by allocating the base
+                        structure:<br />
+                        <code><pre>
+                            typedef struct mem_isaac_t {
+                                uint32_t randcnt;
+                                uint32_t randrsl[256];
+                                uint32_t randmem[256];
+                                uint32_t randa;
+                                uint32_t randb;
+                                uint32_t randc;
+                            } mem_isaac_t;
+                        </pre></code>
+                        The members are not of interest and represent temporary values of the algorithm. You can always override the array
+                        <code>randrsl</code> with entropy but this is not required.<br />
+                        You can initialize this structure with:<br />
+                        <code><pre>
+                            void mem_isaac_seed(mem_isaac_t *r);
+                        </pre></code>
+                        The array <code>randrsl</code> of the base structure is taken as seed value. Seeding it with the current time in microseconds
+                        is often sufficient.<br />
+                        You can generate a new 32bit random number with:<br />
+                        <code>uint32_t mem_isaac_rand(mem_isaac_t *r);</code><br />
+                        Internally, 256 random numbers are generated at once. They are returned by this function and if you called this function 256
+                        times, the next 256 random numbers are generated.<br />
+                        The function which generates the next 256 random numbers can also be called manually:<br />
+                        <code>void mem_isaac_gen(mem_isaac_t *r);</code><br />
+                    </p>
+                    <p>
+                        This ISAAC+ RNG is cryptographically secure!
+                    </p>
+                </p>
+                <p>
+                    <h3>Insecure RNG</h3>
+                    <p>
+                        This RNG is twice as fast as ISAAC+ but is not cryptographically safe. Though, it is sufficient in most cases.
+                    </p>
+                    <p>
+                        Simply allocate the following base structure:<br />
+                        <code><pre>
+                            typedef struct mem_rand_t {
+                                uint32_t a;
+                                uint32_t b;
+                                uint32_t c;
+                                uint32_t d;
+                            } mem_rand_t;
+                        </pre></code><br />
+                        And seed it with the following function:<br />
+                        <code>void mem_seed(mem_rand_t *x, uint32_t seed);</code><br />
+                        <code>seed</code> should be a 32bit random number which is used to seed the RNG. The current time in microseconds is always a
+                        good choice.<br />
+                        You can get the next random number with:<br />
+                        <code>uint32_t mem_rand(mem_rand_t *x);</code><br />
+                    </p>
+                </p>
+            </div>
         </div>
     </body>
 </html>

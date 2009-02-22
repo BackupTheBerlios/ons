@@ -8,7 +8,7 @@
  * - Created: 28. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 8. February 2009
+ * - Last-Change: 22. February 2009
  */
 
 /* Random Number Generators (RNGs).
@@ -63,10 +63,10 @@ typedef struct mem_isaac_t {
 } mem_isaac_t;
 
 /* Uses the content of r->randrsl as seed value. */
-void mem_isaac_seed(mem_isaac_t *r);
+extern void mem_isaac_seed(mem_isaac_t *r);
 
 /* Generates MEM_RANDSIZ new numbers. */
-void mem_isaac_gen(mem_isaac_t *r);
+extern void mem_isaac_gen(mem_isaac_t *r);
 
 static inline uint32_t mem_isaac_rand(mem_isaac_t *r) {
     assert(r != NULL);
