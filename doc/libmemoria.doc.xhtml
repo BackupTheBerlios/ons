@@ -48,6 +48,18 @@
                 <p>
                     Libmemoria depends on libons and a ISO-C library.
                 </p>
+                <p>
+                    The following datatypes are used all over libmemoria:<br />
+                    <ul>
+                        <li>
+                            <code>mem_index_t</code>: Defined as <code>size_t</code> and is used to index a single element in a list of elements.
+                            It cannot overflow because your memory has at most <code>sizeof(size_t)</code> bytes of space.
+                        </li>
+                        <li>
+                            <code>mem_hash_t</code>: A 32bit unsigned integer which holds a single hash value.
+                        </li>
+                    </ul>
+                </p>
             </div>
             <div>
                 <h2>Memory Allocators</h2>
@@ -310,7 +322,7 @@
                         Libmemoria has a generic double linked list implementation which can be used with any datatype. You simply have to allocate a
                         base structure which manages the linked list. The datatype which you want to store in the linked list must be a structure and
                         must have a special member which contains the <code>next</code> and <code>prev</code> links. You have to allocate the elements
-                        yourself, libmemoria provides only functions to insert this element into the list and to unlink it from the list.
+                        yourself, libmemoria provides only functions to insert an element into the list and to unlink it from the list.
                     </p>
                     <p>
                         The base structure is defined as:<br />
@@ -321,7 +333,149 @@
                                 size_t count;
                                 mem_match_t match;
                             } mem_list_t;
-                        </pre></code>
+                        </pre></code><br />
+                        This structure can handle a list of exactly one datatype. This datatype has to look like the following:<br />
+                        <code><pre>
+                            struct &lt;arbitrary_name&gt; {
+                                &lt;... zero or more arbitrary members ...&gt;
+                                mem_node_t &lt;arbitrary_name&gt;;
+                                &lt;... zero or more arbitrary members ...&gt;
+                            };
+                        </pre></code><br />
+                        This means the structure you want to save in this list must have a <code>mem_node_t</code> member. <strong>This member must not be
+                        a pointer!</strong>.<br />
+                        Whereas <code>mem_node_t</code> is implemented as the following:<br />
+                        <code><pre>
+                            typedef struct mem_node_t {
+                                struct mem_node_t *next;
+                                struct mem_node_t *prev;
+                                struct mem_list_t *head;
+                            } mem_node_t;
+                        </pre></code><br />
+                        The usage can be best shown with an example:<br />
+                        <code><pre>
+                            struct i_am_saved {
+                                int value1;
+                                char *value2;
+                                short value3[10];
+                                mem_node_t llist_node;
+                            };
+
+                            int main() {
+                                mem_list_t list;
+
+                                MEM_LL_INIT(&amp;list, struct i_am_saved, llist_node);
+
+                                /* Now work with the list. Insert and remove elements of type "struct i_am_saved". */
+                            }
+                        </pre></code><br />
+                        Now, you need to know more details about the structures. First, the <code>mem_list_t</code> structure. The <code>offset</code>
+                        member contains an integer which specifies the offset of the <code>mem_node_t</code> member in the element-structure. This is
+                        automatically set and you should never touch it. <code>nodes</code> points to the first member of the linked list or is
+                        <code>NULL</code> if the list is empty. <code>count</code> contains the number of currently stored elements and
+                        <code>match</code> is the function which is used to sort the elements. It is explained below. The <code>mem_node_t</code>
+                        structure has two members which point to the next and the previous <code>mem_node_t</code> element in the list. The
+                        <code>head</code> member points to the base structure of the list.<br />
+                        In detail, the list stores <code>mem_node_t</code> structures in this list, but the base structure has the information to get
+                        the corresponding <code>i_am_saved</code> structure (the structure defined by the user) out of a <code>mem_node_t</code>
+                        structure.
+                    </p>
+                    <p>
+                        As shown in the example above, you can initialize a linked list with a macro:<br />
+                        <code>#define MEM_LL_INIT(mem_list_t *list, TYPE, NODE_NAME);</code><br />
+                        <code>list</code> must point to an uninitialized linked list base structure. <code>TYPE</code> must be the datatype which is
+                        stored in the linked list and <code>NODE_NAME</code> must be the name of the <code>mem_node_t</code> member in the
+                        <code>TYPE</code> structure. This macro internally calls:<br />
+                        <code>void mem_ll_init(mem_list_t *list, size_t offset)</code><br />
+                        whereas <code>list</code> is the same as in the macro, but <code>offset</code> is defined as <code>offsetof(TYPE, NODE_NAME)</code>.
+                        <code>offsetof()</code> is a builtin construct of ISO-C89.
+                    </p>
+                    <p>
+                        The following functions are defined to insert a new element into the list. We take as example the <code>struct i_am_saved</code>
+                        from the example above as a user defined structure which is stored in the list. If these functions take a <code>void*</code>
+                        pointer as argument or return a <code>void*</code> pointer, it is always meant to be the datatype of the user, which is here
+                        the <code>struct i_am_saved</code>.<br />
+                        <code><pre>
+                            void *mem_ll_prepend(mem_list_t *list, void *raw_member, void *raw_newm);
+                            void *mem_ll_append(mem_list_t *list, void *raw_member, void *raw_newm);
+                            void *mem_ll_thrust(mem_list_t *list, void *raw_newm);
+                            void *mem_ll_push(mem_list_t *list, void *raw_newm);
+                        </pre></code><br />
+                        <code>list</code> points to the list which is to be modified. <code>raw_newm</code> is the pointer to the member which should
+                        be inserted into the list. It is not copied! It must be allocated by the user before.<br />
+                        <code>raw_member</code> is always an already inserted member which is taken as insertpoint.<br />
+                        <code>*_prepend()</code> inserts the member before the insertpoint. If the insertpoint is the first member, then the new
+                        member becomes the first member.<br />
+                        <code>*_append()</code> inserts the member after the insertpoint. If the insertpoint is the last member, then the new member
+                        becomse the last member.<br />
+                        <code>*_thrust()</code> inserts the member as new first member.<br />
+                        <code>*_push()</code> inserts the member as new last member.<br />
+                        Each of these four ways is as fast as the other three ways. Each function returns always <code>raw_newm</code>.
+                    </p>
+                    <p>
+                        The following functions are defined to unlink an element from a list. Please take into account, that the element is not freed.
+                        Each function returns a pointer to the unlinked member.<br />
+                        <code><pre>
+                            void *mem_ll_remove(mem_list_t *list, void *raw_member);
+                            <em>alias for mem_ll_remove: mem_ll_extract();</em>
+                            void *mem_ll_shift(mem_list_t *list);
+                            void *mem_ll_pop(mem_list_t *list);
+                        </pre></code><br />
+                        <code>*_remove()</code> removes the given member from the list and returns <code>raw_member</code>.<br />
+                        <code>*_shift</code> removes the first element from the list and returns it. If the list is empty, it returns NULL.<br />
+                        <code>*_pop</code> removes the last element from the list and returns it. If the list is empty, it returns NULL.<br />
+                    </p>
+                    <p>
+                        The following functions and macros can be used to manage elements:<br />
+                        <code><pre>
+                            #define mem_ll_empty(const mem_list_t *list);
+                            void *mem_ll_entry(const mem_node_t *node);
+                            #define MEM_LL_ENTRY(mem_node_t *node, TYPE) ((TYPE)mem_ll_entry(node))
+                            void *mem_ll_first(const mem_list_t *list);
+                            void *mem_ll_last(const mem_list_t *list);
+                        </pre></code><br />
+                        <code>*_empty()</code> returns true, if the list is empty, otherwise false.<br />
+                        <code>*_entry()</code> returns the user defined structure which holds the given node structure.<br />
+                        <code>*_ENTRY()</code> is a convenience macro for the <code>*_entry()</code> functions which additionally casts the returned
+                        <code>void*</code> pointer to <code>TYPE</code>.<br />
+                        <code>*_first()</code> returns a pointer to the first element. If the list is empty, it returns <code>NULL</code>.<br />
+                        <code>*_last()</code> returns a pointer to the last element. If the list is empty, it returns <code>NULL</code>.<br />
+                    </p>
+                    <p>
+                        The linked list allows also to keep the list sorted. It uses a special callback function which compares two elements and returns
+                        which one of them is bigger/smaller or whether they are equal. Equal elements are stored in no particular order in the sorted
+                        list.<br />
+                        The callback is defined as:<br />
+                        <code>typedef ons_comp_t (*mem_match_t)(const void *orig, const void *comparison);</code><br />
+                        You have to manually set the <code>match</code> member in your <code>mem_list_t</code> structure to your function. If no such
+                        function is defined (<code>match == NULL</code>), but you try to sort the list, then the physical addresses of the elements are
+                        compared.<br />
+                        <em>A sorted list is always kept in ascending order!</em><br />
+                        That is, the first element of a sorted list is the smallest and the last element is the biggest. If you want to store the
+                        elements in descending order, just return the reversed values in your <code>match</code> function.<br />
+                        An example with the <code>struct i_am_saved</code> user structure would be:<br />
+                        <code><pre>
+                            ons_comp_t func_match(const struct i_am_saved *orig, const struct i_am_saved *comparison) {
+                                /* We sort by the integer value1. */
+                                if(comparison->value1 &gt; orig->value1) return ONS_GREATER;
+                                else if(comparison->value1 &lt; orig->value1) return ONS_SMALLER;
+                                else return ONS_EQUAL;
+                            }
+
+                            /* elsewhere */
+                            your_list->match = func_match;
+                        </pre></code><br />
+                        To keep a list sorted, you have to insert the elements with special functions or sort the list manually. That is, either insert
+                        them with the functions described above and afterwards call:<br />
+                        <code>void mem_ll_sort(mem_list_t *list);</code><br />
+                        which will then sort the list with a simple Insertion-Sort algorithm or you insert the elements sorted into the list with:<br />
+                        <code><pre>
+                            void *mem_ll_srtd_prepend(mem_list_t *list, void *raw_member);
+                            void *mem_ll_srtd_append(mem_list_t *list, void *raw_member);
+                        </pre></code><br />
+                        Both functions insert <code>raw_member</code> sorted into the list and return it. They differ in the behaviour if there is
+                        already an element in the list which equals <code>raw_member</code>. <code>*_prepend()</code> will insert it before all other
+                        equal elements and <code>*_append()</code> will insert it after all equal elements.
                     </p>
                 </p>
             </div>
