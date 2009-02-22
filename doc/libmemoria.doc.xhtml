@@ -9,7 +9,7 @@
   - Created: 8. February 2009
   - Lead-Dev: - David Herrmann
   - Contributors: /
-  - Last-Change: 20. February 2009
+  - Last-Change: 22. February 2009
   -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -299,6 +299,29 @@
                         the array. When you want to return the array, you simply return the <code>list</code> pointer. The structure is dynamically
                         deallocated by the stack and you simply have to call <code>mem_free()</code> on the returned pointer to free all memory still
                         related to this array.
+                    </p>
+                </p>
+                <p>
+                    <h3>Double Linked Lists</h3>
+                    <p>
+                        Linked lists should be known to every developer. They are easy to implement and allow uge lists of elements without much
+                        overhead. However, searching in linked lists is slow and you should prefer other mechanisms like hashtables if you often search
+                        in a list.<br />
+                        Libmemoria has a generic double linked list implementation which can be used with any datatype. You simply have to allocate a
+                        base structure which manages the linked list. The datatype which you want to store in the linked list must be a structure and
+                        must have a special member which contains the <code>next</code> and <code>prev</code> links. You have to allocate the elements
+                        yourself, libmemoria provides only functions to insert this element into the list and to unlink it from the list.
+                    </p>
+                    <p>
+                        The base structure is defined as:<br />
+                        <code><pre>
+                            typedef struct mem_list_t {
+                                size_t offset;
+                                struct mem_node_t *nodes;
+                                size_t count;
+                                mem_match_t match;
+                            } mem_list_t;
+                        </pre></code>
                     </p>
                 </p>
             </div>

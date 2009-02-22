@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 8. February 2009
+ * - Last-Change: 22. February 2009
  */
 
 /* Linked lists.
@@ -24,7 +24,7 @@
  * - APPEND: Insert after a member.
  * - THRUST: Insert as first member.
  * - PUSH: Insert as last member.
- * - EXTRACT: Remove member.
+ * - REMOVE / EXTRACT: Remove member.
  * - SHIFT: Remove first member.
  * - POP: Remove last member.
  * - SORT: Sorts the whole list.
@@ -56,9 +56,9 @@ struct mem_node_t;
 
 /* Linked list.
  * This is the base structure of the linked list.
- * \offset contains the offset if the mem_node_t in each node. \nodes is
+ * \offset contains the offset of the mem_node_t in each node. \nodes is
  * a pointer to the first node in the linked list. If no node is present it
- * is NULL. The nodes are organized in a circulating linked list, thus the
+ * is NULL. The nodes are organized in a circular linked list, thus the
  * previous element of the first element is the last element. \count contains
  * the current number of elements in the linked list and \match is the function
  * which is used to compare two elements. If \match is NULL, the elements'
@@ -67,7 +67,7 @@ struct mem_node_t;
 typedef struct mem_list_t {
     size_t offset;
     struct mem_node_t *nodes;
-    unsigned long count;
+    size_t count;
     mem_match_t match;
 } mem_list_t;
 
@@ -76,7 +76,7 @@ typedef struct mem_list_t {
  * of this structure. It is used to link it with the other elements.
  * You can iterate through the linked list yourself by accessing the ->next and ->prev
  * members. ->head is a link to the mem_ll_list structure.
- * Remember, the nodes are organized in a circulating linked list.
+ * Remember, the nodes are organized in a circular linked list.
  */
 typedef struct mem_node_t {
     struct mem_node_t *next;
@@ -106,7 +106,7 @@ static inline void mem_ll_init(mem_list_t *list, size_t offset) {
  * You can get the number of elements by accessing the \count member of
  * a linked list.
  */
-#define mem_ll_empty(list) (list->count == 0)
+#define mem_ll_empty(list) (assert(list != NULL), (list)->count == 0)
 
 /* Compares the addresses \orig and \comp and returns an ons_comp_t. */
 #define mem_ll_pmatch(orig, comp) (((comp) > (orig))?(ONS_GREATER):((((comp) < (orig))?(ONS_SMALLER):(ONS_EQUAL))))
@@ -117,7 +117,10 @@ static inline void mem_ll_init(mem_list_t *list, size_t offset) {
  */
 #define mem_ll_match(list, orig, comp) (((list)->match)?((list)->match((orig), (comp))):(mem_ll_pmatch((orig), (comp))))
 
-/* Returns a pointer to a real structure if you have only the mem_node_t pointer \node. */
+/* Returns a pointer to a real structure if you have only the mem_node_t pointer \node.
+ * The macro takes as argument a cast the void* pointer is casted to.
+ */
+#define MEM_LL_ENTRY(node, type) ((type)mem_ll_entry(node))
 static inline void *mem_ll_entry(const mem_node_t *node) {
     assert(node != NULL);
 
@@ -236,7 +239,8 @@ static inline void *mem_ll_push(mem_list_t *list, void *raw_newm) {
  * yourself.
  * Returns \raw_member.
  */
-static inline void *mem_ll_extract(mem_list_t *list, void *raw_member) {
+#define mem_ll_extract(list, raw_member) mem_ll_remove((list), (raw_member))
+static inline void *mem_ll_remove(mem_list_t *list, void *raw_member) {
     mem_node_t *member;
 
     assert(list != NULL);
