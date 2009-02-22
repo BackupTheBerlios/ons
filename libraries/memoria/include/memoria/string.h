@@ -25,6 +25,7 @@ ONS_EXTERN_C_BEGIN
 
 #include <stdlib.h>
 #include <string.h>
+#include <memoria/array.h>
 
 /* Classic strnlen() (Not part of C89/C99!)
  * Find the length of $string, but scan at most $len characters.  If no
@@ -43,6 +44,11 @@ ONS_EXTERN_C_BEGIN
         return len;
     }
 #endif
+
+/* String list.
+ * Used to store a list of strings.
+ */
+MEM_ARRAY_DEFINE(mem_strlist_t, char*, 4, 0, 1);
 
 
 ONS_EXTERN_C_END

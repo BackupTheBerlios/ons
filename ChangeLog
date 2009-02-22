@@ -25,7 +25,6 @@ TODO =1.0:
     - ROADMAP
  - memoria:
     - Better sorting algorithms in mem_list_t.
-    - mem_str_t and mem_strlist_t
     - unlimited bitset
  - FIP:
     - Add network interface handling (if.h)
@@ -52,6 +51,7 @@ TODO =1.0:
         - libmemoria.doc.xhtml: Finish llist documentation.
         - COPYING: License ONS under a second license: ISC license.
         - memoria/hash.h: Fix hash table comments.
+        - memoria/rbtree.[hc]: Add Red-Black Tree files.
     * David Herrmann 2009/02/20
         - Add "array return" to memoria documentation. It describes how to use the
           dynamic array implementation to return a single array in a function without

@@ -600,6 +600,22 @@
                     </p>
                 </p>
             </div>
+            <div>
+                <h2>String functions</h2>
+                <p>
+                    Libmemoria defines this as an alias or implements the function itself, if it is not available on the machine:<br />
+                    <code><pre>
+                        size_t mem_strnlen(const char *string, size_t len);
+                    </pre></code>
+                    It returns the length of <code>string</code> but stops at <code>len</code> characters.
+                </p>
+                <p>
+                    Libmemoria defines the following datatype because it is heavily often used:<br />
+                    <code><pre>
+                        MEM_ARRAY_DEFINE(mem_strlist_t, char*, 4, 0, 1);
+                    </pre></code>
+                </p>
+            </div>
         </div>
     </body>
 </html>

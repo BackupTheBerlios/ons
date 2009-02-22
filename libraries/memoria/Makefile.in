@@ -8,7 +8,7 @@
 # - Created: 17. January 2009
 # - Lead-Dev: - David Herrmann
 # - Contributors: /
-# - Last-Change: 17. January 2009
+# - Last-Change: 22. February 2009
 #
 
 
@@ -47,7 +47,8 @@ SRC = \
 	${SRC_PATH}/memoria.c \
 	${SRC_PATH}/heap.c \
 	${SRC_PATH}/hash.c \
-	${SRC_PATH}/random.c
+	${SRC_PATH}/random.c \
+	${SRC_PATH}/rbtree.c
 
 HEADERS = \
 	${INC_PATH}/misc.h \
@@ -58,7 +59,8 @@ HEADERS = \
 	${INC_PATH}/llist.h \
 	${INC_PATH}/heap.h \
 	${INC_PATH}/hash.h \
-	${INC_PATH}/random.h
+	${INC_PATH}/random.h \
+	${INC_PATH}/rbtree.h
 
 BINFILE = lib${LIBNAME}.so
 BINARY = ${srcdir}/${BINFILE}
@@ -121,5 +123,7 @@ ${SRC_PATH}/heap.o: ${SRC_PATH}/heap.c ${HEADERS} ${LIB_DEP}
 ${SRC_PATH}/hash.o: ${SRC_PATH}/hash.c ${HEADERS} ${LIB_DEP}
 	${COMPILE} $< -o $@
 ${SRC_PATH}/random.o: ${SRC_PATH}/random.c ${HEADERS} ${LIB_DEP}
+	${COMPILE} $< -o $@
+${SRC_PATH}/rbtree.o: ${SRC_PATH}/rbtree.c ${HEADERS} ${LIB_DEP}
 	${COMPILE} $< -o $@
 
