@@ -410,3 +410,61 @@ mem_rbnode_t *mem_rbt_find(mem_rbtree_t *tree, const char *key, size_t klen) {
     return node;
 }
 
+mem_rbnode_t *mem_rbt_first(mem_rbtree_t *tree) {
+    mem_rbnode_t *iter;
+
+    assert(tree != NULL);
+    if(!tree->root) return NULL;
+
+    iter = tree->root;
+    while(iter->left) iter = iter->left;
+    return iter;
+}
+
+mem_rbnode_t *mem_rbt_last(mem_rbtree_t *tree) {
+    mem_rbnode_t *iter;
+
+    assert(tree != NULL);
+    if(!tree->root) return NULL;
+
+    iter = tree->root;
+    while(iter->right) iter = iter->right;
+    return iter;
+}
+
+mem_rbnode_t *mem_rbt_next(mem_rbnode_t *node) {
+    assert(node != NULL);
+
+    if(node->right) {
+        node = node->right;
+        while(node->left) node = node->left;
+        return node;
+    }
+    else if(!node->parent) return NULL;
+    else if(node->parent->left == node) return node->parent;
+    else {
+        node = node->parent;
+        while(node->parent && node->parent->right == node) node = node->parent;
+        if(!node->parent) return NULL;
+        else return node->parent;
+    }
+}
+
+mem_rbnode_t *mem_rbt_prev(mem_rbnode_t *node) {
+    assert(node != NULL);
+
+    if(node->left) {
+        node = node->left;
+        while(node->right) node = node->right;
+        return node;
+    }
+    else if(!node->parent) return NULL;
+    else if(node->parent->right == node) return node->parent;
+    else {
+        node = node->parent;
+        while(node->parent && node->parent->left == node) node = node->parent;
+        if(!node->parent) return NULL;
+        else return node->parent;
+    }
+}
+

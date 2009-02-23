@@ -46,6 +46,7 @@ TODO =1.0:
 [ ONS v0.1.1.0 (TESTING) ]
     * David Herrmann 2009/02/23
         - memoria/rbtree.c: Fix key comparison.
+                            Add ways to iterate through an RB-tree.
     * David Herrmann 2009/02/23
         - memoria/array.h: Fix MEM_ARRAY_DEFINE typo.
         - memoria/rbtree.[hc]: Implement Red-Black Trees.

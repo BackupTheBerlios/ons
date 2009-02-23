@@ -63,6 +63,11 @@ extern bool mem_rbt_add(mem_rbtree_t *tree, const char *key, size_t klen, void *
 extern void *mem_rbt_del(mem_rbtree_t *tree, mem_rbnode_t *node);
 extern mem_rbnode_t *mem_rbt_find(mem_rbtree_t *tree, const char *key, size_t klen);
 
+extern mem_rbnode_t *mem_rbt_first(mem_rbtree_t *tree);
+extern mem_rbnode_t *mem_rbt_last(mem_rbtree_t *tree);
+extern mem_rbnode_t *mem_rbt_next(mem_rbnode_t *node);
+extern mem_rbnode_t *mem_rbt_prev(mem_rbnode_t *node);
+
 
 ONS_EXTERN_C_END
 #endif /* ONS_INCLUDED_memoria_rbtree_h */
