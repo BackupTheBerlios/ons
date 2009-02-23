@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 20. February 2009
+ * - Last-Change: 23. February 2009
  */
 
 /* Dynamic length arrays.
@@ -302,7 +302,7 @@ static inline void mem_array_remove(struct mem_array_t *array, mem_index_t index
             if(DOUBLE) size = array->size >> 1; \
             else size = array->size - INITIAL_VAR; \
             if(array->used <= size) { \
-                if(size == 0) ARRNAME##_clear(array); \
+                if(size == 0) ARR_NAME##_clear(array); \
                 else { \
                     array->list = mem_realloc(array->list, size * sizeof(ELE_TYPE)); \
                     array->size = size; \

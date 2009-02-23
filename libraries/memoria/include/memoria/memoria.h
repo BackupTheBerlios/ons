@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 1. January 2009
+ * - Last-Change: 23. February 2009
  */
 
 /* Main and public header of memoria.
@@ -30,6 +30,7 @@ ONS_EXTERN_C_BEGIN
 #include <memoria/hash.h>
 #include <memoria/random.h>
 #include <memoria/string.h>
+#include <memoria/rbtree.h>
 
 
 ONS_EXTERN_C_END
