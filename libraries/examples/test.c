@@ -1,42 +1,28 @@
-            #include <ons/ons.h>
-            #include <stdio.h>
+#include <ons/ons.h>
+#include <memoria/memoria.h>
+#include <stdio.h>
 
-            ons_mutex_t mutex;
-            unsigned int val;
-            void *callback(void *arg);
+int main() {
+    unsigned long i, ii, COUNT = 10000;
+    mem_rbtree_t tree;
+    mem_rbnode_t *nodes[COUNT];
+    char buffer[100];
 
-            void *callback(void *arg) {
-                unsigned int *begin = arg;
+    for(i = 0; i < COUNT; ++i) nodes[i] = NULL;
 
-                val = *begin;
-                while(1) {
-                    /* Do we need to return? */
-                    if(!ons_mutex_trylock(&mutex)) {
-                        return NULL;
-                    }
+    mem_rbt_init(&tree, NULL);
 
-                    ++val;
-                    ons_mutex_unlock(&mutex);
-                }
-            }
+    for(ii = 0; ii < 100; ++ii) {
+        for(i = 0; i < COUNT; ++i) {
+            sprintf(buffer, "%u", rand());
+            if(!mem_rbt_add(&tree, MEM_STR(buffer), mem_malloc(100), &nodes[i])) ONS_ABORT("mem_rbt_add failed (collision in RNG)");
+        }
 
-            int main() {
-                ons_thread_t thread;
-                unsigned int begin = 10;
+        for(i = 0; i < COUNT; ++i) {
+            mem_free(mem_rbt_del(&tree, nodes[i]));
+            nodes[i] = NULL;
+        }
+    }
 
-                /* Start thread an let him count from 10 upwards. */
-                ons_mutex_init(&mutex);
-                ons_thread_run(&thread, callback, &begin);
-
-                /* Now sleep 1 second and then lock the mutex and wait for the thread to exit. */
-                ons_sleep(1);
-                ons_mutex_lock(&mutex);
-                ons_thread_join(&thread);
-
-                ons_mutex_unlock(&mutex);
-                ons_mutex_free(&mutex);
-
-                printf("Thread counted: %u\n", val);
-
-                return 0;
-            }
+    return 0;
+}

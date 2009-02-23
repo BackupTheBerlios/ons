@@ -29,8 +29,11 @@ static inline ons_comp_t mem_rbt_comp(mem_rbtree_t *tree, mem_rbnode_t *orig, me
         /* Default: Binary comparison of the keys.
          * If the keys are equal, the shorter key is smaller.
          */
-        comp = memcmp(comparison, orig, (comparison->klen > orig->klen)?orig->klen:comparison->klen);
-        if(comp != ONS_EQUAL) return comp;
+        comp = memcmp(comparison->key, orig->key, (comparison->klen > orig->klen)?orig->klen:comparison->klen);
+        if(comp != 0) {
+            if(comp < 0) return ONS_SMALLER;
+            else return ONS_GREATER;
+        }
         if(orig->klen == comparison->klen) return ONS_EQUAL;
         if(orig->klen > comparison->klen) return ONS_SMALLER;
         return ONS_GREATER;
@@ -274,7 +277,7 @@ void *mem_rbt_del(mem_rbtree_t *tree, mem_rbnode_t *node) {
     if(tree->count == 1) {
         tree->root = NULL;
         tree->count = 0;
-        free(node);
+        mem_free(node);
         return ret;
     }
 
@@ -392,7 +395,7 @@ void *mem_rbt_del(mem_rbtree_t *tree, mem_rbnode_t *node) {
         if(neph && neph->color == MEM_RED) neph->color = MEM_BLACK;
     }
 
-    free(node);
+    mem_free(node);
     --tree->count;
     return ret;
 }
