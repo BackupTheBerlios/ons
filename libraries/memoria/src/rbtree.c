@@ -193,10 +193,11 @@ void mem_rbt_init(mem_rbtree_t *tree, mem_rbmatch_t match) {
     tree->last = NULL;
 }
 
-void mem_rbt_clear(mem_rbtree_t *tree) {
+void mem_rbt_clear(mem_rbtree_t *tree, void (*del_func)(void*)) {
     assert(tree != NULL);
 
-    while(tree->count) mem_rbt_del(tree, tree->root);
+    if(del_func) while(tree->count) del_func(mem_rbt_del(tree, tree->root));
+    else while(tree->count) mem_rbt_del(tree, tree->root);
 }
 
 /* Returns the uncle of a node.

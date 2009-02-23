@@ -130,8 +130,12 @@ static inline void mem_array_init(struct mem_array_t *array, size_t element, mem
  * you can simply use the pointer in \list and delete the mem_array_t object yourself
  * without calling this function.
  */
-static inline void mem_array_clear(struct mem_array_t *array) {
+static inline void mem_array_clear(struct mem_array_t *array, void (*del_func)(void*)) {
+    size_t i;
+
     assert(array != NULL);
+
+    if(del_func) for(i = 0; i < array->used; ++i) del_func(MEM_ARRAY(array, i));
 
     mem_free(array->list);
     array->list = NULL;
@@ -180,7 +184,7 @@ static inline void mem_array_pop(struct mem_array_t *array) {
     if(array->opt_free) {
         size = _mem_array_dec_size(array);
         if(array->used <= size) {
-            if(size == 0) mem_array_clear(array);
+            if(size == 0) mem_array_clear(array, NULL);
             else {
                 array->list = mem_realloc(array->list, size * array->element);
                 array->size = size;
@@ -279,8 +283,10 @@ static inline void mem_array_remove(struct mem_array_t *array, mem_index_t index
         array->size = 0; \
         array->list = NULL; \
     } \
-    static inline void ARR_NAME##_clear(ARR_NAME *array) { \
+    static inline void ARR_NAME##_clear(ARR_NAME *array, void (*del_func)(ELE_TYPE*)) { \
+        size_t i; \
         assert(array != NULL); \
+        if(del_func) for(i = 0; i < array->used; ++i) del_func(array->list[i]); \
         array->used = array->size = 0; \
         mem_free(array->list); \
         array->list = NULL; \
