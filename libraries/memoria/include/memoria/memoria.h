@@ -31,6 +31,7 @@ ONS_EXTERN_C_BEGIN
 #include <memoria/random.h>
 #include <memoria/string.h>
 #include <memoria/rbtree.h>
+#include <memoria/splay_tree.h>
 
 
 ONS_EXTERN_C_END

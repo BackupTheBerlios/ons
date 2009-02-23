@@ -28,7 +28,7 @@ ONS_EXTERN_C_BEGIN
 struct mem_rbtree_t;
 struct mem_rbnode_t;
 
-typedef ons_comp_t (*mem_rbmatch_t)(const void *orig, const void *comparison);
+typedef ons_comp_t (*mem_rbmatch_t)(const struct mem_rbnode_t *orig, const struct mem_rbnode_t *comparison);
 
 /* The color of a node. */
 typedef enum mem_rbcolor_t {
