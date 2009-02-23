@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 22. February 2009
+ * - Last-Change: 23. February 2009
  */
 
 /* Linked lists.
@@ -56,17 +56,19 @@ struct mem_node_t;
 
 /* Linked list.
  * This is the base structure of the linked list.
- * \offset contains the offset of the mem_node_t in each node. \nodes is
+ * \offset contains the offset of the mem_node_t in each node. \first is
  * a pointer to the first node in the linked list. If no node is present it
- * is NULL. The nodes are organized in a circular linked list, thus the
- * previous element of the first element is the last element. \count contains
- * the current number of elements in the linked list and \match is the function
- * which is used to compare two elements. If \match is NULL, the elements'
- * addresses are compared.
+ * is NULL. \last points to the last member and is, in this case, also NULL.
+ * The nodes are organized in a straight-lined linked list, thus the
+ * previous element of the first element is NULL and the next element of the
+ * last element is also NULL. \count contains the current number of elements
+ * in the linked list and \match is the function which is used to compare two
+ * elements. If \match is NULL, the elements' addresses are compared.
  */
 typedef struct mem_list_t {
     size_t offset;
-    struct mem_node_t *nodes;
+    struct mem_node_t *first;
+    struct mem_node_t *last;
     size_t count;
     mem_match_t match;
 } mem_list_t;
@@ -76,7 +78,7 @@ typedef struct mem_list_t {
  * of this structure. It is used to link it with the other elements.
  * You can iterate through the linked list yourself by accessing the ->next and ->prev
  * members. ->head is a link to the mem_ll_list structure.
- * Remember, the nodes are organized in a circular linked list.
+ * Remember, the nodes are organized in a straight-lined linked list.
  */
 typedef struct mem_node_t {
     struct mem_node_t *next;
@@ -97,7 +99,8 @@ static inline void mem_ll_init(mem_list_t *list, size_t offset) {
     assert(list != NULL);
 
     list->offset = offset;
-    list->nodes = NULL;
+    list->first = NULL;
+    list->last = NULL;
     list->count = 0;
     list->match = NULL;
 }
@@ -118,33 +121,13 @@ static inline void mem_ll_init(mem_list_t *list, size_t offset) {
 #define mem_ll_match(list, orig, comp) (((list)->match)?((list)->match((orig), (comp))):(mem_ll_pmatch((orig), (comp))))
 
 /* Returns a pointer to a real structure if you have only the mem_node_t pointer \node.
- * The macro takes as argument a cast the void* pointer is casted to.
+ * The macro takes as argument a type the void* pointer is casted to.
  */
 #define MEM_LL_ENTRY(node, type) ((type)mem_ll_entry(node))
 static inline void *mem_ll_entry(const mem_node_t *node) {
     assert(node != NULL);
 
     return ((void*)node) - node->head->offset;
-}
-
-/* Returns a pointer to the first element of the linked list. If the list
- * \list is empty, NULL is returned.
- */
-static inline void *mem_ll_first(const mem_list_t *list) {
-    assert(list != NULL);
-
-    if(!mem_ll_empty(list)) return ((void*)list->nodes) - list->offset;
-    else return NULL;
-}
-
-/* Returns a pointer to the last element of the linked list. If the list \list is empty
- * NULL is returned.
- */
-static inline void *mem_ll_last(const mem_list_t *list) {
-    assert(list != NULL);
-
-    if(!mem_ll_empty(list)) return ((void*)list->nodes->prev) - list->offset;
-    else return NULL;
 }
 
 /* Links \raw_newm into the list \list in front of the already listed member \raw_member.
@@ -164,10 +147,10 @@ static inline void *mem_ll_prepend(mem_list_t *list, void *raw_member, void *raw
 
     newm->next = member;
     newm->prev = member->prev;
-    member->prev->next = newm;
+    if(member->prev) member->prev->next = newm;
+    else list->first = newm;
     member->prev = newm;
 
-    if(list->nodes == member) list->nodes = newm;
     ++list->count;
 
     return raw_newm;
@@ -190,7 +173,8 @@ static inline void *mem_ll_append(mem_list_t *list, void *raw_member, void *raw_
 
     newm->prev = member;
     newm->next = member->next;
-    member->next->prev = newm;
+    if(member->next) member->next->prev = newm;
+    else list->last = newm;
     member->next = newm;
 
     ++list->count;
@@ -207,10 +191,11 @@ static inline void *mem_ll_thrust(mem_list_t *list, void *raw_newm) {
     assert(list != NULL);
     assert(raw_newm != NULL);
 
-    if(!mem_ll_empty(list)) return mem_ll_prepend(list, list->nodes, raw_newm);
+    if(!mem_ll_empty(list)) return mem_ll_prepend(list, list->first, raw_newm);
     else {
         newm = raw_newm + list->offset;
-        list->nodes = newm->next = newm->prev = newm;
+        list->first = list->last = newm;
+        newm->next = newm->prev = NULL;
         ++list->count;
         return raw_newm;
     }
@@ -225,10 +210,11 @@ static inline void *mem_ll_push(mem_list_t *list, void *raw_newm) {
     assert(list != NULL);
     assert(raw_newm != NULL);
 
-    if(!mem_ll_empty(list)) return mem_ll_append(list, list->nodes->prev, raw_newm);
+    if(!mem_ll_empty(list)) return mem_ll_append(list, list->last, raw_newm);
     else {
         newm = raw_newm + list->offset;
-        list->nodes = newm->next = newm->prev = newm;
+        list->first = list->last = newm;
+        newm->next = newm->prev = NULL;
         ++list->count;
         return raw_newm;
     }
@@ -247,14 +233,24 @@ static inline void *mem_ll_remove(mem_list_t *list, void *raw_member) {
     assert(raw_member != NULL);
 
     member = raw_member + list->offset;
-    if(member->next == member) {
+    if(list->count == 1) {
         list->count = 0;
+        list->first = list->last = NULL;
         return raw_member;
     }
-    member->prev->next = member->next;
-    member->next->prev = member->prev;
+    else if(list->first == member) {
+        list->first = member->next;
+        list->first->prev = NULL;
+    }
+    else if(list->last == member) {
+        list->last = member->prev;
+        list->last->next = NULL;
+    }
+    else {
+        member->prev->next = member->next;
+        member->next->prev = member->prev;
+    }
 
-    if(list->nodes == member) list->nodes = member->next;
     --list->count;
 
     return raw_member;
@@ -267,7 +263,7 @@ static inline void *mem_ll_shift(mem_list_t *list) {
     assert(list != NULL);
 
     if(mem_ll_empty(list)) return NULL;
-    else return mem_ll_extract(list, ((void*)list->nodes) - list->offset);
+    else return mem_ll_extract(list, ((void*)list->first) - list->offset);
 }
 
 /* Same as mem_ll_shift but removes the last node. */
@@ -275,105 +271,7 @@ static inline void *mem_ll_pop(mem_list_t *list) {
     assert(list != NULL);
 
     if(mem_ll_empty(list)) return NULL;
-    else return mem_ll_extract(list, ((void*)list->nodes->prev) - list->offset);
-}
-
-/* Sorts the list.
- * This sorts all nodes in the list \list with the \match function set
- * in \list. If \match is NULL, the addresses are compared.
- * Sorting is always done ascending, thus, the first element is the
- * smallest and the last the greatest.
- */
-static inline void mem_ll_sort(mem_list_t *list) {
-    mem_node_t *iter, *iiter, *ilist;
-
-    assert(list != NULL);
-
-    /* Sorting possible? */
-    if(mem_ll_empty(list) || list->nodes->next == list->nodes) return;
-
-    /* Create new temporary sorted list. */
-    ilist = list->nodes;
-    list->nodes->prev->next = list->nodes->next;
-    list->nodes->next->prev = list->nodes->prev;
-    list->nodes = list->nodes->next;
-    ilist->next = ilist->prev = ilist;
-
-    /* Sort every member into this list. */
-    while(list->nodes) {
-        /* remove from llist */
-        iter = list->nodes;
-        if(iter->next != iter) {
-            list->nodes->prev->next = list->nodes->next;
-            list->nodes->next->prev = list->nodes->prev;
-            list->nodes = iter->next;
-        }
-        else list->nodes = NULL;
-
-        /* insert into new llist */
-        iiter = ilist;
-        do {
-            if(mem_ll_match(list, ((void*)iiter) - list->offset, ((void*)iter) - list->offset) != ONS_GREATER) {
-                iter->next = iiter;
-                iter->prev = iiter->prev;
-                iiter->prev->next = iter;
-                iiter->prev = iter;
-                if(ilist == iiter) ilist = iter;
-                goto next_round;
-            }
-            iiter = iiter->next;
-        } while(iiter != ilist);
-
-        /* Not inserted, yet, thus, add it at tail. */
-        iter->next = ilist;
-        iter->prev = ilist->prev;
-        ilist->prev->next = iter;
-        ilist->prev = iter;
-
-        /* insert next member */
-        next_round:
-        continue;
-    }
-    list->nodes = ilist;
-}
-
-/* Inserts an element into a sorted list. If other elements are equal to this one, it is
- * inserted before them. Returns \raw_member.
- * Sorting is always done ascending.
- */
-static inline void *mem_ll_srtd_prepend(mem_list_t *list, void *raw_member) {
-    mem_node_t *iter;
-
-    assert(list != NULL);
-    assert(raw_member != NULL);
-
-    if(mem_ll_empty(list)) return mem_ll_thrust(list, raw_member);
-
-    iter = list->nodes;
-    do {
-        if(mem_ll_match(list, ((void*)iter) - list->offset, raw_member) != ONS_GREATER) return mem_ll_prepend(list, ((void*)iter) - list->offset, raw_member);
-        iter = iter->next;
-    } while(iter != list->nodes);
-
-    return mem_ll_push(list, raw_member);
-}
-
-/* Same as mem_ll_srtd_prepend() but inserts the element after all equal elements. */
-static inline void *mem_ll_srtd_append(mem_list_t *list, void *raw_member) {
-    mem_node_t *iter;
-
-    assert(list != NULL);
-    assert(raw_member != NULL);
-
-    if(mem_ll_empty(list)) return mem_ll_thrust(list, raw_member);
-
-    iter = list->nodes;
-    do {
-        if(mem_ll_match(list, ((void*)iter) - list->offset, raw_member) == ONS_SMALLER) return mem_ll_prepend(list, ((void*)iter) - list->offset, raw_member);
-        iter = iter->next;
-    } while(iter != list->nodes);
-
-    return mem_ll_push(list, raw_member);
+    else return mem_ll_extract(list, ((void*)list->last) - list->offset);
 }
 
 

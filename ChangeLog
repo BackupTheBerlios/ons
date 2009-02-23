@@ -51,6 +51,7 @@ TODO =1.0:
                             Link the elements additionally in a double linked list which is
                             not circular, but straight-lined.
         - memoria/splay_tree.[hc]: Add splay-tree primitives.
+        - memoria/llist.h: Change link list to a straight-lined linked list.
     * David Herrmann 2009/02/23
         - memoria/array.h: Fix MEM_ARRAY_DEFINE typo.
         - memoria/rbtree.[hc]: Implement Red-Black Trees.
