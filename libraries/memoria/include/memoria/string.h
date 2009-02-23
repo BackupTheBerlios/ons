@@ -45,11 +45,6 @@ ONS_EXTERN_C_BEGIN
     }
 #endif
 
-/* String list.
- * Used to store a list of strings.
- */
-MEM_ARRAY_DEFINE(mem_strlist_t, char*, 4, 0, 1);
-
 
 ONS_EXTERN_C_END
 #endif /* ONS_INCLUDED_memoria_string_h */
