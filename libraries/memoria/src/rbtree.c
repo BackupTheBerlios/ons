@@ -24,7 +24,7 @@
 static inline ons_comp_t mem_rbt_comp(mem_rbtree_t *tree, mem_rbnode_t *orig, mem_rbnode_t *comparison) {
     ons_comp_t comp;
 
-    if(tree->match) return tree->match(orig, comparison);
+    if(tree->match) return tree->match(orig->key, orig->klen, comparison->key, comparison->klen);
     else {
         /* Default: Binary comparison of the keys.
          * If the keys are equal, the shorter key is smaller.
@@ -68,12 +68,16 @@ static mem_rbnode_t *mem_rbt_push(mem_rbtree_t *tree, mem_rbnode_t *node, bool p
         if(peek) return NULL;
         tree->root = node;
         tree->count = 1;
+        tree->first = node;
+        tree->last = node;
 
         node->color = MEM_BLACK;
         node->parent = NULL;
         node->tree = tree;
         node->left = NULL;
         node->right = NULL;
+        node->prev = NULL;
+        node->next = NULL;
 
         return node;
     }
@@ -127,6 +131,11 @@ static mem_rbnode_t *mem_rbt_push(mem_rbtree_t *tree, mem_rbnode_t *node, bool p
 
     node->left = NULL;
     node->right = NULL;
+    node->next = mem_rbt_next(node);
+    if(!node->next) tree->last = node;
+    node->prev = mem_rbt_prev(node);
+    if(!node->prev) tree->first = node;
+
     return node;
 }
 
@@ -180,6 +189,8 @@ void mem_rbt_init(mem_rbtree_t *tree, mem_rbmatch_t match) {
     tree->root = 0;
     tree->count = 0;
     tree->match = match;
+    tree->first = NULL;
+    tree->last = NULL;
 }
 
 void mem_rbt_clear(mem_rbtree_t *tree) {
@@ -289,6 +300,8 @@ void *mem_rbt_del(mem_rbtree_t *tree, mem_rbnode_t *node) {
     if(tree->count == 1) {
         tree->root = NULL;
         tree->count = 0;
+        tree->first = NULL;
+        tree->last = NULL;
         mem_free(node);
         return ret;
     }
@@ -406,6 +419,12 @@ void *mem_rbt_del(mem_rbtree_t *tree, mem_rbnode_t *node) {
         /* Turn the parent red node into black. */
         if(neph && neph->color == MEM_RED) neph->color = MEM_BLACK;
     }
+
+    /* One of \prev or \next is guaranteed to be set. */
+    if(node->prev) node->prev->next = node->next;
+    else tree->first = node->next;
+    if(node->next) node->next->prev = node->prev;
+    else tree->last = node->prev;
 
     mem_free(node);
     --tree->count;
