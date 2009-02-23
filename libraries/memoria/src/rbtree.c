@@ -203,6 +203,12 @@ static inline mem_rbnode_t *mem_rbt_uncle(mem_rbnode_t *node) {
 bool mem_rbt_add(mem_rbtree_t *tree, const char *key, size_t klen, void *data, mem_rbnode_t **result) {
     mem_rbnode_t *node, *iter, *tmp;
 
+    assert(tree != NULL);
+    assert(key != NULL);
+    assert(klen != 0);
+    assert(data != NULL);
+    assert(result != NULL);
+
     node = mem_malloc(sizeof(mem_rbnode_t) + klen + 1);
     node->key = sizeof(mem_rbnode_t) + (void*)node;
     node->klen = klen;
@@ -408,6 +414,10 @@ void *mem_rbt_del(mem_rbtree_t *tree, mem_rbnode_t *node) {
 
 mem_rbnode_t *mem_rbt_find(mem_rbtree_t *tree, const char *key, size_t klen) {
     mem_rbnode_t *node, find;
+
+    assert(tree != NULL);
+    assert(key != NULL);
+    assert(klen != 0);
 
     find.key = (char*)key;
     find.klen = klen;

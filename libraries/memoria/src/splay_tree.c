@@ -41,16 +41,81 @@ static inline ons_comp_t mem_stree_comp(mem_stree_t *tree, mem_snode_t *orig, me
 }
 
 void mem_stree_init(mem_stree_t *tree, mem_smatch_t match) {
+    assert(tree != NULL);
+
+    tree->root = NULL;
+    tree->count = 0;
+    tree->match = match;
 }
 
-bool mem_stree_add(mem_stree_t *tree, const char *key, size_t klen, void *data, mem_snode_t **result) {
+void mem_stree_clean(mem_stree_t *tree) {
+    assert(tree != NULL);
+
+    while(tree->count) mem_stree_del(tree, tree->root->key, tree->root->klen);
+}
+
+bool mem_stree_add(mem_stree_t *tree, const void *key, size_t klen, void *data, void **result) {
+    mem_snode_t *node;
+
+    assert(tree != NULL);
+    assert(key != NULL);
+    assert(klen != 0);
+    assert(data != NULL);
+    assert(result != NULL);
+
+    node = mem_malloc(sizeof(mem_snode_t) + klen + 1);
+    node->key = sizeof(mem_snode_t) + (void*)node;
+    node->klen = klen;
+    node->data = data;
+    memcpy(node->key, key, klen);
+
+    if(!tree->root) {
+        node->left = NULL;
+        node->right = NULL;
+        tree->root = node;
+    }
+    else {
+        //tree->root = mem_stree_splay(tree->root, key, klen);
+        switch(mem_stree_comp(tree, tree->root, node)) {
+            case ONS_SMALLER:
+                /* Insert before the current root. */
+                node->left = tree->root->left;
+                node->right = tree->root;
+                tree->root->left = NULL;
+                tree->root = node;
+                break;
+            case ONS_GREATER:
+                /* Insert after the current root. */
+                node->right = tree->root->right;
+                node->left = tree->root;
+                tree->root->right = NULL;
+                tree->root = node;
+                break;
+            case ONS_EQUAL:
+                *result = tree->root->data;
+                mem_free(node);
+                return false;
+                break;
+            default:
+                assert(0);
+                break;
+        }
+    }
+
+    *result = node->data;
+    ++tree->count;
     return true;
 }
 
-void *mem_stree_del(mem_stree_t *tree, mem_snode_t *node) {
+void *mem_stree_del(mem_stree_t *tree, const void *key, size_t klen) {
+    assert(tree != NULL);
+    assert(key != NULL);
+    assert(klen != 0);
+
+    if(tree->count == 0) return NULL;
     return NULL;
 }
 
-mem_snode_t *mem_stree_find(mem_stree_t *tree, const char *key, size_t klen) {
+void *mem_stree_find(mem_stree_t *tree, const void *key, size_t klen) {
     return NULL;
 }

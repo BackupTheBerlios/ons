@@ -38,7 +38,7 @@ typedef struct mem_stree_t {
 } mem_stree_t;
 
 typedef struct mem_snode_t {
-    char *key;
+    void *key;
     size_t klen;
     void *data;
 
@@ -47,9 +47,10 @@ typedef struct mem_snode_t {
 } mem_snode_t;
 
 extern void mem_stree_init(mem_stree_t *tree, mem_smatch_t match);
-extern bool mem_stree_add(mem_stree_t *tree, const char *key, size_t klen, void *data, mem_snode_t **result);
-extern void *mem_stree_del(mem_stree_t *tree, mem_snode_t *node);
-extern mem_snode_t *mem_stree_find(mem_stree_t *tree, const char *key, size_t klen);
+extern void mem_stree_clean(mem_stree_t *tree);
+extern bool mem_stree_add(mem_stree_t *tree, const void *key, size_t klen, void *data, void **result);
+extern void *mem_stree_del(mem_stree_t *tree, const void *key, size_t klen);
+extern void *mem_stree_find(mem_stree_t *tree, const void *key, size_t klen);
 
 
 ONS_EXTERN_C_END
