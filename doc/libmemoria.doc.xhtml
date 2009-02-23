@@ -243,9 +243,11 @@
                             If <code>element</code> or <code>reserve</code> are 0, they are automatically set to 1.
                         </p>
                         <p>
-                            <code><pre>void mem_array_clear(struct mem_array_t *array);</pre></code><br />
+                            <code><pre>void mem_array_clear(struct mem_array_t *array, void (*del_func)(void*));</pre></code><br />
                             This function frees all elements in the array and sets the <code>list</code> pointer to <code>NULL</code>. You can safely
-                            allocate new elements in this array after clearing it.
+                            allocate new elements in this array after clearing it.<br />
+                            If <code>del_func</code> is not <code>NULL</code>, this function is called with each element as parameter, before the
+                            element is deleted.
                         </p>
                         <p>
                             Several macros are available to access an element at an index.<br />
@@ -578,6 +580,67 @@
                         size_t mem_strnlen(const char *string, size_t len);
                     </pre></code>
                     It returns the length of <code>string</code> but stops at <code>len</code> characters.
+                </p>
+            </div>
+            <div>
+                <h2>Dynamic Memory Structure (tree based)</h2>
+                <p>
+                    Libmemoria provides several structures which can be used to store values in a tree based structure. Trees allow faster searches
+                    than linked lists or arrays but are slower than hashtables. However, trees grow and shrink automatically to the exact used size.
+                </p>
+                <p>
+                    <h3>Red-Black Trees</h3>
+                    <p>
+                        Red-Black Trees are balanced binary search trees. You have to allocate the base structure yourself and initialize it:<br />
+                        <code><pre>
+                            typedef struct mem_rbtree_t {
+                                struct mem_rbnode_t *root;
+                                struct mem_rbnode_t *first;
+                                struct mem_rbnode_t *last;
+                                size_t count;
+                                mem_rbmatch_t match;
+                            } mem_rbtree_t;
+                        </pre></code>
+                        <code>root</code> points to the root node or is <code>NULL</code> if the tree is empty. <code>count</code> contains the current
+                        size of members in this tree and <code>match</code> is a function which is used to compare two keys. If it is <code>NULL</code>
+                        a binary comparison is done.<br />
+                        This function is declared as:<br />
+                        <code>typedef ons_comp_t (*mem_rbmatch_t)(const void *orig_key, size_t orig_len, const void *comp_key, size_t comp_len);</code>
+                        <br />
+                        Each node is defined as:<br />
+                        <code><pre>
+                            typedef struct mem_rbnode_t {
+                                char *key;
+                                size_t klen;
+                                void *data;
+                                mem_rbcolor_t color;
+
+                                mem_rbtree_t *tree;
+                                struct mem_rbnode_t *parent;
+
+                                struct mem_rbnode_t *left;
+                                struct mem_rbnode_t *right;
+
+                                struct mem_rbnode_t *next;
+                                struct mem_rbnode_t *prev;
+                            } mem_rbnode_t;
+                        </pre></code>
+                        The user defined data can be accessed in <code>data</code>. The elements are sorted additionally in a linked list and you can
+                        iterate through them with the <code>next/prev</code> members. See the linked list docu for more information.<br />
+                        You can manage the tree with the following functions:<br />
+                        <code><pre>
+                            extern void mem_rbt_init(mem_rbtree_t *tree, mem_rbmatch_t match);
+                            extern void mem_rbt_clear(mem_rbtree_t *tree, void (*del_func)(void*));
+                            extern bool mem_rbt_add(mem_rbtree_t *tree, const char *key, size_t klen, void *data, mem_rbnode_t **result);
+                            extern void *mem_rbt_del(mem_rbtree_t *tree, mem_rbnode_t *node);
+                            extern mem_rbnode_t *mem_rbt_find(mem_rbtree_t *tree, const char *key, size_t klen);
+                        </pre></code>
+                    </p>
+                </p>
+                <p>
+                    <h3>Splay Trees</h3>
+                    <p>
+                    </p>
                 </p>
             </div>
         </div>
