@@ -130,7 +130,7 @@ extern void ons_fatal_error(const char *format, ...);
 #ifdef ONS_DEBUG
     #define ONS_ASSERT(x) ((x)?ONS_ABORT("Assertation failed."):0)
 #else
-    #define ONS_ASSERT(x) (0)
+    #define ONS_ASSERT(x)
 #endif
 
 

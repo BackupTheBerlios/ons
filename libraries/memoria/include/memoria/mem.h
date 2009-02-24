@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 19. February 2009
+ * - Last-Change: 24. February 2009
  */
 
 /* This file wraps the common memory allocation functions
@@ -45,7 +45,7 @@ extern void (*mem_outofmem)(void);
 static inline void *mem_malloc(size_t size) {
     void *ret;
 
-    assert(size > 0);
+    ONS_ASSERT(size > 0);
 
     ret = malloc(size);
 
@@ -82,8 +82,8 @@ static inline void *mem_zmalloc(size_t size) {
 static inline void *mem_realloc(void *mem, size_t size) {
     void *ret;
 
-    assert(mem != NULL);
-    assert(size > 0);
+    ONS_ASSERT(mem != NULL);
+    ONS_ASSERT(size > 0);
 
     ret = realloc(mem, size);
 
@@ -102,8 +102,8 @@ static inline void *mem_realloc(void *mem, size_t size) {
 static inline void *mem_dup(const void *mem, size_t len) {
     void *ret;
 
-    assert(mem != NULL);
-    assert(len > 0);
+    ONS_ASSERT(mem != NULL);
+    ONS_ASSERT(len > 0);
 
     ret = mem_malloc(len);
     memcpy(ret, mem, len);

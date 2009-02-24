@@ -20,12 +20,19 @@ TODO =1.0:
  - Documentation:
     - complete rules and guidelines
     - add FAQ
-    - better overview of ONS
     - Update documentation.
     - ROADMAP
+    - add tutorials
+    - Doc state:
+        - overview: export thread example into a tutorial
+        - ons: finished
+        - memoria: rewrite
+        - saw: rewrite
+        - fip: write
+        - yaadns: write
  - memoria:
-    - Better sorting algorithms in mem_list_t.
     - unlimited bitset
+    - config file parser based on trees.
  - FIP:
     - Add network interface handling (if.h)
     - Add control message handling (cmsg.h)
@@ -48,6 +55,8 @@ TODO =1.0:
         - Finish main documentation.
         - Finish libons documentation.
         - Add first tutorial.
+        - memoria/array.h: Remove the generic array.
+                           Change delete function implementation.
     * David Herrmann 2009/02/23
         - memoria/rbtree.c: Fix key comparison.
                             Add ways to iterate through an RB-tree.
