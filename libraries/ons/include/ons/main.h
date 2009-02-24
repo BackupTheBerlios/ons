@@ -8,7 +8,7 @@
  * - Created: 23. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 7. February 2009
+ * - Last-Change: 24. February 2009
  */
 
 /* ONS main functions.
@@ -33,6 +33,21 @@ enum {
                      */
     #define ONS_INIT_WSA ONS_BIT(ONS_INIT_WSA)
 };
+
+/* EINTR handler.
+ * On Unixes most syscalls can return EINTR if they were interrupted by a signal. By default FIP retrys
+ * the functions until it is not interrupted. This is the recommended strategy. But if you want FIP to return
+ * after a given amount of attempts you can set this value.
+ * A function returns FIP_E_SIGFLOOD in this case.
+ * Set it to FIP_EINTR_ENDLESS if you want it to try until it succeeds.
+ *
+ * Be carefull. It's prefered to set it with fip_global_init().
+ * Do not change this value during runtime of socket-functions in another thread!
+ */
+extern uint64_t ons_eintr_count;
+
+/* Endless. */
+#define ONS_EINTR_ENDLESS 0
 
 /* Initialize the core library.
  * ons_init() returns ONS_E_SUCCESS on success, otherwise an error code is returned.

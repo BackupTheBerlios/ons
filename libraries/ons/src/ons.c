@@ -8,7 +8,7 @@
  * - Created: 22. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 8. February 2009
+ * - Last-Change: 24. February 2009
  */
 
 /* Main source file of ONS.
@@ -28,6 +28,9 @@
 #ifdef ONS_CONF_HAVE_UNISTD_H
     #include <unistd.h>
 #endif
+
+/* default value of signal-counter */
+uint64_t ons_eintr_count = ONS_EINTR_ENDLESS;
 
 /* Sleeps for \s seconds. */
 void ons_sleep(unsigned int s) {

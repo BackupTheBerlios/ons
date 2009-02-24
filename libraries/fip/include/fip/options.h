@@ -132,8 +132,8 @@ ONS_EXTERN_C_BEGIN
 #define FIP_OPT_SOCKNAME             9 /* Returns the address of the local socket. (ADDR*) (O_GET) */
 #define FIP_OPT_DUALSTACK           10 /* Enables the IPv4/IPv6 Dualstack mode. (BOOL) */
 
-extern bool fip_optset(fip_err_t *err, fip_socket_t fd, unsigned int opt, ...);
-extern bool fip_optget(fip_err_t *err, fip_socket_t fd, unsigned int opt, ...);
+extern bool fip_optset(ons_err_t *err, fip_socket_t fd, unsigned int opt, ...);
+extern bool fip_optget(ons_err_t *err, fip_socket_t fd, unsigned int opt, ...);
 
 /* The following options are transmission options (TOPT) which can be passed to fip_recv/send. */
 #define FIP_TOPT_NONE           0x0000 /* No option. */

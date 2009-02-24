@@ -33,13 +33,16 @@ typedef uint32_t mem_hash_t;
  */
 #define MEM_STR(str) (str), strlen(str)
 
-/* Expands to two arguments, a pointer to array and the size of the array. */
-#define MEM_LIT(str) (str), sizeof(str)
+/* Expands to two arguments, a pointer to string-literal and the length of the string-literal. */
+#define MEM_STRL(str) (str), (sizeof(str) - 1)
 
 /* Expands to two arguments, the string and the length of the string until
  * the first zero character or \len, depending on which occurs first.
  */
 #define MEM_STRN(str, len) (str), strnlen((str), (len))
+
+/* Expands to two arguments, a pointer to array and the size of the array. */
+#define MEM_LIT(str) (str), sizeof(str)
 
 
 ONS_EXTERN_C_END

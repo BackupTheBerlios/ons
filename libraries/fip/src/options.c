@@ -8,7 +8,7 @@
  * - Created: 3. June 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 2. January 2009
+ * - Last-Change: 24. February 2009
  */
 
 /* Socket option interface */
@@ -44,7 +44,7 @@
     #define IPV6_V6ONLY IPV6_BINDV6ONLY
 #endif
 
-static bool _fip_optset_bool(fip_err_t *err, fip_socket_t fd, unsigned int opt, va_list *argp) {
+static bool _fip_optset_bool(ons_err_t *err, fip_socket_t fd, unsigned int opt, va_list *argp) {
     unsigned int val = va_arg(*argp, unsigned int);
     signed int tmp;
     val &= 0x1;
@@ -79,12 +79,12 @@ static bool _fip_optset_bool(fip_err_t *err, fip_socket_t fd, unsigned int opt, 
             if(!fip_setsockopt(err, fd, IPPROTO_IPV6, IPV6_V6ONLY, &val, sizeof(unsigned int))) return 0;
             return 1;
         default:
-            *err = FIP_E_UNKNOWN;
+            *err = ONS_E_UNKNOWN;
             return 0;
     }
 }
 
-static bool _fip_optget_bool(fip_err_t *err, fip_socket_t fd, unsigned int opt, va_list *argp) {
+static bool _fip_optget_bool(ons_err_t *err, fip_socket_t fd, unsigned int opt, va_list *argp) {
     unsigned int *val = va_arg(*argp, unsigned int*);
     unsigned int tsize = sizeof(unsigned int);
     signed int tmp;
@@ -96,7 +96,7 @@ static bool _fip_optget_bool(fip_err_t *err, fip_socket_t fd, unsigned int opt, 
             else *val = 0;
             return 1;
 #else
-            *err = FIP_E_OPNOTSUPP;
+            *err = ONS_E_OPNOTSUPP;
             return 0;
 #endif
         case FIP_OPT_BROADCAST:
@@ -121,14 +121,14 @@ static bool _fip_optget_bool(fip_err_t *err, fip_socket_t fd, unsigned int opt, 
             *val = !*val;
             return 1;
         default:
-            *err = FIP_E_BADARG;
+            *err = ONS_E_BADARG;
             return 0;
     }
-    *err = FIP_E_BADARG;
+    *err = ONS_E_BADARG;
     return 0;
 }
 
-static bool _fip_optget_misc(fip_err_t *err, fip_socket_t fd, unsigned int opt, va_list *argp) {
+static bool _fip_optget_misc(ons_err_t *err, fip_socket_t fd, unsigned int opt, va_list *argp) {
     unsigned int *uval;
     signed int *sval;
     unsigned int tsize;
@@ -148,7 +148,7 @@ static bool _fip_optget_misc(fip_err_t *err, fip_socket_t fd, unsigned int opt, 
             tsize = sizeof(signed int);
             if(!fip_getsockopt(err, fd, SOL_SOCKET, SO_TYPE, &sval, &tsize)) return 0;
             *uval = FIP_MKTRANS_REV(*sval);
-            if(*uval == 255) { *err = FIP_E_UNKNOWN; return 0; }
+            if(*uval == 255) { *err = ONS_E_UNKNOWN; return 0; }
             return 1;
         case FIP_OPT_PEERNAME:
             tsize = SAW_ADDR_LOCSIZE;
@@ -156,21 +156,21 @@ static bool _fip_optget_misc(fip_err_t *err, fip_socket_t fd, unsigned int opt, 
                 switch(errno) {
                     case EBADF:
                     case ENOTSOCK:
-                        *err = FIP_E_BADFD;
+                        *err = ONS_E_BADFD;
                         return 0;
                     case ENOBUFS:
-                        *err = FIP_E_MEMFAIL;
+                        *err = ONS_E_MEMFAIL;
                         return 0;
                     case ENOTCONN:
-                        *err = FIP_E_NOTCONN;
+                        *err = ONS_E_NOTCONN;
                         return 0;
                     default:
-                        *err = FIP_E_FAIL;
+                        *err = ONS_E_FAIL;
                         return 0;
                 }
             }
             addr = va_arg(*argp, saw_addr_t*);
-            if(!saw_addr_from_local((saw_addr_local_t*)sawbuf, addr)) { *err = FIP_E_UNKNOWN; return 0; }
+            if(!saw_addr_from_local((saw_addr_local_t*)sawbuf, addr)) { *err = ONS_E_UNKNOWN; return 0; }
             return 1;
         case FIP_OPT_SOCKNAME:
             tsize = SAW_ADDR_LOCSIZE;
@@ -178,26 +178,26 @@ static bool _fip_optget_misc(fip_err_t *err, fip_socket_t fd, unsigned int opt, 
                 switch(errno) {
                     case EBADF:
                     case ENOTSOCK:
-                        *err = FIP_E_BADFD;
+                        *err = ONS_E_BADFD;
                         return 0;
                     case ENOBUFS:
-                        *err = FIP_E_MEMFAIL;
+                        *err = ONS_E_MEMFAIL;
                         return 0;
                     default:
-                        *err = FIP_E_FAIL;
+                        *err = ONS_E_FAIL;
                         return 0;
                 }
             }
             addr = va_arg(*argp, saw_addr_t*);
-            if(!saw_addr_from_local((saw_addr_local_t*)sawbuf, addr)) { *err = FIP_E_UNKNOWN; return 0; }
+            if(!saw_addr_from_local((saw_addr_local_t*)sawbuf, addr)) { *err = ONS_E_UNKNOWN; return 0; }
             return 1;
         default:
-            *err = FIP_E_BADARG;
+            *err = ONS_E_BADARG;
             return 0;
     }
 }
 
-bool fip_optset(fip_err_t *err, fip_socket_t fd, unsigned int opt, ...) {
+bool fip_optset(ons_err_t *err, fip_socket_t fd, unsigned int opt, ...) {
     va_list argp;
     unsigned int ret = 0;
 
@@ -211,14 +211,14 @@ bool fip_optset(fip_err_t *err, fip_socket_t fd, unsigned int opt, ...) {
             ret = _fip_optset_bool(err, fd, opt, &argp);
             break;
         default:
-            *err = FIP_E_BADARG;
+            *err = ONS_E_BADARG;
             return 0;
     }
     va_end(argp);
     return ret;
 }
 
-bool fip_optget(fip_err_t *err, fip_socket_t fd, unsigned int opt, ...) {
+bool fip_optget(ons_err_t *err, fip_socket_t fd, unsigned int opt, ...) {
     va_list argp;
     unsigned int ret = 0;
 
@@ -238,7 +238,7 @@ bool fip_optget(fip_err_t *err, fip_socket_t fd, unsigned int opt, ...) {
         case FIP_OPT_SOCKNAME:
             ret = _fip_optget_misc(err, fd, opt, &argp);
         default:
-            *err = FIP_E_BADARG;
+            *err = ONS_E_BADARG;
             return 0;
     }
     va_end(argp);

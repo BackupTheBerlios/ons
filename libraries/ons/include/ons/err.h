@@ -8,7 +8,7 @@
  * - Created: 7. February 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 7. February 2009
+ * - Last-Change: 24. February 2009
  */
 
 /* ONS error handling.
@@ -18,8 +18,8 @@
 
 #include <ons/misc.h>
 
-#ifndef ONS_INCLUDED_ons_main_h
-#define ONS_INCLUDED_ons_main_h
+#ifndef ONS_INCLUDED_ons_err_h
+#define ONS_INCLUDED_ons_err_h
 ONS_EXTERN_C_BEGIN
 
 
@@ -38,7 +38,84 @@ typedef enum ons_ecode_t {
     ONS_E_SUCCESS = 0,
     ONS_E_DONE = 0,
     ONS_E_FAIL = 1,
-    ONS_E_WSAFAIL                           /* WSA failed. */
+
+    /* General error codes.
+     * Some of these errors have no single meaning. Please see each function for the meaning of the error code.
+     */
+    ONS_E_WSAFAIL,              /* WSA failed. */
+    ONS_E_MEMFAIL,              /* Kernel denied further object related memory. */
+    ONS_E_UNKNOWN,              /* Unknown parameter. */
+    ONS_E_BADARG,               /* In contrast to ONS_E_UNKNOWN this is returned if the parameters are invalid (but known). */
+    ONS_E_DENIED,               /* Access denied. */
+    ONS_E_SIGFLOOD,             /* A signal interrupted the syscall. */
+    ONS_E_OPNOTSUPP,            /* Operation not supported. */
+    ONS_E_NONBLOCK,             /* Either operation is continued in background or the operation is aborted 'cause it would block. */
+    ONS_E_BADFD,                /* The file descriptor is not valid (already closed) or not a socket. */
+    ONS_E_ALREADY,              /* Operation already in progress. */
+    ONS_E_AGAIN,                /* Try again. */
+
+    /* Address family or protocol [family] error.
+     * These errors describe some failures when an address family, a protocol family or a transmission method is used
+     * in a wrong manner or is not supported on your platform in this constelation.
+     * Remember, "protocol" and "protocol family" are two totally different things.
+     */
+    ONS_E_AFNOTSUPP,            /* Address family not supported on this machine. */
+    ONS_E_PFNOTSUPP,            /* Protocol family not supported on this machine. */
+    ONS_E_PROTONOTSUPP,         /* Protocol or transmission method not supported on this machine. */
+    ONS_E_PROTODOM,             /* This protocol is not supported within this transmission method, or this transmission method is not supported within this domain. */
+    ONS_E_MISSING,              /* Missing kernel package. */
+
+    /* Address errors. */
+    ONS_E_ADDRINUSE,            /* Address already in use. */
+    ONS_E_ADDRNOTAVAIL,         /* The address is not available on this machine. */
+    ONS_E_INVALADDR,            /* Invalid/Unknown address. */
+    ONS_E_DESTREQ,              /* Destination address required. */
+
+    /* Errors occurring during a connection attempt. */
+    ONS_E_NETDOWN,              /* Network is down. */
+    ONS_E_NETUNREACH,           /* Network unreachable. */
+    ONS_E_HOSTDOWN,             /* Host is down. */
+    ONS_E_HOSTUNREACH,          /* Host is unreachable. */
+    ONS_E_ISCONN,               /* Already connected. */
+    ONS_E_REFUSED,              /* Connection refused by other side. */
+    ONS_E_TIMEDOUT,             /* Operation timed out. */
+
+    /* Connection reset. */
+    ONS_E_NETRESET,             /* Connection closed due to network reset. */
+    ONS_E_RESET,                /* Connection reset by peer. */
+    ONS_E_CONNABORT,            /* The connection has been aborted by our side. */
+
+    /* IO errors. */
+    ONS_E_SHUTDOWN,             /* Connection already shutdown. */
+    ONS_E_PIPE,                 /* Local end has already been closed. */
+    ONS_E_NOTCONN,              /* Socket is not connected, yet. */
+    ONS_E_MSGSIZE,              /* Message size too big. */
+    ONS_E_DROP,                 /* Packet dropped due to queue overflow (most time packages are dropped silently). */
+
+    /* Socket creation/binding errors. */
+    ONS_E_MFILE,                /* Process file descriptor table overflow. */
+    ONS_E_NFILE,                /* Global file descriptor table overflow. */
+    ONS_E_PROVERFLOW,           /* Port number or routing cache overflow. */
+    ONS_E_PROTOFAIL,            /* Protocol error. */
+    ONS_E_INVALIDDEV,           /* Invalid device. */
+
+    /* Option setting errors. */
+    ONS_E_NOPROTOOPT,           /* The option is unknown at the level indicated. */
+
+    /* Errors which occur only with Unix Sockets. */
+    ONS_E_ISDIR,                /* Is a directory. */
+    ONS_E_TOOLARGE,             /* File is too large. */
+    ONS_E_NOSPACELEFT,          /* No space left on device. */
+    ONS_E_QUOTA,                /* Quota exceeded. */
+    ONS_E_LOOP,                 /* Too many symlinks encountered in local address. */
+    ONS_E_NAMETOOLONG,          /* The local address has an overlength. */
+    ONS_E_NOFILE,               /* File does not exist. */
+    ONS_E_NOTDIR,               /* Invalid directory path. */
+    ONS_E_ROFS,                 /* Read only filesystem. */
+    ONS_E_IO,                   /* IO failure. */
+
+    /* End of list indicator. Always the highest error number. */
+    ONS_E_LAST
 } ons_ecode_t;
 
 /* Windows error code definitions.
@@ -108,5 +185,5 @@ typedef enum ons_ecode_t {
 
 
 ONS_EXTERN_C_END
-#endif /* ONS_INCLUDED_ons_main_h */
+#endif /* ONS_INCLUDED_ons_err_h */
 

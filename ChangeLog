@@ -25,7 +25,7 @@ TODO =1.0:
     - add tutorials
     - Doc state:
         - overview: export thread example into a tutorial
-        - ons: finished
+        - ons: update error codes; add eintr_count
         - memoria: rewrite
         - saw: rewrite; add flow-label and scope-id information and probably support.
         - fip: write
@@ -36,9 +36,6 @@ TODO =1.0:
  - FIP:
     - Add network interface handling (if.h)
     - Add control message handling (cmsg.h)
-    - Add simple udp interface (udp.h)
-    - Add simple tcp interface (tcp.h)
-    - Add simple file interface (file.h)
     - Add all options to options.h.
     - Implement multicast support.
     - Add ioctl-options support.
@@ -62,6 +59,7 @@ TODO =1.0:
                             Change match function to handle more cases.
         - memoria/splay_tree.c: Implement Splay Trees.
         - saw/net.h: remove
+        - fip/error.h: Move error codes into libons.
     * David Herrmann 2009/02/23
         - memoria/rbtree.c: Fix key comparison.
                             Add ways to iterate through an RB-tree.

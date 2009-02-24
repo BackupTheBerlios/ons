@@ -8,7 +8,7 @@
  * - Created: 3. June 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 2. January 2009
+ * - Last-Change: 24. February 2009
  */
 
 /* Socket functions.
@@ -160,46 +160,46 @@ typedef enum fip_connpart_t {
                              )
 
 /* Creates a new socket. */
-extern fip_socket_t fip_socket(fip_err_t *err, signed int dom, unsigned int trans, unsigned int proto);
+extern fip_socket_t fip_socket(ons_err_t *err, signed int dom, unsigned int trans, unsigned int proto);
 
 /* Creates a new pair of sockets connected to each other. */
-extern bool fip_socketpair(fip_err_t *err, unsigned int trans, unsigned int proto, fip_socket_t *fd1, fip_socket_t *fd2);
+extern bool fip_socketpair(ons_err_t *err, unsigned int trans, unsigned int proto, fip_socket_t *fd1, fip_socket_t *fd2);
 
 /* Binds a socket to a particular address. */
-extern bool fip_bind(fip_err_t *err, fip_socket_t fd, const saw_addr_t *addr);
+extern bool fip_bind(ons_err_t *err, fip_socket_t fd, const saw_addr_t *addr);
 
 /* Creates a listener on a socket. */
-extern bool fip_listen(fip_err_t *err, fip_socket_t fd, unsigned int backlog);
+extern bool fip_listen(ons_err_t *err, fip_socket_t fd, unsigned int backlog);
 
 /* Connects to a remote socket. */
-extern bool fip_connect(fip_err_t *err, fip_socket_t fd, const saw_addr_t *addr);
+extern bool fip_connect(ons_err_t *err, fip_socket_t fd, const saw_addr_t *addr);
 
 /* Accepts a connection on a listener. */
-extern fip_socket_t fip_accept(fip_err_t *err, fip_socket_t fd, saw_addr_t *addr);
+extern fip_socket_t fip_accept(ons_err_t *err, fip_socket_t fd, saw_addr_t *addr);
 
 /* Standard IO on a socket. */
-extern unsigned int fip_send(fip_err_t *err, fip_socket_t fd, const char *buf, unsigned int bufsize, const saw_addr_t *addr, unsigned int opts);
-extern unsigned int fip_recv(fip_err_t *err, fip_socket_t fd, char *buf, unsigned int size, saw_addr_t *addr, unsigned int opts);
+extern unsigned int fip_send(ons_err_t *err, fip_socket_t fd, const char *buf, unsigned int bufsize, const saw_addr_t *addr, unsigned int opts);
+extern unsigned int fip_recv(ons_err_t *err, fip_socket_t fd, char *buf, unsigned int size, saw_addr_t *addr, unsigned int opts);
 
 /* Shuts down specified parts of a connection. */
-extern void fip_shutdown(fip_err_t *err, fip_socket_t fd, fip_connpart_t part);
+extern void fip_shutdown(ons_err_t *err, fip_socket_t fd, fip_connpart_t part);
 
 /* Closes a connection. */
-extern void fip_close(fip_err_t *err, fip_socket_t fd);
+extern void fip_close(ons_err_t *err, fip_socket_t fd);
 
 /* System dependent function to set/get a socket option.
  * Returns 0 on failure and 1 on success.
  * * options.h/c provides a system independent wrapper.
  */
-extern bool fip_setsockopt(fip_err_t *err, fip_socket_t fd, signed int level, signed int opt, const void *val, unsigned int size);
-extern bool fip_getsockopt(fip_err_t *err, fip_socket_t fd, signed int level, signed int opt, void *val, unsigned int *size);
+extern bool fip_setsockopt(ons_err_t *err, fip_socket_t fd, signed int level, signed int opt, const void *val, unsigned int size);
+extern bool fip_getsockopt(ons_err_t *err, fip_socket_t fd, signed int level, signed int opt, void *val, unsigned int *size);
 
 /* fcntl() get/set wrapper.
  * Sets *err and returns 0 on failure and 1 on success.
  * * options.h/c provides a system independent wrapper.
  */
-extern bool fip_fcntl_get(fip_err_t *err, fip_socket_t fd, signed int *opts);
-extern bool fip_fcntl_set(fip_err_t *err, fip_socket_t fd, signed int opts);
+extern bool fip_fcntl_get(ons_err_t *err, fip_socket_t fd, signed int *opts);
+extern bool fip_fcntl_set(ons_err_t *err, fip_socket_t fd, signed int opts);
 
 
 ONS_EXTERN_C_END
