@@ -8,7 +8,7 @@
  * - Created: 3. June 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 1. January 2009
+ * - Last-Change: 24. February 2009
  */
 
 /* Socket option interface (rev29 old options) */
@@ -137,7 +137,8 @@ extern bool fip_optget(ons_err_t *err, fip_socket_t fd, unsigned int opt, ...);
 
 /* The following options are transmission options (TOPT) which can be passed to fip_recv/send. */
 #define FIP_TOPT_NONE           0x0000 /* No option. */
-#define FIP_TOPT_OOB            0x0002 /* Receive/Send OOB data. */
+#define FIP_TOPT_OOB            0x0001 /* Receive/Send OOB data. */
+#define FIP_TOPT_DONTROUTE      0x0002 /* Don't route the packet. */
 
 /* Clears all invalid/unknown options. */
 /* Required headers for system dependent codes. */
@@ -146,6 +147,7 @@ extern bool fip_optget(ons_err_t *err, fip_socket_t fd, unsigned int opt, ...);
 #endif
 #define FIP_MKTOPTS(opts) ( \
                                 (((opts) & FIP_TOPT_OOB)?MSG_OOB:0x0) | \
+                                (((opts) & FIP_TOPT_DONTROUTE)?MSG_DONTROUTE:0x0) | \
                                 0x0 \
                           )
 

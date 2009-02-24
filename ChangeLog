@@ -12,7 +12,11 @@
 #
 
 TODO >1.0:
- - nothing
+ - FIP:
+    - Add network interface handling (if.h)
+    - Add control message handling (cmsg.h)
+    - Add all options to options.h.
+    - Implement multicast support.
 
 TODO =1.0:
  - general:
@@ -34,18 +38,8 @@ TODO =1.0:
     - unlimited bitset
     - config file parser based on trees.
  - FIP:
-    - Add network interface handling (if.h)
-    - Add control message handling (cmsg.h)
-    - Add all options to options.h.
-    - Implement multicast support.
-    - Add ioctl-options support.
-    - File socket support (especially file errors)
-    - Add signal handler (remove and add into event library)
-    - Improve error code catching in socket functions.
-    - Finish error code grouping.
     - Add Win/BSD compatibility layer
-    - Add debug info
-    - writev and readv
+    - Add ioctl-options support.
 
 [ ONS v0.1.1.0 (TESTING) ]
     * David Herrmann 2009/02/24
@@ -60,6 +54,7 @@ TODO =1.0:
         - memoria/splay_tree.c: Implement Splay Trees.
         - saw/net.h: remove
         - fip/error.h: Move error codes into libons.
+        - fip: Added debug info printings.
     * David Herrmann 2009/02/23
         - memoria/rbtree.c: Fix key comparison.
                             Add ways to iterate through an RB-tree.

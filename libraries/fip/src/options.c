@@ -165,6 +165,7 @@ static bool _fip_optget_misc(ons_err_t *err, fip_socket_t fd, unsigned int opt, 
                         *err = ONS_E_NOTCONN;
                         return 0;
                     default:
+                        ONS_iDEBUG("_fip_optget_misc(): Invalid ecode", errno);
                         *err = ONS_E_FAIL;
                         return 0;
                 }
@@ -184,6 +185,7 @@ static bool _fip_optget_misc(ons_err_t *err, fip_socket_t fd, unsigned int opt, 
                         *err = ONS_E_MEMFAIL;
                         return 0;
                     default:
+                        ONS_iDEBUG("_fip_optget_misc(): Invalid ecode", errno);
                         *err = ONS_E_FAIL;
                         return 0;
                 }

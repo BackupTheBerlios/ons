@@ -96,6 +96,7 @@ fip_socket_t fip_socket(ons_err_t *err, signed int dom, unsigned int trans, unsi
                 *err = ONS_E_MEMFAIL;
                 return FIP_INVALID_SOCKET;
             default:
+                ONS_iDEBUG("fip_socket(): Invalid ecode", errno);
                 *err = ONS_E_FAIL;
                 return FIP_INVALID_SOCKET;
         }
@@ -163,6 +164,7 @@ bool fip_socketpair(ons_err_t *err, unsigned int trans, unsigned int proto, fip_
                 *err = ONS_E_DENIED;
                 return 0;
             default:
+                ONS_iDEBUG("fip_socketpair(): Invalid ecode", errno);
                 *err = ONS_E_FAIL;
                 return 0;
         }
@@ -257,6 +259,7 @@ bool fip_bind(ons_err_t *err, fip_socket_t fd, const saw_addr_t *addr) {
                 *err = ONS_E_QUOTA;
                 return 0;
             default:
+                ONS_iDEBUG("fip_bind(): Invalid ecode", errno);
                 *err = ONS_E_FAIL;
                 return 0;
         }
@@ -303,6 +306,7 @@ bool fip_listen(ons_err_t *err, fip_socket_t fd, unsigned int backlog) {
                 *err = ONS_E_BADARG;
                 return 0;
             default:
+                ONS_iDEBUG("fip_listen(): Invalid ecode", errno);
                 *err = ONS_E_FAIL;
                 return 0;
         }
@@ -438,6 +442,7 @@ bool fip_connect(ons_err_t *err, fip_socket_t fd, const saw_addr_t *addr) {
                 *err = ONS_E_ROFS;
                 return 0;
             default:
+                ONS_iDEBUG("fip_connect(): Invalid ecode", errno);
                 *err = ONS_E_FAIL;
                 return 0;
         }
@@ -535,6 +540,7 @@ fip_socket_t fip_accept(ons_err_t *err, fip_socket_t fd, saw_addr_t *addr) {
                  * protocol may be returned.  Various Linux kernels can return other
                  * errors such as ENOSR, ESOCKTNOSUPPORT, EPROTONOSUPPORT, ETIMEDOUT.
                  */
+                ONS_iDEBUG("fip_accept(): Invalid ecode", errno);
                 *err = ONS_E_FAIL;
                 return FIP_INVALID_SOCKET;
         }
@@ -730,6 +736,7 @@ unsigned int fip_send(ons_err_t *err, fip_socket_t fd, const char *buf, unsigned
                 *err = ONS_E_QUOTA;
                 return 0;
             default:
+                ONS_iDEBUG("fip_send(): Invalid ecode", errno);
                 *err = ONS_E_FAIL;
                 return 0;
         }
@@ -844,6 +851,7 @@ unsigned int fip_recv(ons_err_t *err, fip_socket_t fd, char *buf, unsigned int s
                 *err = ONS_E_IO;
                 return 0;
             default:
+                ONS_iDEBUG("fip_recv(): Invalid ecode", errno);
                 *err = ONS_E_FAIL;
                 return 0;
         }
@@ -891,6 +899,7 @@ void fip_shutdown(ons_err_t *err, fip_socket_t fd, fip_connpart_t part) {
                 *err = ONS_E_NOTCONN;
                 return;
             default:
+                ONS_iDEBUG("fip_shutdown(): Invalid ecode", errno);
                 *err = ONS_E_FAIL;
                 return;
         }
@@ -937,6 +946,7 @@ void fip_close(ons_err_t *err, fip_socket_t fd) {
                 /* badf means file already closed => ignore */
                 return;
             default:
+                ONS_iDEBUG("fip_close(): Invalid ecode", errno);
                 *err = ONS_E_FAIL;
                 return;
         }
@@ -981,6 +991,7 @@ bool fip_setsockopt(ons_err_t *err, fip_socket_t fd, signed int level, signed in
                 *err = ONS_E_BADARG;
                 return 0;
             default:
+                ONS_iDEBUG("fip_setsockopt(): Invalid ecode", errno);
                 *err = ONS_E_FAIL;
                 return 0;
         }
@@ -1031,6 +1042,7 @@ bool fip_getsockopt(ons_err_t *err, fip_socket_t fd, signed int level, signed in
                 *err = ONS_E_BADARG;
                 return 0;
             default:
+                ONS_iDEBUG("fip_getsockopt(): Invalid ecode", errno);
                 *err = ONS_E_FAIL;
                 return 0;
         }
@@ -1072,6 +1084,7 @@ bool fip_fcntl_get(ons_err_t *err, fip_socket_t fd, signed int *opts) {
                 *err = ONS_E_BADFD;
                 return 0;
             default:
+                ONS_iDEBUG("fip_fcntl_get(): Invalid ecode", errno);
                 *err = ONS_E_FAIL;
                 return 0;
         }
@@ -1121,6 +1134,7 @@ bool fip_fcntl_set(ons_err_t *err, fip_socket_t fd, signed int opts) {
                 *err = ONS_E_BADARG;
                 return 0;
             default:
+                ONS_iDEBUG("fip_fcntl_set(): Invalid ecode", errno);
                 *err = ONS_E_FAIL;
                 return 0;
         }

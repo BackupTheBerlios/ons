@@ -123,14 +123,24 @@ extern 'C' {
 
 /* Function which is called on fatal error.
  * Calls abort().
- * If \msg is NULL, a default msg is printed.
+ * If \format is NULL, a default msg is printed.
  */
 extern void ons_fatal_error(const char *format, ...);
+
+/* Function which is called on debug error.
+ * Returns.
+ * If \format is NULL, a default msg is printed.
+ */
+extern void ons_debug_error(const char *format, ...);
+
 #define ONS_ABORT(msg) ons_fatal_error("ONS failed in %s at %u: %s\n", __FILE__, __LINE__, msg)
 #ifdef ONS_DEBUG
     #define ONS_ASSERT(x) ((x)?ONS_ABORT("Assertation failed."):0)
+    #define ONS_DEBUG(x) ons_debug_error("(Debug) Please report this bug! ONS failed in %s at %u: %s\n", __FILE__, __LINE__, x)
+    #define ONS_iDEBUG(x, i) ons_debug_error("(Debug) Please report this bug! ONS failed in %s at %u: %s (%i)\n", __FILE__, __LINE__, x, i)
 #else
     #define ONS_ASSERT(x)
+    #define ONS_iDEBUG(x, i)
 #endif
 
 

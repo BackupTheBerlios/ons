@@ -8,7 +8,7 @@
  * - Created: 7. February 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 7. February 2009
+ * - Last-Change: 24. February 2009
  */
 
 /* ONS error handling.
@@ -23,7 +23,7 @@
 
 /* Function which is called on fatal error.
  * Calls abort().
- * If \msg is NULL, a default msg is printed.
+ * If \format is NULL, a default msg is printed.
  */
 void ons_fatal_error(const char *format, ...) {
     va_list list;
@@ -34,5 +34,18 @@ void ons_fatal_error(const char *format, ...) {
     }
     else fprintf(stderr, "ONS discovered a fatal error. No Error message specified; Exiting...");
     abort();
+}
+
+/* Function which is called on debug error.
+ * If \format is NULL, a default msg is printed.
+ */
+void ons_debug_error(const char *format, ...) {
+    va_list list;
+    if(format) {
+        va_start(list, format);
+        vfprintf(stderr, format, list);
+        va_end(list);
+    }
+    else fprintf(stderr, "ONS discovered a debug error. No error message specified; Ignoring...");
 }
 

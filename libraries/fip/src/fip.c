@@ -216,6 +216,7 @@ ons_err_t fip_mkerrno_file(signed int err) {
         case EDQUOT: /* (+) Quota exceeded */
             return ONS_E_QUOTA;
         default:
+            ONS_iDEBUG("fip_mkerrno_*(): Invalid ecode", err);
             return ONS_E_FAIL;
     }
 }
