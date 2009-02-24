@@ -29,7 +29,7 @@ ONS_EXTERN_C_BEGIN
 struct mem_stree_t;
 struct mem_snode_t;
 
-typedef ons_comp_t (*mem_smatch_t)(const struct mem_snode_t *orig, const struct mem_snode_t *comparison);
+typedef ons_comp_t (*mem_smatch_t)(const void *orig_key, size_t orig_len, const void *comp_key, size_t comp_len);
 
 typedef struct mem_stree_t {
     struct mem_snode_t *root;
@@ -52,10 +52,10 @@ typedef struct mem_snode_t {
 } mem_snode_t;
 
 extern void mem_stree_init(mem_stree_t *tree, mem_smatch_t match);
-extern void mem_stree_clean(mem_stree_t *tree);
+extern void mem_stree_clean(mem_stree_t *tree, void (*del_func)(void*));
 extern bool mem_stree_add(mem_stree_t *tree, const void *key, size_t klen, void *data, void **result);
 extern void *mem_stree_del(mem_stree_t *tree, const void *key, size_t klen);
-extern void *mem_stree_find(mem_stree_t *tree, const void *key, size_t klen);
+extern mem_snode_t *mem_stree_find(mem_stree_t *tree, const void *key, size_t klen);
 
 
 ONS_EXTERN_C_END
