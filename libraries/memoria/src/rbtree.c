@@ -92,35 +92,31 @@ static mem_rbnode_t *mem_rbt_push(mem_rbtree_t *tree, mem_rbnode_t *node, bool p
     next_round:
 
     comp = mem_rbt_comp(tree, iter, node);
-    switch(comp) {
-        case ONS_SMALLER:
-            if(!iter->left) {
-                /* The left node is empty, we have to add the node here. */
-                if(peek) return NULL;
-                iter->left = node;
-                break;
-            }
-            else {
-                iter = iter->left;
-                goto next_round;
-            }
-        case ONS_GREATER:
-            if(!iter->right) {
-                /* The right node is empty, add \node here. */
-                if(peek) return NULL;
-                iter->right = node;
-                break;
-            }
-            else {
-                iter = iter->right;
-                goto next_round;
-            }
-        case ONS_EQUAL:
-            /* The node does already exist. Return it. */
-            return iter;
-        default:
-            ONS_ASSERT(0);
-            break;
+    if(comp <= ONS_SMALLER) {
+        if(!iter->left) {
+            /* The left node is empty, we have to add the node here. */
+            if(peek) return NULL;
+            iter->left = node;
+        }
+        else {
+            iter = iter->left;
+            goto next_round;
+        }
+    }
+    else if(comp >= ONS_GREATER) {
+        if(!iter->right) {
+            /* The right node is empty, add \node here. */
+            if(peek) return NULL;
+            iter->right = node;
+        }
+        else {
+            iter = iter->right;
+            goto next_round;
+        }
+    }
+    else {
+        /* The node does already exist. Return it. */
+        return iter;
     }
 
     /* Insert the node at the current iter-position. */
