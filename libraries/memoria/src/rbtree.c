@@ -132,9 +132,20 @@ static mem_rbnode_t *mem_rbt_push(mem_rbtree_t *tree, mem_rbnode_t *node, bool p
     node->left = NULL;
     node->right = NULL;
     node->next = mem_rbt_next(node);
-    if(!node->next) tree->last = node;
-    node->prev = mem_rbt_prev(node);
-    if(!node->prev) tree->first = node;
+    if(node->next) {
+        node->prev = node->next->prev;
+        node->next->prev = node;
+        if(node->prev) node->prev->next = node;
+        else tree->first = node;
+    }
+    else {
+        node->prev = mem_rbt_prev(node);
+        ONS_ASSERT(node->prev != NULL);
+        ONS_ASSERT(node->prev->next == NULL);
+        node->next = node->prev->next;
+        node->prev->next = node;
+        tree->last = node;
+    }
 
     return node;
 }
