@@ -28,6 +28,19 @@ typedef size_t mem_index_t;
 /* Type used for hashes. */
 typedef uint32_t mem_hash_t;
 
+/* Expands to two arguments, the first is the string and the second the
+ * length of the string until the first zero character.
+ */
+#define MEM_STR(str) (str), strlen(str)
+
+/* Expands to two arguments, a pointer to array and the size of the array. */
+#define MEM_LIT(str) (str), sizeof(str)
+
+/* Expands to two arguments, the string and the length of the string until
+ * the first zero character or \len, depending on which occurs first.
+ */
+#define MEM_STRN(str, len) (str), strnlen((str), (len))
+
 
 ONS_EXTERN_C_END
 #endif /* ONS_INCLUDED_memoria_misc_h */

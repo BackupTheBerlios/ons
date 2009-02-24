@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 23. February 2009
+ * - Last-Change: 24. February 2009
  */
 
 /* Linked lists.
@@ -96,7 +96,7 @@ typedef struct mem_node_t {
  */
 #define MEM_LL_INIT(list, type, name) mem_ll_init((list), offsetof(type, name))
 static inline void mem_ll_init(mem_list_t *list, size_t offset) {
-    assert(list != NULL);
+    ONS_ASSERT(list != NULL);
 
     list->offset = offset;
     list->first = NULL;
@@ -109,7 +109,7 @@ static inline void mem_ll_init(mem_list_t *list, size_t offset) {
  * You can get the number of elements by accessing the \count member of
  * a linked list.
  */
-#define mem_ll_empty(list) (assert(list != NULL), (list)->count == 0)
+#define mem_ll_empty(list) ((list)->count == 0)
 
 /* Compares the addresses \orig and \comp and returns an ons_comp_t. */
 #define mem_ll_pmatch(orig, comp) (((comp) > (orig))?(ONS_GREATER):((((comp) < (orig))?(ONS_SMALLER):(ONS_EQUAL))))
@@ -125,7 +125,7 @@ static inline void mem_ll_init(mem_list_t *list, size_t offset) {
  */
 #define MEM_LL_ENTRY(node, type) ((type)mem_ll_entry(node))
 static inline void *mem_ll_entry(const mem_node_t *node) {
-    assert(node != NULL);
+    ONS_ASSERT(node != NULL);
 
     return ((void*)node) - node->head->offset;
 }
@@ -138,9 +138,9 @@ static inline void *mem_ll_entry(const mem_node_t *node) {
 static inline void *mem_ll_prepend(mem_list_t *list, void *raw_member, void *raw_newm) {
     mem_node_t *member, *newm;
 
-    assert(list != NULL);
-    assert(raw_member != NULL);
-    assert(raw_newm != NULL);
+    ONS_ASSERT(list != NULL);
+    ONS_ASSERT(raw_member != NULL);
+    ONS_ASSERT(raw_newm != NULL);
 
     member = raw_member + list->offset;
     newm = raw_newm + list->offset;
@@ -164,9 +164,9 @@ static inline void *mem_ll_prepend(mem_list_t *list, void *raw_member, void *raw
 static inline void *mem_ll_append(mem_list_t *list, void *raw_member, void *raw_newm) {
     mem_node_t *member, *newm;
 
-    assert(list != NULL);
-    assert(raw_member != NULL);
-    assert(raw_newm != NULL);
+    ONS_ASSERT(list != NULL);
+    ONS_ASSERT(raw_member != NULL);
+    ONS_ASSERT(raw_newm != NULL);
 
     member = raw_member + list->offset;
     newm = raw_newm + list->offset;
@@ -188,8 +188,8 @@ static inline void *mem_ll_append(mem_list_t *list, void *raw_member, void *raw_
 static inline void *mem_ll_thrust(mem_list_t *list, void *raw_newm) {
     mem_node_t *newm;
 
-    assert(list != NULL);
-    assert(raw_newm != NULL);
+    ONS_ASSERT(list != NULL);
+    ONS_ASSERT(raw_newm != NULL);
 
     if(!mem_ll_empty(list)) return mem_ll_prepend(list, list->first, raw_newm);
     else {
@@ -207,8 +207,8 @@ static inline void *mem_ll_thrust(mem_list_t *list, void *raw_newm) {
 static inline void *mem_ll_push(mem_list_t *list, void *raw_newm) {
     mem_node_t *newm;
 
-    assert(list != NULL);
-    assert(raw_newm != NULL);
+    ONS_ASSERT(list != NULL);
+    ONS_ASSERT(raw_newm != NULL);
 
     if(!mem_ll_empty(list)) return mem_ll_append(list, list->last, raw_newm);
     else {
@@ -229,8 +229,8 @@ static inline void *mem_ll_push(mem_list_t *list, void *raw_newm) {
 static inline void *mem_ll_remove(mem_list_t *list, void *raw_member) {
     mem_node_t *member;
 
-    assert(list != NULL);
-    assert(raw_member != NULL);
+    ONS_ASSERT(list != NULL);
+    ONS_ASSERT(raw_member != NULL);
 
     member = raw_member + list->offset;
     if(list->count == 1) {
@@ -260,7 +260,7 @@ static inline void *mem_ll_remove(mem_list_t *list, void *raw_member) {
  * otherwise a pointer to the removed element is returned.
  */
 static inline void *mem_ll_shift(mem_list_t *list) {
-    assert(list != NULL);
+    ONS_ASSERT(list != NULL);
 
     if(mem_ll_empty(list)) return NULL;
     else return mem_ll_extract(list, ((void*)list->first) - list->offset);
@@ -268,7 +268,7 @@ static inline void *mem_ll_shift(mem_list_t *list) {
 
 /* Same as mem_ll_shift but removes the last node. */
 static inline void *mem_ll_pop(mem_list_t *list) {
-    assert(list != NULL);
+    ONS_ASSERT(list != NULL);
 
     if(mem_ll_empty(list)) return NULL;
     else return mem_ll_extract(list, ((void*)list->last) - list->offset);

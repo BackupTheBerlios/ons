@@ -60,9 +60,6 @@ typedef struct mem_rbnode_t {
     struct mem_rbnode_t *prev;
 } mem_rbnode_t;
 
-#define MEM_STR(str) (str), strlen(str)
-#define MEM_LIT(str) (str), sizeof(str)
-#define MEM_STRN(str, len) (str), strnlen((str), (len))
 extern void mem_rbt_init(mem_rbtree_t *tree, mem_rbmatch_t match);
 extern void mem_rbt_clear(mem_rbtree_t *tree, void (*del_func)(void*));
 extern bool mem_rbt_add(mem_rbtree_t *tree, const char *key, size_t klen, void *data, mem_rbnode_t **result);

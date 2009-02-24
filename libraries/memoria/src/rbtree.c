@@ -8,7 +8,7 @@
  * - Created: 22. February 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 23. February 2009
+ * - Last-Change: 24. February 2009
  */
 
 /* Red-Black Tree implementation.
@@ -54,8 +54,8 @@ static mem_rbnode_t *mem_rbt_push(mem_rbtree_t *tree, mem_rbnode_t *node, bool p
     mem_rbnode_t *iter;
     ons_comp_t comp;
 
-    assert(tree != NULL);
-    assert(node != NULL);
+    ONS_ASSERT(tree != NULL);
+    ONS_ASSERT(node != NULL);
 
     /* Algorithm:
      * If the tree is empty, add the new child as new black root node.
@@ -119,7 +119,7 @@ static mem_rbnode_t *mem_rbt_push(mem_rbtree_t *tree, mem_rbnode_t *node, bool p
             /* The node does already exist. Return it. */
             return iter;
         default:
-            assert(0);
+            ONS_ASSERT(0);
             break;
     }
 
@@ -147,8 +147,8 @@ static mem_rbnode_t *mem_rbt_push(mem_rbtree_t *tree, mem_rbnode_t *node, bool p
 static void mem_rbt_rotate(mem_rbtree_t *tree, mem_rbnode_t *node) {
     mem_rbnode_t *parent;
 
-    assert(tree != NULL);
-    assert(node != NULL);
+    ONS_ASSERT(tree != NULL);
+    ONS_ASSERT(node != NULL);
     if(!node->parent) return;
 
     parent = node->parent;
@@ -184,7 +184,7 @@ static void mem_rbt_rotate(mem_rbtree_t *tree, mem_rbnode_t *node) {
 }
 
 void mem_rbt_init(mem_rbtree_t *tree, mem_rbmatch_t match) {
-    assert(tree != NULL);
+    ONS_ASSERT(tree != NULL);
 
     tree->root = 0;
     tree->count = 0;
@@ -194,7 +194,7 @@ void mem_rbt_init(mem_rbtree_t *tree, mem_rbmatch_t match) {
 }
 
 void mem_rbt_clear(mem_rbtree_t *tree, void (*del_func)(void*)) {
-    assert(tree != NULL);
+    ONS_ASSERT(tree != NULL);
 
     if(del_func) while(tree->count) del_func(mem_rbt_del(tree, tree->root));
     else while(tree->count) mem_rbt_del(tree, tree->root);
@@ -215,11 +215,11 @@ static inline mem_rbnode_t *mem_rbt_uncle(mem_rbnode_t *node) {
 bool mem_rbt_add(mem_rbtree_t *tree, const char *key, size_t klen, void *data, mem_rbnode_t **result) {
     mem_rbnode_t *node, *iter, *tmp;
 
-    assert(tree != NULL);
-    assert(key != NULL);
-    assert(klen != 0);
-    assert(data != NULL);
-    assert(result != NULL);
+    ONS_ASSERT(tree != NULL);
+    ONS_ASSERT(key != NULL);
+    ONS_ASSERT(klen != 0);
+    ONS_ASSERT(data != NULL);
+    ONS_ASSERT(result != NULL);
 
     node = mem_malloc(sizeof(mem_rbnode_t) + klen + 1);
     node->key = sizeof(mem_rbnode_t) + (void*)node;
@@ -292,8 +292,8 @@ void *mem_rbt_del(mem_rbtree_t *tree, mem_rbnode_t *node) {
     mem_rbnode_t *iter, *tmp_parent, *neph;
     mem_rbcolor_t color;
 
-    assert(tree != NULL);
-    assert(node != NULL);
+    ONS_ASSERT(tree != NULL);
+    ONS_ASSERT(node != NULL);
 
     ret = node->data;
 
@@ -435,9 +435,9 @@ void *mem_rbt_del(mem_rbtree_t *tree, mem_rbnode_t *node) {
 mem_rbnode_t *mem_rbt_find(mem_rbtree_t *tree, const char *key, size_t klen) {
     mem_rbnode_t *node, find;
 
-    assert(tree != NULL);
-    assert(key != NULL);
-    assert(klen != 0);
+    ONS_ASSERT(tree != NULL);
+    ONS_ASSERT(key != NULL);
+    ONS_ASSERT(klen != 0);
 
     find.key = (char*)key;
     find.klen = klen;
@@ -449,7 +449,7 @@ mem_rbnode_t *mem_rbt_find(mem_rbtree_t *tree, const char *key, size_t klen) {
 mem_rbnode_t *mem_rbt_first(mem_rbtree_t *tree) {
     mem_rbnode_t *iter;
 
-    assert(tree != NULL);
+    ONS_ASSERT(tree != NULL);
     if(!tree->root) return NULL;
 
     iter = tree->root;
@@ -460,7 +460,7 @@ mem_rbnode_t *mem_rbt_first(mem_rbtree_t *tree) {
 mem_rbnode_t *mem_rbt_last(mem_rbtree_t *tree) {
     mem_rbnode_t *iter;
 
-    assert(tree != NULL);
+    ONS_ASSERT(tree != NULL);
     if(!tree->root) return NULL;
 
     iter = tree->root;
@@ -469,7 +469,7 @@ mem_rbnode_t *mem_rbt_last(mem_rbtree_t *tree) {
 }
 
 mem_rbnode_t *mem_rbt_next(mem_rbnode_t *node) {
-    assert(node != NULL);
+    ONS_ASSERT(node != NULL);
 
     if(node->right) {
         node = node->right;
@@ -487,7 +487,7 @@ mem_rbnode_t *mem_rbt_next(mem_rbnode_t *node) {
 }
 
 mem_rbnode_t *mem_rbt_prev(mem_rbnode_t *node) {
-    assert(node != NULL);
+    ONS_ASSERT(node != NULL);
 
     if(node->left) {
         node = node->left;

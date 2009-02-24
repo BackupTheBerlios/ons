@@ -104,7 +104,7 @@ mem_heap_t *mem_heap_create(size_t node_size, unsigned long nodes_per_block) {
 void mem_heap_destroy(mem_heap_t *heap) {
     mem_heap_block_t *iter;
 
-    assert(heap != NULL);
+    ONS_ASSERT(heap != NULL);
 
     iter = heap->blocks->next;
     while(iter != heap->blocks) {
@@ -124,7 +124,7 @@ void *mem_heap_alloc(mem_heap_t *heap) {
     unsigned int i;
     void *mem;
 
-    assert(heap != NULL);
+    ONS_ASSERT(heap != NULL);
 
     /* Either we have free nodes left or we need to allocate a new block. */
     if(heap->free > 0) {
@@ -196,8 +196,8 @@ void mem_heap_free(mem_heap_t *heap, void *mem) {
     mem_heap_node_t *node;
     mem_heap_block_t *block;
 
-    assert(heap != NULL);
-    assert(mem != NULL);
+    ONS_ASSERT(heap != NULL);
+    ONS_ASSERT(mem != NULL);
 
     node = mem - sizeof(mem_heap_node_t);
     if(node->block != heap->blocks && node->block->free == heap->nodes_per_block - 1) {

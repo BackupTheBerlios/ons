@@ -8,7 +8,7 @@
  * - Created: 23. February 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 23. February 2009
+ * - Last-Change: 24. February 2009
  */
 
 /* Splay Tree implementation.
@@ -41,7 +41,7 @@ static inline ons_comp_t mem_stree_comp(mem_stree_t *tree, mem_snode_t *orig, me
 }
 
 void mem_stree_init(mem_stree_t *tree, mem_smatch_t match) {
-    assert(tree != NULL);
+    ONS_ASSERT(tree != NULL);
 
     tree->root = NULL;
     tree->count = 0;
@@ -49,7 +49,7 @@ void mem_stree_init(mem_stree_t *tree, mem_smatch_t match) {
 }
 
 void mem_stree_clean(mem_stree_t *tree) {
-    assert(tree != NULL);
+    ONS_ASSERT(tree != NULL);
 
     while(tree->count) mem_stree_del(tree, tree->root->key, tree->root->klen);
 }
@@ -57,11 +57,11 @@ void mem_stree_clean(mem_stree_t *tree) {
 bool mem_stree_add(mem_stree_t *tree, const void *key, size_t klen, void *data, void **result) {
     mem_snode_t *node;
 
-    assert(tree != NULL);
-    assert(key != NULL);
-    assert(klen != 0);
-    assert(data != NULL);
-    assert(result != NULL);
+    ONS_ASSERT(tree != NULL);
+    ONS_ASSERT(key != NULL);
+    ONS_ASSERT(klen != 0);
+    ONS_ASSERT(data != NULL);
+    ONS_ASSERT(result != NULL);
 
     node = mem_malloc(sizeof(mem_snode_t) + klen + 1);
     node->key = sizeof(mem_snode_t) + (void*)node;
@@ -97,7 +97,7 @@ bool mem_stree_add(mem_stree_t *tree, const void *key, size_t klen, void *data, 
                 return false;
                 break;
             default:
-                assert(0);
+                ONS_ASSERT(0);
                 break;
         }
     }
@@ -108,9 +108,9 @@ bool mem_stree_add(mem_stree_t *tree, const void *key, size_t klen, void *data, 
 }
 
 void *mem_stree_del(mem_stree_t *tree, const void *key, size_t klen) {
-    assert(tree != NULL);
-    assert(key != NULL);
-    assert(klen != 0);
+    ONS_ASSERT(tree != NULL);
+    ONS_ASSERT(key != NULL);
+    ONS_ASSERT(klen != 0);
 
     if(tree->count == 0) return NULL;
     return NULL;

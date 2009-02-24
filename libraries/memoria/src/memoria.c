@@ -35,7 +35,7 @@ void (*mem_outofmem)(void) = NULL;
  * if not present, from malloc.
  */
 void *mem_block_alloc(size_t size) {
-    assert(size > 0);
+    ONS_ASSERT(size > 0);
 
 #if defined(ONS_CONF_HAVE_MMAP) && defined(MAP_ANONYMOUS)
     void *ptr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
@@ -54,7 +54,7 @@ void *mem_block_alloc(size_t size) {
  */
 void mem_block_free(void *ptr, size_t size) {
 #if defined(ONS_CONF_HAVE_MMAP) && defined(MAP_ANONYMOUS)
-    assert(size > 0);
+    ONS_ASSERT(size > 0);
     if(ptr) munmap(ptr, size);
 #else
     mem_free(ptr);

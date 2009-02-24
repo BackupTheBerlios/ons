@@ -154,8 +154,8 @@ static uint32_t mem_hashlittle(const void *key, size_t length, uint32_t initval)
     uint32_t a, b, c; /* internal state */
     union { const void *ptr; size_t i; } u; /* needed for Mac Powerbook G4 */
 
-    assert(key != NULL);
-    assert(length > 0);
+    ONS_ASSERT(key != NULL);
+    ONS_ASSERT(length > 0);
 
     /* Set up the internal state */
     a = b = c = 0xdeadbeef + ((uint32_t)length) + initval;
@@ -319,8 +319,8 @@ static uint32_t mem_hashbig(const void *key, size_t length, uint32_t initval) {
     uint32_t a, b, c;
     union { const void *ptr; size_t i; } u; /* to cast key to (size_t) happily */
 
-    assert(key != NULL);
-    assert(length > 0);
+    ONS_ASSERT(key != NULL);
+    ONS_ASSERT(length > 0);
 
     /* Set up the internal state */
     a = b = c = 0xdeadbeef + ((uint32_t)length) + initval;
@@ -414,8 +414,8 @@ static uint32_t mem_hashbig(const void *key, size_t length, uint32_t initval) {
  * collisions and is almost perfectly balanced.
  */
 mem_hash_t mem_hash(const char *str, size_t len) {
-    assert(str != NULL);
-    assert(len > 0);
+    ONS_ASSERT(str != NULL);
+    ONS_ASSERT(len > 0);
 
 #ifdef ONS_CONF_LITTLE_ENDIAN
     return mem_hashlittle(str, len, 0xdefcadad);

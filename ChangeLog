@@ -57,6 +57,7 @@ TODO =1.0:
         - Add first tutorial.
         - memoria/array.h: Remove the generic array.
                            Change delete function implementation.
+        - Fix assertations.
     * David Herrmann 2009/02/23
         - memoria/rbtree.c: Fix key comparison.
                             Add ways to iterate through an RB-tree.

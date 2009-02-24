@@ -64,8 +64,8 @@ void ons_deinit(ons_bitset8_t opts) {
 }
 
 ons_comp_t ons_compare_time(const ons_time_t *orig, const ons_time_t *comp) {
-    assert(orig != NULL);
-    assert(comp != NULL);
+    ONS_ASSERT(orig != NULL);
+    ONS_ASSERT(comp != NULL);
 
     if(comp->t_sec > orig->t_sec) return ONS_GREATER;
     else if(comp->t_sec < orig->t_sec) return ONS_SMALLER;
@@ -75,9 +75,9 @@ ons_comp_t ons_compare_time(const ons_time_t *orig, const ons_time_t *comp) {
 }
 
 void ons_sum(const ons_time_t *addend1, const ons_time_t *addend2, ons_time_t *sum) {
-    assert(addend1 != NULL);
-    assert(addend2 != NULL);
-    assert(sum != NULL);
+    ONS_ASSERT(addend1 != NULL);
+    ONS_ASSERT(addend2 != NULL);
+    ONS_ASSERT(sum != NULL);
 
     sum->t_usec = addend1->t_usec + addend2->t_usec;
     sum->t_sec = addend1->t_sec + addend2->t_sec;
@@ -88,9 +88,9 @@ void ons_sum(const ons_time_t *addend1, const ons_time_t *addend2, ons_time_t *s
 }
 
 void ons_sub(const ons_time_t *minuend, const ons_time_t *subtrahend, ons_time_t *diff) {
-    assert(minuend != NULL);
-    assert(subtrahend != NULL);
-    assert(diff != NULL);
+    ONS_ASSERT(minuend != NULL);
+    ONS_ASSERT(subtrahend != NULL);
+    ONS_ASSERT(diff != NULL);
 
     diff->t_sec = minuend->t_sec - subtrahend->t_sec;
     if(minuend->t_usec >= subtrahend->t_usec) diff->t_usec = minuend->t_usec - subtrahend->t_usec;
@@ -101,7 +101,7 @@ void ons_sub(const ons_time_t *minuend, const ons_time_t *subtrahend, ons_time_t
 }
 
 void ons_time(ons_time_t *buf) {
-    assert(buf != NULL);
+    ONS_ASSERT(buf != NULL);
 
 #ifdef GETTIMEOFDAY
     struct timeval tv;
@@ -139,60 +139,60 @@ void ons_time(ons_time_t *buf) {
 
 #ifdef ONS_CONF_WINDOWS
     void ons_thread_run(ons_thread_t *thread, ons_thread_handler_t function, void *arg) {
-        assert(thread != NULL);
-        assert(function != NULL);
+        ONS_ASSERT(thread != NULL);
+        ONS_ASSERT(function != NULL);
 
         *thread = CreateThread(NULL, 0, function, arg, 0, NULL);
         if(*thread == NULL) ONS_ABORT("Windows function 'CreateThread()' returned NULL.");
     }
 
     void ons_thread_join(ons_thread_t *thread) {
-        assert(thread != NULL);
-        assert(*thread != NULL);
+        ONS_ASSERT(thread != NULL);
+        ONS_ASSERT(*thread != NULL);
 
         WaitForSingleObject(*thread, INFINITE);
         CloseHandle(*thread);
     }
 
     void ons_mutex_init(ons_mutex_t *mutex) {
-        assert(mutex != NULL);
+        ONS_ASSERT(mutex != NULL);
 
         *mutex = CreateMutex(NULL, FALSE, NULL);
         if(*mutex == NULL) ONS_ABORT("Windows function 'CreateMutex()' returned NULL.");
     }
 
     void ons_mutex_free(ons_mutex_t *mutex) {
-        assert(mutex != NULL);
-        assert(*mutex != NULL);
+        ONS_ASSERT(mutex != NULL);
+        ONS_ASSERT(*mutex != NULL);
 
         CloseHandle(*mutex);
     }
 
     void ons_mutex_lock(ons_mutex_t *mutex) {
-        assert(mutex != NULL);
-        assert(*mutex != NULL);
+        ONS_ASSERT(mutex != NULL);
+        ONS_ASSERT(*mutex != NULL);
 
         WaitForSingleObject(*mutex, INFINITE);
     }
 
     void ons_mutex_unlock(ons_mutex_t *mutex) {
-        assert(mutex != NULL);
-        assert(*mutex != NULL);
+        ONS_ASSERT(mutex != NULL);
+        ONS_ASSERT(*mutex != NULL);
 
         ReleaseMutex(*mutex);
     }
 
     bool ons_mutex_trylock(ons_mutex_t *mutex) {
-        assert(mutex != NULL);
-        assert(*mutex != NULL);
+        ONS_ASSERT(mutex != NULL);
+        ONS_ASSERT(*mutex != NULL);
 
         return (WaitForSingleObject(*mutex, 0) == WAIT_OBJECT_0);
     }
 
     bool ons_mutex_timedlock(ons_mutex_t *mutex, ons_time_t *timeout) {
-        assert(mutex != NULL);
-        assert(*mutex != NULL);
-        assert(timeout != NULL);
+        ONS_ASSERT(mutex != NULL);
+        ONS_ASSERT(*mutex != NULL);
+        ONS_ASSERT(timeout != NULL);
 
         return (WaitForSingleObject(*mutex, (timeout.tv_usec / 1000) + (timeout.tv_sec * 1000)) == WAIT_OBJECT_0);
     }
@@ -201,8 +201,8 @@ void ons_time(ons_time_t *buf) {
         pthread_attr_t attribute;
         signed int ret;
 
-        assert(thread != NULL);
-        assert(function != NULL);
+        ONS_ASSERT(thread != NULL);
+        ONS_ASSERT(function != NULL);
 
         /* Create attributes and set thread joinable. */
         if(pthread_attr_init(&attribute) != 0) ONS_ABORT("PThread attr_init failed.");
@@ -217,37 +217,37 @@ void ons_time(ons_time_t *buf) {
     }
 
     void ons_thread_join(ons_thread_t *thread) {
-        assert(thread != NULL);
+        ONS_ASSERT(thread != NULL);
 
         pthread_join(*thread, NULL);
     }
 
     void ons_mutex_init(ons_mutex_t *mutex) {
-        assert(mutex != NULL);
+        ONS_ASSERT(mutex != NULL);
 
         if(pthread_mutex_init(mutex, NULL) != 0) ONS_ABORT("PThread mutex creation failed.");
     }
 
     void ons_mutex_free(ons_mutex_t *mutex) {
-        assert(mutex != NULL);
+        ONS_ASSERT(mutex != NULL);
 
         pthread_mutex_destroy(mutex);
     }
 
     void ons_mutex_lock(ons_mutex_t *mutex) {
-        assert(mutex != NULL);
+        ONS_ASSERT(mutex != NULL);
 
         pthread_mutex_lock(mutex);
     }
 
     void ons_mutex_unlock(ons_mutex_t *mutex) {
-        assert(mutex != NULL);
+        ONS_ASSERT(mutex != NULL);
 
         pthread_mutex_unlock(mutex);
     }
 
     bool ons_mutex_trylock(ons_mutex_t *mutex) {
-        assert(mutex != NULL);
+        ONS_ASSERT(mutex != NULL);
 
         return (pthread_mutex_trylock(mutex) == 0);
     }
@@ -256,8 +256,8 @@ void ons_time(ons_time_t *buf) {
         struct timespec absolute;
         ons_time_t current;
 
-        assert(mutex != NULL);
-        assert(timeout != NULL);
+        ONS_ASSERT(mutex != NULL);
+        ONS_ASSERT(timeout != NULL);
 
         ons_time(&current);
         absolute.tv_sec = current.t_sec + timeout->t_sec;
