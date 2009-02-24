@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  - (COPYRIGHT) Copyright (C) 2008, 2009, The ONS Team.
+  - This file is part of ONS, see COPYING for details.
+  -->
+
+<!--
+  - File Information:
+  - Created: 24. February 2009
+  - Lead-Dev: - David Herrmann
+  - Contributors: /
+  - Last-Change: [ See last doc update below ]
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Padding Tutorial - Open Network Suite - Official Documentation</title>
+        <meta name="author" content="The ONS Team" />
+        <meta name="description" content="Documentation of the Open Network Suite." />
+        <meta name="keywords" content="network, internet, ipv4, ipv6, communication, open source, public domain, tcp, udp, dns" />
+        <meta name="robots" content="index" />
+        <link rel="stylesheet" type="text/css" href="main.css" />
+    </head>
+    <body>
+        <div id="main">
+            <div id="header">
+                <h1 id="main_headline">
+                    <acronym title="Open Network Suite">Padding Tutorial</acronym>
+                </h1>
+                <dl id="actual_state">
+                    <dt>Version</dt>
+                        <dd>0.1.1.0</dd>
+                    <dt>Last doc update</dt>
+                        <dd>2009-02-24</dd>
+                    <dt>Homepage</dt>
+                        <dd><a href="http://developer.berlios.de/projects/ons">ONS @ BerliOS</a></dd>
+                </dl>
+            </div>
+
+            <div id="people">
+                <dl>
+                    <dt>Developers</dt>
+                        <dd>David Herrmann</dd>
+                    <dt>Contributors</dt>
+                        <dd>/</dd>
+                    <dt>Documentation/Doc-Contributors</dt>
+                        <dd>David Herrmann</dd>
+                    <dt>Contact</dt>
+                        <dd><a href="http://developer.berlios.de/projects/ons">ONS @ BerliOS</a></dd>
+                        <dd>ons@xccd.eu</dd>
+                        <dd><em>[See also <a href="open_network_suite.xhtml#contact">Contact part</a>]</em></dd>
+                </dl>
+            </div>
+
+            <div id="premises" class="box">
+                <span id="premises_warning">
+                    This documentation uses modern techniques to display the information in a standard compliant and user readable mode. If you have no
+                    browser with these requirements this document should be readable with few display failures, anyway.
+                    Requirements to show this document correctly is a browser compliant to:
+                </span>
+                <ul id="premises_list">
+                    <li>XHTML 1.0</li>
+                    <li>CSS 2.1</li>
+                </ul>
+            </div>
+
+            <div>
+                <h1>Padding Tutorial</h1>
+                <p>
+                    <h2>Integer Padding</h2>
+                    First, I need to explain what padding in the C language is. If you take an integer datatype, for instance
+                    <code><span class="c_key">char</span></code> then this type provides a specific amount of memory. Lets assume this type provides
+                    8 bit. This means, that you can store a number with 8 bit in this type.<br />
+                    The type is probably represented the following way in your system:<br />
+                    <table class="binary_table">
+                        <tr>
+                            <td>Bit:</td>
+                            <td>8</td><td>7</td><td>6</td><td>5</td>
+                            <td>4</td><td>3</td><td>2</td><td>1</td>
+                        </tr>
+                        <tr>
+                            <td>Decimal:</td>
+                            <td>128</td><td>64</td><td>32</td><td>16</td>
+                            <td>8</td><td>4</td><td>2</td><td>1</td>
+                        </tr>
+                        <tr>
+                            <td>Value:</td>
+                            <td class="block">0</td><td class="block">0</td><td class="block">0</td><td class="block">0</td>
+                            <td class="block">0</td><td class="block">0</td><td class="block">0</td><td class="block">0</td>
+                        </tr>
+                    </table>
+                    Let's save the number 30 in this integer. It will look like:<br />
+                    <table class="binary_table">
+                        <tr>
+                            <td>Bit:</td>
+                            <td>8</td><td>7</td><td>6</td><td>5</td>
+                            <td>4</td><td>3</td><td>2</td><td>1</td>
+                        </tr>
+                        <tr>
+                            <td>Decimal:</td>
+                            <td>128</td><td>64</td><td>32</td><td>16</td>
+                            <td>8</td><td>4</td><td>2</td><td>1</td>
+                        </tr>
+                        <tr>
+                            <td>Value:</td>
+                            <td class="block">0</td><td class="block">0</td><td class="block">0</td><td class="block">1</td>
+                            <td class="block">1</td><td class="block">1</td><td class="block">1</td><td class="block">0</td>
+                        </tr>
+                    </table>
+                    This type has no padding at all. But now, the C standard allows in every datatype, in a simple
+                    <code><span class="c_key">int</span></code> but also in a <code><span class="c_key">struct</span></code>, that the type uses
+                    an arbitrary amount of bits for padding. These bits should not be accessed by the coder. Lets assume our
+                    <code><span class="c_key">char</span></code> has two padding bits in the middle:<br />
+                    <table class="binary_table">
+                        <tr>
+                            <td>Bit:</td>
+                            <td>8</td><td>7</td><td>6</td><td>5</td>
+                            <td>P2</td><td>P1</td>
+                            <td>4</td><td>3</td><td>2</td><td>1</td>
+                        </tr>
+                        <tr>
+                            <td>Decimal:</td>
+                            <td>128</td><td>64</td><td>32</td><td>16</td>
+                            <td>-</td><td>-</td>
+                            <td>8</td><td>4</td><td>2</td><td>1</td>
+                        </tr>
+                        <tr>
+                            <td>Value:</td>
+                            <td class="block">0</td><td class="block">0</td><td class="block">0</td><td class="block">1</td>
+                            <td class="block2">0</td><td class="block2">1</td>
+                            <td class="block">1</td><td class="block">1</td><td class="block">1</td><td class="block">0</td>
+                        </tr>
+                    </table>
+                    The values of these two bits are not of interest. The system may use them for any purpose, for example for thread synchronisation.
+                    Now, as you probably noticed, you can store still 8 bit values in this datatype, but this type takes 10 bits space.<br />
+                    These bits may be really annoying in an integer, but ONS runs only on machines which do not use padding in simple integers. That is,
+                    if you use ONS you do not have to bother with integer padding.<br />
+                    Though, I have never seen a CPU that uses integer padding. I only heared of an an embedded one from Motorola, however, I don't think
+                    you use such a CPU. If you do, I would be glad to hear about it.<br />
+                </p>
+                <p>
+                    Integer padding can make a C program totally useless. Almost every program i've seen would not run on a machine that uses integer
+                    padding, therefore, every CPU that will use integer padding will probably not be able to run 99% of all programs.
+                    Therefore, you can safely ignore integer padding.
+                </p>
+                <p>
+                    <h2>Structure Padding</h2>
+                    You know now what padding is. However, integer padding is mostly a theory and not really used in CPUs. But there is also another
+                    type of padding which is wide spread and almost every compiler uses it.<br />
+                    This padding does not depend on the CPU but on your compiler.<br />
+                    Lets assume we have a structure:<br />
+                    <code>
+                        <span class="c_key">struct</span> mystruct <span class="c_bold">{</span>
+                            <span class="c_key">char</span> v1<span class="c_bold">;</span>
+                            <span class="c_key">short</span> v2<span class="c_bold">;</span>
+                            <span class="c_key">int</span> v3<span class="c_bold">;</span>
+                            <span class="c_key">long</span> v4<span class="c_bold">;</span>
+                        <span class="c_bold">};</span>
+                    </code><br />
+                    In this example, we assume <code class="c_key">char</code> takes 8 bit, <code class="c_key">short</code> 16 bit,
+                    <code class="c_key">int</code> 32 bit and <code class="c_key">long</code> 64 bit of space.<br />
+                    It may be saved in your memory like this:<br />
+                    <table class="binary_table">
+                        <tr>
+                            <td class="block2">Offset</td>
+                            <td class="block2">Value: Bit 1 to 8</td>
+                        </tr>
+                        <tr>
+                            <td>0:</td>
+                            <td class="block"><code class="c_key">char</code> v1</td>
+                        </tr>
+                        <tr>
+                            <td>1:</td>
+                            <td rowspan="2" class="block"><code class="c_key">short</code> v2</td>
+                        </tr>
+                        <tr>
+                            <td>2:</td>
+                        </tr>
+                        <tr>
+                            <td>3:</td>
+                            <td rowspan="4" class="block"><code class="c_key">int</code> v3</td>
+                        </tr>
+                        <tr>
+                            <td>4:</td>
+                        </tr>
+                        <tr>
+                            <td>5:</td>
+                        </tr>
+                        <tr>
+                            <td>6:</td>
+                        </tr>
+                        <tr>
+                            <td>7:</td>
+                            <td rowspan="8" class="block"><code class="c_key">long</code> v4</td>
+                        </tr>
+                        <tr>
+                            <td>8:</td>
+                        </tr>
+                        <tr>
+                            <td>9:</td>
+                        </tr>
+                        <tr>
+                            <td>10:</td>
+                        </tr>
+                        <tr>
+                            <td>11:</td>
+                        </tr>
+                        <tr>
+                            <td>12:</td>
+                        </tr>
+                        <tr>
+                            <td>13:</td>
+                        </tr>
+                        <tr>
+                            <td>14:</td>
+                        </tr>
+                    </table>
+                    As you may see, the number of bytes is 15 which is, for an computer, a really odd number. Computers like powers of 2 as numbers.
+                    Therefore they add padding. Well, the compiler does not bother with the size of the whole structure, but it bothers with the
+                    offsets of the values. The offset is the byte, where each member of the structure starts. The compiler can access members faster
+                    if they start at an offset of the power of 2. These offsets are for instance 0, 2, 4, 8, 16, ...<br />
+                    Compilers can also align the members to powers of 4 or powers of 8. 32 bit CPUs can access members with maximum speed when they
+                    are aligned to powers of 4, 64 bit CPUs can access members with maximum speed when they are aligned to powers of 8.
+                    The left example shows alignment to powers of 2, the right example shows alignments to powers of 4:<br />
+                    <table class="binary_table" style="float: left;">
+                        <tr>
+                            <td class="block2">Offset</td>
+                            <td class="block2">Value: Bit 1 to 8</td>
+                        </tr>
+                        <tr>
+                            <td>0:</td>
+                            <td class="block"><code class="c_key">char</code> v1</td>
+                            <td rowspan="2" class="block">2</td>
+                        </tr>
+                        <tr>
+                            <td>1:</td>
+                            <td class="block2">Padding</td>
+                        </tr>
+                        <tr>
+                            <td>2:</td>
+                            <td rowspan="2" class="block"><code class="c_key">short</code> v2</td>
+                            <td rowspan="2" class="block">2</td>
+                        </tr>
+                        <tr>
+                            <td>3:</td>
+                        </tr>
+                        <tr>
+                            <td>4:</td>
+                            <td rowspan="4" class="block"><code class="c_key">int</code> v3</td>
+                            <td rowspan="2" class="block">2</td>
+                        </tr>
+                        <tr>
+                            <td>5:</td>
+                        </tr>
+                        <tr>
+                            <td>6:</td>
+                            <td rowspan="2" class="block">2</td>
+                        </tr>
+                        <tr>
+                            <td>7:</td>
+                        </tr>
+                        <tr>
+                            <td>8:</td>
+                            <td rowspan="8" class="block"><code class="c_key">long</code> v4</td>
+                            <td rowspan="2" class="block">2</td>
+                        </tr>
+                        <tr>
+                            <td>9:</td>
+                        </tr>
+                        <tr>
+                            <td>10:</td>
+                            <td rowspan="2" class="block">2</td>
+                        </tr>
+                        <tr>
+                            <td>11:</td>
+                        </tr>
+                        <tr>
+                            <td>12:</td>
+                            <td rowspan="2" class="block">2</td>
+                        </tr>
+                        <tr>
+                            <td>13:</td>
+                        </tr>
+                        <tr>
+                            <td>14:</td>
+                            <td rowspan="2" class="block">2</td>
+                        </tr>
+                        <tr>
+                            <td>15:</td>
+                        </tr>
+                    </table>
+                    <code style="float:left;">
+<span class="c_key">struct</span> mystruct <span class="c_bold">{</span>
+    <span class="c_key">char</span> v1<span class="c_bold">;</span>
+    <span class="c_red">padding</span> 1-byte<span class="c_bold">;</span>
+    <span class="c_key">short</span> v2<span class="c_bold">;</span>
+    <span class="c_key">int</span> v3<span class="c_bold">;</span>
+    <span class="c_key">long</span> v4<span class="c_bold">;</span>
+<span class="c_bold">};</span>
+                    </code>
+                    <table class="binary_table" style="float: left;">
+                        <tr>
+                            <td class="block2">Offset</td>
+                            <td class="block2">Value: Bit 1 to 8</td>
+                        </tr>
+                        <tr>
+                            <td>0:</td>
+                            <td class="block"><code class="c_key">char</code> v1</td>
+                            <td rowspan="4" class="block">4</td>
+                        </tr>
+                        <tr>
+                            <td>1:</td>
+                            <td class="block2">Padding</td>
+                        </tr>
+                        <tr>
+                            <td>2:</td>
+                            <td class="block2">Padding</td>
+                        </tr>
+                        <tr>
+                            <td>3:</td>
+                            <td class="block2">Padding</td>
+                        </tr>
+                        <tr>
+                            <td>4:</td>
+                            <td rowspan="2" class="block"><code class="c_key">short</code> v2</td>
+                            <td rowspan="4" class="block">4</td>
+                        </tr>
+                        <tr>
+                            <td>5:</td>
+                        </tr>
+                        <tr>
+                            <td>6:</td>
+                            <td class="block2">Padding</td>
+                        </tr>
+                        <tr>
+                            <td>7:</td>
+                            <td class="block2">Padding</td>
+                        </tr>
+                        <tr>
+                            <td>8:</td>
+                            <td rowspan="4" class="block"><code class="c_key">int</code> v3</td>
+                            <td rowspan="4" class="block">4</td>
+                        </tr>
+                        <tr>
+                            <td>9:</td>
+                        </tr>
+                        <tr>
+                            <td>10:</td>
+                        </tr>
+                        <tr>
+                            <td>11:</td>
+                        </tr>
+                        <tr>
+                            <td>12:</td>
+                            <td rowspan="8" class="block"><code class="c_key">long</code> v4</td>
+                            <td rowspan="4" class="block">4</td>
+                        </tr>
+                        <tr>
+                            <td>13:</td>
+                        </tr>
+                        <tr>
+                            <td>14:</td>
+                        </tr>
+                        <tr>
+                            <td>15:</td>
+                        </tr>
+                        <tr>
+                            <td>16:</td>
+                            <td rowspan="4" class="block">4</td>
+                        </tr>
+                        <tr>
+                            <td>17:</td>
+                        </tr>
+                        <tr>
+                            <td>18:</td>
+                        </tr>
+                        <tr>
+                            <td>19:</td>
+                        </tr>
+                    </table>
+                    <code style="float:left;">
+<span class="c_key">struct</span> mystruct <span class="c_bold">{</span>
+    <span class="c_key">char</span> v1<span class="c_bold">;</span>
+    <span class="c_red">padding</span> 3-bytes<span class="c_bold">;</span>
+    <span class="c_key">short</span> v2<span class="c_bold">;</span>
+    <span class="c_red">padding</span> 2-bytes<span class="c_bold">;</span>
+    <span class="c_key">int</span> v3<span class="c_bold">;</span>
+    <span class="c_key">long</span> v4<span class="c_bold">;</span>
+<span class="c_bold">};</span>
+                    </code>
+                    <p style="clear: both;">
+                    </p>
+                    The padding-type in the C-code is an imaginary type, which is not part of the C-Standard in this way. However, this example
+                    shows that padding can take quite a lot of space between members. Although, these examples are deliberately created to have a
+                    maximum of padding.
+                </p>
+                <p>
+                    Most time, this padding is not annoying. However, there are cases where there should be no padding. For example if you need the
+                    type to be as small as possible or if you need to map the type into a file and another system, which probably has other padding,
+                    should be able to remap the file into a structure. Therefore, ONS provides a way to created unpadded structures.
+                </p>
+                <p>
+                    <h2>Unpadded structures in ONS</h2>
+                    <p>
+                        There are two ways to tell a compiler to remove padding. ONS guarantees that at least one way is supported, so simply always
+                        use both ways to be sure.<br />
+                        The first way is a <code class="c_macro">#pragma</code>. The second way is a structure attribute
+                        <code class="c_key">ONS_ATTR_PACK</code>.
+                        <code><pre>
+                            <span class="c_macro">#include &lt;ons/ons.h&gt;</span>
+
+                            <span class="c_macro">#ifdef ONS_CONF_HAVE_PRAGMA_PACK</span>
+                                <span class="c_macro">#pragma pack(push)</span>
+                                <span class="c_macro">#pragma pack(1)</span>
+                            <span class="c_macro">#endif</span>
+                            <span class="c_key">struct</span> mystruct <span class="c_bold">{</span>
+                                char v1<span class="c_bold">;</span>
+                                short v2<span class="c_bold">;</span>
+                                int v3<span class="c_bold">;</span>
+                                long v4<span class="c_bold">;</span>
+                            <span class="c_bold">}</span> <span class="c_key">ONS_ATTR_PACK</span><span class="c_bold">;</span>
+                            <span class="c_macro">#ifdef ONS_CONF_HAVE_PRAGMA_PACK</span>
+                                <span class="c_macro">#pragma pack(pop)</span>
+                            <span class="c_macro">#endif</span>
+                        </pre></code>
+                        This guarantees that there is no padding at all in the structure.
+                    </p>
+                </p>
+            </div>
+        </div>
+    </body>
+</html>

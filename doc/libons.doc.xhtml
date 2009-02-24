@@ -9,7 +9,7 @@
   - Created: 3. January 2009
   - Lead-Dev: - David Herrmann
   - Contributors: /
-  - Last-Change: 8. February 2009
+  - Last-Change: [ See last doc update below ]
   -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -20,23 +20,51 @@
         <meta name="description" content="Reference documentation of libons." />
         <meta name="keywords" content="ons, open network suite, network, internet, open source, public domain" />
         <meta name="robots" content="index" />
-        <style type="text/css">
-        body {
-            padding: 0px;
-            margin: 50px;
-            border: 0px;
-            text-align: justify;
-        }
-        p {
-            padding-left: 20px;
-        }
-        code {
-            background-color: #FFBBBB;
-        }
-        </style>
+        <link rel="stylesheet" type="text/css" href="main.css" />
     </head>
     <body>
         <div id="main">
+            <div id="header">
+                <h1 id="main_headline">
+                    <acronym title="Open Network Suite">Libons</acronym>
+                </h1>
+                <dl id="actual_state">
+                    <dt>Version</dt>
+                        <dd>0.1.1.0</dd>
+                    <dt>Last doc update</dt>
+                        <dd>2009-02-24</dd>
+                    <dt>Homepage</dt>
+                        <dd><a href="http://developer.berlios.de/projects/ons">ONS @ BerliOS</a></dd>
+                </dl>
+            </div>
+
+            <div id="people">
+                <dl>
+                    <dt>Developers</dt>
+                        <dd>David Herrmann</dd>
+                    <dt>Contributors</dt>
+                        <dd>/</dd>
+                    <dt>Documentation/Doc-Contributors</dt>
+                        <dd>David Herrmann</dd>
+                    <dt>Contact</dt>
+                        <dd><a href="http://developer.berlios.de/projects/ons">ONS @ BerliOS</a></dd>
+                        <dd>ons@xccd.eu</dd>
+                        <dd><em>[See also <a href="open_network_suite.xhtml#contact">Contact part</a>]</em></dd>
+                </dl>
+            </div>
+
+            <div id="premises" class="box">
+                <span id="premises_warning">
+                    This documentation uses modern techniques to display the information in a standard compliant and user readable mode. If you have no
+                    browser with these requirements this document should be readable with few display failures, anyway.
+                    Requirements to show this document correctly is a browser compliant to:
+                </span>
+                <ul id="premises_list">
+                    <li>XHTML 1.0</li>
+                    <li>CSS 2.1</li>
+                </ul>
+            </div>
+
             <div id="overview">
                 <h1>Libons</h1>
                 <p>
@@ -44,7 +72,7 @@
                     in the source code.
                 </p>
                 <p>
-                    To use libons, simply include <code>&lt;ons/ons.h&gt;</code> in your source code.
+                    To use libons, simply include <code class="c_macro">#include &lt;ons/ons.h&gt;</code> in your source code.
                 </p>
             </div>
             <div>
@@ -158,25 +186,23 @@
                         <code>ONS_CONF_HAVE_ATTR_PACKED</code> is defined if <code>__attribute__((__packed__))</code> is supported.<br />
                         <code>ONS_CONF_HAVE_PRAGMA_PACK</code> is defined if <code>#pragma pack</code> is supported.<br />
                         Use it like:<br />
-                        <code>
-                            <pre>
-            #include &lt;ons/ons.h&gt;
+                        <code><pre>
+                            <span class="c_macro">#include &lt;ons/ons.h&gt;</span>
 
-            #ifdef ONS_CONF_HAVE_PRAGMA_PACK
-                #pragma pack(push)
-                #pragma pack(1)
-            #endif
-            struct sample_structure {
-                uint8_t val1;
-                uint16_t val2;
-                uint32_t val3;
-                uint64_t val4;
-            } ONS_ATTR_PACK;
-            #ifdef ONS_CONF_HAVE_PRAGMA_PACK
-                #pragma pack(pop)
-            #endif
-                            </pre>
-                        </code>
+                            <span class="c_macro">#ifdef ONS_CONF_HAVE_PRAGMA_PACK</span>
+                                <span class="c_macro">#pragma pack(push)</span>
+                                <span class="c_macro">#pragma pack(1)</span>
+                            <span class="c_macro">#endif</span>
+                            <span class="c_key">struct</span> mystruct <span class="c_bold">{</span>
+                                char v1<span class="c_bold">;</span>
+                                short v2<span class="c_bold">;</span>
+                                int v3<span class="c_bold">;</span>
+                                long v4<span class="c_bold">;</span>
+                            <span class="c_bold">}</span> <span class="c_key">ONS_ATTR_PACK</span><span class="c_bold">;</span>
+                            <span class="c_macro">#ifdef ONS_CONF_HAVE_PRAGMA_PACK</span>
+                                <span class="c_macro">#pragma pack(pop)</span>
+                            <span class="c_macro">#endif</span>
+                        </pre></code>
                         This would create the structure <code>struct sample_structure</code> without any padding between the members.
                         If the structure attribute is not supported
                         then <code>ONS_ATTR_PACK</code> is defined as nothing.<br />
@@ -187,6 +213,12 @@
                     <h3>IPv6</h3>
                     <p>
                         <code>ONS_CONF_NO_IPV6</code> is defined if all IPv6 support should be disabled.
+                    </p>
+                </p>
+                <p>
+                    <h3>Debug</h3>
+                    <p>
+                        <code>ONS_CONF_DEBUG</code> and <code>ONS_DEBUG</code> are defined if ONS is compiled in debug mode.
                     </p>
                 </p>
                 <p>
@@ -259,9 +291,9 @@
                         <p>
                             Libons defines three constants which are returned in every comparison in ONS.<br />
                             The datatype is <code>typedef signed int ons_comp_t;</code><br />
-                            <code>#define ONS_SMALLER -1</code> is returned if the compared element is smaller than the original.<br />
+                            <code>#define ONS_SMALLER -1</code> or smaller is returned if the compared element is smaller than the original.<br />
                             <code>#define ONS_EQUAL 0</code> is returned if the compared element is equal to the original.<br />
-                            <code>#define ONS_GREATER 1</code> is returned if the compared element is greater than the original.<br />
+                            <code>#define ONS_GREATER 1</code> or greater is returned if the compared element is greater than the original.<br />
                         </p>
                     </p>
                     <p>
@@ -450,8 +482,8 @@
                                 which prints a message with <code>__FILE__</code> and <code>__LINE__</code> and termiantes the process.
                             </li>
                             <li>
-                                Every function uses assert() to check the validity of it's parameters. Though, <code>-DNDEBUG</code> should deactivate
-                                all those checks.
+                                Every function uses <code>ONS_ASSERT()</code> to check the validity of it's parameters. This macro is equal in it's
+                                behaviour to <code>assert()</code> but works only if <code>ONS_CONF_DEBUG</code> is defined.
                             </li>
                         </ul>
                     </p>

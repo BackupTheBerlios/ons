@@ -9,7 +9,7 @@
   - Created: 3. January 2009
   - Lead-Dev: - David Herrmann
   - Contributors: /
-  - Last-Change: 8. February 2009
+  - Last-Change: [ See last doc update below ]
   -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -20,17 +20,51 @@
         <meta name="description" content="Documentation of the Open Network Suite." />
         <meta name="keywords" content="network, internet, ipv4, ipv6, communication, open source, public domain, tcp, udp, dns" />
         <meta name="robots" content="index" />
-        <style type="text/css">
-        body {
-            padding: 0px;
-            margin: 50px;
-            border: 0px;
-            text-align: justify;
-        }
-        </style>
+        <link rel="stylesheet" type="text/css" href="main.css" />
     </head>
     <body>
         <div id="main">
+            <div id="header">
+                <h1 id="main_headline">
+                    <acronym title="Open Network Suite">Open Network Suite</acronym>
+                </h1>
+                <dl id="actual_state">
+                    <dt>Version</dt>
+                        <dd>0.1.1.0</dd>
+                    <dt>Last doc update</dt>
+                        <dd>2009-02-24</dd>
+                    <dt>Homepage</dt>
+                        <dd><a href="http://developer.berlios.de/projects/ons">ONS @ BerliOS</a></dd>
+                </dl>
+            </div>
+
+            <div id="people">
+                <dl>
+                    <dt>Developers</dt>
+                        <dd>David Herrmann</dd>
+                    <dt>Contributors</dt>
+                        <dd>/</dd>
+                    <dt>Documentation/Doc-Contributors</dt>
+                        <dd>David Herrmann</dd>
+                    <dt>Contact</dt>
+                        <dd><a href="http://developer.berlios.de/projects/ons">ONS @ BerliOS</a></dd>
+                        <dd>ons@xccd.eu</dd>
+                        <dd><em>[See also <a href="#contact">Contact part</a>]</em></dd>
+                </dl>
+            </div>
+
+            <div id="premises" class="box">
+                <span id="premises_warning">
+                    This documentation uses modern techniques to display the information in a standard compliant and user readable mode. If you have no
+                    browser with these requirements this document should be readable with few display failures, anyway.
+                    Requirements to show this document correctly is a browser compliant to:
+                </span>
+                <ul id="premises_list">
+                    <li>XHTML 1.0</li>
+                    <li>CSS 2.1</li>
+                </ul>
+            </div>
+
             <div id="overview">
                 <h1>Overview</h1>
                 <p>
@@ -40,8 +74,8 @@
                     The Open Network Suite (foll. "ONS") is divided into subgroups where each subgroup represents one library of ONS. The
                     subgroups are referred here with or without the prefix "lib" (eg., "memoria" or "libmemoria").<br />
                     The main library is called "libons". It does not provide any special functionality but contains wrappers for some system
-                    dependent functions which are needed in more than one ONS library. This library is required for all other libraries of ONS.
-                    Moreover, if this library runs on you system, all other libraries are guaranteed to run on your system, too. Though, there
+                    dependent functions which are needed in more than one ONS library. Libons is required for all other libraries of ONS.
+                    Moreover, if this library runs on your system, all other libraries are guaranteed to run on your system, too. Though, there
                     is no need to install all libraries. You can choose the libraries you need and install only them into your system.
                 </p>
                 <p>
@@ -55,8 +89,25 @@
                 </p>
                 <p>
                     This documentation is divided into several parts. You can skip all parts you don't need, however, I recommend to every developer,
-                    who uses ONS, reading this file completely. For all others it is sufficient to read the installation guide.
+                    who uses ONS, reading this file completely. For all others it is sufficient to read the <a href="#install">installation guide</a>.
                 </p>
+            </div>
+
+            <div id="toc">
+                <h1>Table of Contents</h1>
+                <ul style="font-size:1.4em;">
+                    <li><a href="#install">Installation</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#detail">ONS</a><br />
+                    <ul>
+                        <li><a href="#libons">ons</a></li>
+                        <li><a href="#memoria">Memoria</a></li>
+                        <li><a href="#saw">Saw</a></li>
+                        <li><a href="#fip">Fip</a></li>
+                        <li><a href="#yaadns">yaadns</a></li>
+                    </ul></li>
+                    <li><a href="#rules">Rules &amp; Guidelines</a></li>
+                </ul>
             </div>
 
             <div id="install">
@@ -103,7 +154,26 @@
                         <li>exit</li>
                     </ul>
                     You should check the summary at the end of the configure output carefully and pass some arguments to configure if the output is
-                    not correct. If everything built fine, ONS is now usable on your system.
+                    not correct. If everything built fine, ONS is now usable on your system.<br />
+                    You can use the default autoconf parameters with "configure". We added the following parameters:<br />
+                    <ul>
+                        <li><strong>--enable-bigendian</strong>: Force the endianness of your system to bigendian.</li>
+                        <li><strong>--enable-littleendian</strong>: Force the endianness of your system to littleendian.</li>
+                        <li><strong>--enable-warnings</strong>: Enable compiler warnings.</li>
+                        <li><strong>--enable-debug</strong>: Compile in debug mode.</li>
+                        <li><strong>--disable-ipv6</strong>: Disable all IPv6 functionality and dependencies.</li>
+                        <li><strong>--enable-modules=list,of,modules</strong>: Compile only the listed modules.</li>
+                    </ul>
+                    The following modules are available:<br />
+                    <ul>
+                        <li>ons</li>
+                        <li>memoria</li>
+                        <li>saw</li>
+                        <li>fip</li>
+                        <li>yaadns</li>
+                    </ul>
+                    They partly depend on each other, that is, if you specify for instance only <em>fip</em>, this will compile
+                    <em>ons, saw and fip</em>.
                 </p>
             </div>
 
@@ -147,42 +217,45 @@
                 <h1>Detailed look into the Open Network Suite</h1>
                 <p>
                     As said before, ONS consists of several mostly stand-alone libraries which only partly depend on each other. Thus, this file does not
-                    contain a reference for all libraries, but tries to give an overview about the structure used behind the whole software. Furthermore
-                    it contains tutorials which help you learning how the libraries are used and how they work together and interact with each other. Though,
-                    if you want to have a detailed function reference of a library, please read the reference documentations in this directory of the library
-                    you want to get information of.
+                    contain a reference for all libraries, but tries to give an overview about the structure used behind the whole software. If you
+                    want to use a library, please read it's reference documentation.
                 </p>
-            </div>
-
-            <div id="tutorials">
-                <h1>Tutorials</h1>
                 <p>
-                    Following, some tutorials which first show how to use the single libraries and then list more detailed views into the interaction between the
-                    libraries and show how to use even complex functionality of ONS.
+                    Most users are not interested in reference documentation, though, we provide several tutorials which introduce a single topic to
+                    the user and show how to use it. They, however, cannot explain every detail so if you need additional functionality you have to
+                    look into the documentation.<br />
+                    Available tutorials:<br />
+                    <ul>
+                        <li><a href="padding.tut.xhtml">Using unpadded structures.</a></li>
+                        <li><em>[ ... to be continued ... ]</em></li>
+                    </ul>
                 </p>
-                <div>
-                    <h2>Libons - Functionality</h2>
+                <div id="libons">
+                    <h2>Libons</h2>
+                    <p>
+                        Please read the <a href="libons.doc.xhtml">reference documentation</a> for detailed information.
+                    </p>
                     <p>
                         The main functions which are provided by Libons are configuration of your system and macros providing such information in the source code.
                         One example are macros providing unpadded structures. Either "#pragma pack" or a structure attribute is supported, thus, simply use
                         both like:<br />
                         <code>
                             <pre>
-            #include &lt;ons/ons.h&gt;
+                                <span class="c_macro">#include &lt;ons/ons.h&gt;</span>
 
-            #ifdef ONS_CONF_HAVE_PRAGMA_PACK
-                #pragma pack(push)
-                #pragma pack(1)
-            #endif
-            struct sample_structure {
-                uint8_t val1;
-                uint16_t val2;
-                uint32_t val3;
-                uint64_t val4;
-            } ONS_ATTR_PACK;
-            #ifdef ONS_CONF_HAVE_PRAGMA_PACK
-                #pragma pack(pop)
-            #endif
+                                <span class="c_macro">#ifdef ONS_CONF_HAVE_PRAGMA_PACK</span>
+                                    <span class="c_macro">#pragma pack(push)</span>
+                                    <span class="c_macro">#pragma pack(1)</span>
+                                <span class="c_macro">#endif</span>
+                                <span class="c_key">struct</span> sample_structure <span class="c_bold">{</span>
+                                    uint8_t val1<span class="c_bold">;</span>
+                                    uint16_t val2<span class="c_bold">;</span>
+                                    uint32_t val3<span class="c_bold">;</span>
+                                    uint64_t val4<span class="c_bold">;</span>
+                                <span class="c_bold">}</span> ONS_ATTR_PACK<span class="c_bold">;</span>
+                                <span class="c_macro">#ifdef ONS_CONF_HAVE_PRAGMA_PACK</span>
+                                    <span class="c_macro">#pragma pack(pop)</span>
+                                <span class="c_macro">#endif</span>
                             </pre>
                         </code>
                         This would create the structure "struct sample_structure" without any padding between the members. If the structure attribute is not supported
@@ -197,48 +270,48 @@
                         This example shows how to start a thread which counts from a start value and returns the current value when the other threads wants it to exit:
                         <code>
                             <pre>
-            #include &lt;ons/ons.h&gt;
-            #include &lt;stdio.h&gt;
+                                <span class="c_macro">#include &lt;ons/ons.h&gt;</span>
+                                <span class="c_macro">#include &lt;stdio.h&gt;</span>
 
-            ons_mutex_t mutex;
-            unsigned int val;
-            void *callback(void *arg);
+                                ons_mutex_t mutex<span class="c_bold">;</span>
+                                <span class="c_key">unsigned int</span> val<span class="c_bold">;</span>
+                                <span class="c_key">void</span> <span class="c_bold">*</span>callback<span class="c_bold">(</span><span class="c_key">void</span> <span class="c_bold">*</span>arg<span class="c_bold">)</span><span class="c_bold">;</span>
 
-            void *callback(void *arg) {
-                unsigned int *begin = arg;
+                                <span class="c_key">void</span> <span class="c_bold">*</span>callback<span class="c_bold">(</span><span class="c_key">void</span> <span class="c_bold">*</span>arg<span class="c_bold">)</span> <span class="c_bold">{</span>
+                                    <span class="c_key">unsigned int</span> <span class="c_bold">*</span>begin <span class="c_bold">=</span> arg<span class="c_bold">;</span>
 
-                val = *begin;
-                while(1) {
-                    /* Do we need to return? */
-                    if(!ons_mutex_trylock(&amp;mutex)) {
-                        return NULL;
-                    }
+                                    val <span class="c_bold">=</span> <span class="c_bold">*</span>begin<span class="c_bold">;</span>
+                                    <span class="c_key">while</span><span class="c_bold">(</span><span class="c_number">1</span><span class="c_bold">)</span> <span class="c_bold">{</span>
+                                        <span class="c_comment">/* Do we need to return? */</span>
+                                        <span class="c_key">if</span><span class="c_bold">(!</span>ons_mutex_trylock<span class="c_bold">(&amp;</span>mutex<span class="c_bold">))</span> <span class="c_bold">{</span>
+                                            <span class="c_key">return</span> NULL<span class="c_bold">;</span>
+                                        <span class="c_bold">}</span>
 
-                    ++val;
-                    ons_mutex_unlock(&amp;mutex);
-                }
-            }
+                                        ++val<span class="c_bold">;</span>
+                                        ons_mutex_unlock<span class="c_bold">(&amp;</span>mutex<span class="c_bold">);</span>
+                                    <span class="c_bold">}</span>
+                                <span class="c_bold">}</span>
 
-            int main() {
-                ons_thread_t thread;
-                unsigned int begin = 10;
+                                <span class="c_key">int</span> main<span class="c_bold">() {</span>
+                                    ons_thread_t thread<span class="c_bold">;</span>
+                                    <span class="c_key">unsigned int</span> begin <span class="c_bold">=</span> <span class="c_number">10</span><span class="c_bold">;</span>
 
-                /* Start thread an let him count from 10 upwards. */
-                ons_mutex_init(&amp;mutex);
-                ons_thread_run(&amp;thread, callback, &amp;begin);
+                                    <span class="c_comment">/* Start thread an let him count from 10 upwards. */</span>
+                                    ons_mutex_init<span class="c_bold">(&amp;</span>mutex<span class="c_bold">);</span>
+                                    ons_thread_run<span class="c_bold">(&amp;</span>thread, callback, <span class="c_bold">&amp;</span>begin<span class="c_bold">);</span>
 
-                /* Now sleep 1 second and then lock the mutex and wait for the thread to exit. */
-                ons_sleep(1);
-                ons_mutex_lock(&amp;mutex);
-                ons_thread_join(&amp;thread);
+                                    <span class="c_comment">/* Now sleep 1 second and then lock the mutex and wait for the thread to exit. */</span>
+                                    ons_sleep<span class="c_bold">(</span><span class="c_number">1</span><span class="c_bold">);</span>
+                                    ons_mutex_lock<span class="c_bold">(&amp;</span>mutex<span class="c_bold">);</span>
+                                    ons_thread_join<span class="c_bold">(&amp;</span>thread<span class="c_bold">);</span>
 
-                ons_mutex_unlock(&amp;mutex);
-                ons_mutex_free(&amp;mutex);
+                                    ons_mutex_unlock<span class="c_bold">(&amp;</span>mutex<span class="c_bold">);</span>
+                                    ons_mutex_free<span class="c_bold">(&amp;</span>mutex<span class="c_bold">);</span>
 
-                printf("Thread counted: %u\n", val);
+                                    printf<span class="c_bold">(</span><span class="c_string">"Thread counted: %u\n"</span>, val<span class="c_bold">);</span>
 
-                return 0;
-            }
+                                    <span class="c_key">return</span> <span class="c_number">0</span><span class="c_bold">;</span>
+                                <span class="c_bold">}</span>
                             </pre>
                         </code>
                     </p>
@@ -261,32 +334,35 @@
                         creating the first thread an after stopping the last additional thread.
                     </p>
                 </div>
-                <div>
-                    <h2>Memoria - Functionality</h2>
+                <div id="memoria">
+                    <h2>Memoria</h2>
+                    <p>
+                        Please read the <a href="libmemoria.doc.xhtml">reference documentation</a> for detailed information.
+                    </p>
                     <p>
                         Libmemoria is a memory management library. It provides generic linked lists, generic dynamic arrays and other generic and dynamic memory
-                        structures. The following list shows all things supported by Libmemoria, please see the reference for a more detailed list, this document
-                        shows only some tutorials for chosen topics:<br />
+                        structures. The following list shows all things supported by Libmemoria:<br />
                         <ul>
                             <li>malloc(), realloc(), ... wrappers.</li>
                             <li>strnlen() and similar non-ISO-C string functions.</li>
                             <li>generic dynamic arrays</li>
                             <li>generic double linked lists</li>
-                            <li>Heap management through mmap().</li>
+                            <li>generic binary trees</li>
+                            <li>config file parser</li>
                             <li>Fast hashing functions.</li>
                             <li>Fast cryptographic and non-cryptographic random number generators.</li>
                         </ul>
                     </p>
-                    <p>
-                        TODO: tutorials
-                    </p>
                 </div>
-                <div>
-                    <h2>Saw - Functionality</h2>
+                <div id="saw">
+                    <h2>Saw - Socket Address Wrapper</h2>
+                    <p>
+                        Please read the <a href="libsaw.doc.xhtml">reference documentation</a> for detailed information.
+                    </p>
                     <p>
                         Saw was created when we tried to compile our socket application on a BSD machine and discovered that we need to check for BSD specific
-                        members in the sockaddr structure, before we could use it. We decided to write a small library which checks for all these spcecial
-                        cases on really not-standard-following UNIX systems. And while writing this library we discovered that there is really no system which
+                        members in the sockaddr structure, before we could use it. We decided to write a small library which checks for all these special
+                        cases on really non-standard-following UNIX systems. And while writing this library we discovered that there is really no system which
                         followes all POSIX/UNIX standards (this sucks!) and of course these standards are far less than perfect. However, this library supports
                         the following:<br />
                         <ul>
@@ -295,12 +371,12 @@
                             <li>Checks for special addresses, eg., solicited multicast.</li>
                         </ul>
                     </p>
-                    <p>
-                        TODO: tutorials
-                    </p>
                 </div>
-                <div>
-                    <h2>Fip - Functionality</h2>
+                <div id="fip">
+                    <h2>Fip - Free Internet Protocol Library</h2>
+                    <p>
+                        Please read the <a href="libfip.doc.xhtml">reference documentation</a> for detailed information.
+                    </p>
                     <p>
                         Fip is a library which wraps the common Unix socket functions in a uniform API. Though, most UNIX systems follow a standard here, the returned
                         error codes are fare less than self-explaining and documented. The main reason why using Fip is because it returns the same codes on all machines
@@ -316,14 +392,14 @@
                             <li>Interface bindings.</li>
                         </ul>
                     </p>
-                    <p>
-                        TODO: tutorials
-                    </p>
                 </div>
-                <div>
-                    <h2>yaadns - Functionality</h2>
+                <div id="yaadns">
+                    <h2>yaadns - Yet Another Asynchronous Domain Name System Resolver Library</h2>
                     <p>
-                        Yaadns is the try to create a DNS resolver library which supports non-blocking, threaded and non-threaded, recursive domain name system
+                        Please read the <a href="libyaadns.doc.xhtml">reference documentation</a> for detailed information.
+                    </p>
+                    <p>
+                        Yaadns is the attempt to create a DNS resolver library which supports non-blocking, threaded and non-threaded, recursive domain name system
                         services. The current support is limited to a stab resolver because there are DNS-standard issues which need to be resolved before
                         we are going to support recursive services. Please read the documentation files of yaadns to get more information about the DNS mess.
                         The following list shows the current yaadns services:<br />
@@ -335,12 +411,9 @@
                             <li>domain name resolver</li>
                         </ul>
                     </p>
-                    <p>
-                        TODO: tutorials
-                    </p>
                 </div>
             </div>
-            <div>
+            <div id="rules">
                 <h1>Rules &amp; Guidelines</h1>
                 <p>
                     Following a list of guidelines and rules all ONS software conforms to:

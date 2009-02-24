@@ -44,6 +44,10 @@ TODO =1.0:
     - writev and readv
 
 [ ONS v0.1.1.0 (TESTING) ]
+    * David Herrmann 2009/02/24 
+        - Finish main documentation.
+        - Finish libons documentation.
+        - Add first tutorial.
     * David Herrmann 2009/02/23
         - memoria/rbtree.c: Fix key comparison.
                             Add ways to iterate through an RB-tree.

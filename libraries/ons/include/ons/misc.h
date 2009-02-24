@@ -8,7 +8,7 @@
  * - Created: 22. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 1. January 2009
+ * - Last-Change: 24. February 2009
  */
 
 /* This file contains global declarations for all libraries
@@ -65,6 +65,7 @@ extern 'C' {
  * - ONS_CONF_HAVE_GETTIMEOFDAY is defined if gettimeofday() and sys/time.h are available.
  * - ONS_CONF_HAVE_PTHREAD_H is defined if pthread.h is available and the library is linked to -lpthread.
  * - ONS_CONF_WINDOWS is defined on windows machines.
+ * - ONS_CONF_DEBUG is defined if ONS is compiled in debug mode.
  */
 /* Modify the appropriate block here. */
 #if defined(WIN32) || defined(_WIN32) || defined(WIN64) || defined(_WIN64) || defined(_WINDOWS_)
@@ -98,6 +99,10 @@ extern 'C' {
     #define ONS_EXTERN_C_END
 #endif
 
+#ifdef ONS_CONF_DEBUG
+    #define ONS_DEBUG ONS_CONF_DEBUG
+#endif
+
 /* Include windows.h and winsock2.h headers on Windows. */
 #ifdef ONS_CONF_WINDOWS
     #include <windows.h>
@@ -122,6 +127,11 @@ extern 'C' {
  */
 extern void ons_fatal_error(const char *format, ...);
 #define ONS_ABORT(msg) ons_fatal_error("ONS failed in %s at %u: %s\n", __FILE__, __LINE__, msg)
+#ifdef ONS_DEBUG
+    #define ONS_ASSERT(x) ((x)?ONS_ABORT("Assertation failed."):0)
+#else
+    #define ONS_ASSERT(x) (0)
+#endif
 
 
 #ifdef __cplusplus

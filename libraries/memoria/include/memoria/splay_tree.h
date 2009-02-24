@@ -33,6 +33,8 @@ typedef ons_comp_t (*mem_smatch_t)(const struct mem_snode_t *orig, const struct 
 
 typedef struct mem_stree_t {
     struct mem_snode_t *root;
+    struct mem_snode_t *first;
+    struct mem_snode_t *last;
     size_t count;
     mem_smatch_t match;
 } mem_stree_t;
@@ -44,6 +46,9 @@ typedef struct mem_snode_t {
 
     struct mem_snode_t *left;
     struct mem_snode_t *right;
+
+    struct mem_snode_t *next;
+    struct mem_snode_t *prev;
 } mem_snode_t;
 
 extern void mem_stree_init(mem_stree_t *tree, mem_smatch_t match);

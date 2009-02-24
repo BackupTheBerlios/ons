@@ -1,0 +1,99 @@
+body {
+	padding: 0px;
+	margin: 20px;
+	border: 0px;
+	text-align: justify;
+}
+#header {
+	text-align: center;
+	height: 200px;
+}
+#actual_state {
+	width: 400px;
+	position: absolute;
+	left: 50%;
+	margin: 0 -200px;
+}
+#actual_state dt {
+	float: left;
+	clear: both;
+	font-weight: bold;
+}
+#actual_state dt:after {
+	content: ":";
+}
+#actual_state dd {
+	float: right;
+}
+#people dt {
+	font-weight: bold;
+}
+#people dt:after {
+	content: ":";
+}
+.box {
+	background-color: #e9ffe8;
+	border: 1px solid black;
+	padding: 10px;
+}
+.warnbox {
+	background-color: red;
+	border: 1px solid black;
+	padding: 10px;
+	font-weight: bold;
+}
+.box .head {
+	background-color: #7be778;
+}
+code {
+	padding: 2px;
+	white-space: pre;
+	font-family: monospace;
+}
+p {
+	margin-left: 20px;
+}
+div {
+	margin-left: 20px;
+}
+.c_key {
+	color: #00007f;
+	font-weight: bold;
+}
+.c_macro {
+	color: #7f7f00;
+}
+.c_comment {
+	color: #0c850c;
+}
+.c_string {
+	color: #7f007f;
+}
+.c_number {
+	color: #379b9b;
+}
+.c_bold {
+	font-weight: bold;
+}
+.c_red {
+	color: #FFBBBB;
+	font-weight: bold;
+}
+.binary_table {
+	border: 1px solid black;
+	border-spacing: 5px;
+	text-align: right;
+	margin: 10px;
+}
+.binary_table .block {
+	border: 1px solid black;
+	min-width: 20px;
+	background-color: #e9ffe8;
+	font-weight: bold;
+}
+.binary_table .block2 {
+	border: 1px solid black;
+	min-width: 20px;
+	background-color: #FFBBBB;
+	font-weight: bold;
+}

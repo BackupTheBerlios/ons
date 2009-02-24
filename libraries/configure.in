@@ -8,7 +8,7 @@ dnl File information:
 dnl - Created: 22. December 2008
 dnl - Lead-Dev: - David Herrmann
 dnl - Contributors: /
-dnl - Last-Change: 17. January 2009
+dnl - Last-Change: 24. February 2009
 dnl
 
 dnl
@@ -83,6 +83,7 @@ dnl - Defines HAVE_FCNTL_H if sys/fcntl.h is available.
 dnl - Defines HAVE_GETTIMEOFDAY if gettimeofday() is available. This includes the
 dnl   sys/time.h header.
 dnl - Defines HAVE_PTHREAD_H if pthread.h is available.
+dnl - Defines DEBUG if debug mode is enabled.
 dnl
 
 
@@ -160,10 +161,12 @@ if test x"$ons_cv_enable_warnings" = xyes; then
     else
         CFLAGS="-fPIC -O2 -Wall -DNDEBUG"
         ons_cv_enable_debug="no"
+        AC_DEFINE([DEBUG], [1], [Define if Debug mode is enabled.])
     fi
 elif test x"$ons_cv_enable_debug" = xyes; then
     CFLAGS="-fPIC -g -O0"
     ons_cv_enable_warnings="no"
+    AC_DEFINE([DEBUG], [1], [Define if Debug mode is enabled.])
 else
     CFLAGS="$CFLAGS -fPIC -DNDEBUG"
     ons_cv_enable_debug="no"
@@ -510,6 +513,11 @@ AC_ARG_ENABLE(modules,
                 fi
                 ;;
             fip)
+                if test $ons_enable_saw = "no" ; then
+                    ons_enable_saw="yes"
+                    ons_modules="$ons_modules saw"
+                    ons_makefiles="$ons_makefiles saw/Makefile"
+                fi
                 if test $ons_enable_fip = "no" ; then
                     ons_enable_fip="yes"
                     ons_modules="$ons_modules fip"
@@ -517,6 +525,21 @@ AC_ARG_ENABLE(modules,
                 fi
                 ;;
             yaadns)
+                if test $ons_enable_memoria = "no" ; then
+                    ons_enable_memoria="yes"
+                    ons_modules="$ons_modules memoria"
+                    ons_makefiles="$ons_makefiles memoria/Makefile"
+                fi
+                if test $ons_enable_saw = "no" ; then
+                    ons_enable_saw="yes"
+                    ons_modules="$ons_modules saw"
+                    ons_makefiles="$ons_makefiles saw/Makefile"
+                fi
+                if test $ons_enable_fip = "no" ; then
+                    ons_enable_fip="yes"
+                    ons_modules="$ons_modules fip"
+                    ons_makefiles="$ons_makefiles fip/Makefile"
+                fi
                 if test $ons_enable_yaadns = "no" ; then
                     ons_enable_yaadns="yes"
                     ons_modules="$ons_modules yaadns"
@@ -615,6 +638,7 @@ if test -f ons/include/ons/config.h ; then
     TMP_MISC="$TMP_MISC$TMP_NL$(grep NONBLOCK_SYSV <$ons_path/include/ons/config.h)"
     TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_GETTIMEOFDAY <$ons_path/include/ons/config.h)"
     TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_PTHREAD_H <$ons_path/include/ons/config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep DEBUG <$ons_path/include/ons/config.h)"
     TMP_MISC=$(echo "$TMP_MISC" | sed -e 's/^#define\s\{1,\}\(ONS_CONF_\)\{0,1\}\(.*\)$/#define ONS_CONF_\2/g')
 
     # Write into setup.h
