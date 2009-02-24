@@ -21,7 +21,7 @@
 #include <ctype.h>
 #include "saw/saw.h"
 
-/* Old macros which are no longer used. TODO: remove them. */
+/* Old macros which no longer are needed. */
 #define SAW_UINT(x) x
 #define SAW_MKUINT(x) x
 

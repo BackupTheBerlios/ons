@@ -8,7 +8,7 @@
 # - Created: 17. January 2009
 # - Lead-Dev: - David Herrmann
 # - Contributors: /
-# - Last-Change: 17. January 2009
+# - Last-Change: 24. February 2009
 #
 
 
@@ -53,8 +53,7 @@ HEADERS = \
 	${INC_PATH}/addr6.h \
 	${INC_PATH}/addrx.h \
 	${INC_PATH}/addrlo.h \
-	${INC_PATH}/addr.h \
-	${INC_PATH}/net.h
+	${INC_PATH}/addr.h
 
 BINFILE = lib${LIBNAME}.so
 BINARY = ${srcdir}/${BINFILE}

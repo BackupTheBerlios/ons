@@ -27,7 +27,7 @@ TODO =1.0:
         - overview: export thread example into a tutorial
         - ons: finished
         - memoria: rewrite
-        - saw: rewrite
+        - saw: rewrite; add flow-label and scope-id information and probably support.
         - fip: write
         - yaadns: write
  - memoria:
@@ -61,6 +61,7 @@ TODO =1.0:
         - memoria/rbtree.c: Fix wrong linked list inserts.
                             Change match function to handle more cases.
         - memoria/splay_tree.c: Implement Splay Trees.
+        - saw/net.h: remove
     * David Herrmann 2009/02/23
         - memoria/rbtree.c: Fix key comparison.
                             Add ways to iterate through an RB-tree.
