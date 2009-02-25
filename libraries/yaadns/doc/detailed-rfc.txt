@@ -8,7 +8,7 @@
 # - Created: 21. March 2008
 # - Lead-Dev: - David Herrmann
 # - Contributors: /
-# - Last-Change: 27. December 2008
+# - Last-Change: 25. February 2009
 #
 
 
@@ -38,7 +38,6 @@
        domain name system.
 1464 - Shows how to use TXT records to store arbitrary information. Uses a key
        value architecture.
-1480 - Structure of the *.us. domain name.
 1535 - Shows a security problem with widely deployed DNS software and non rooted
        FQDNs.
 1536 - Common DNS implementation errors and suggested fixes.
@@ -81,7 +80,6 @@
 2870 - Root Name Server Operational Requirements.
 2874 - DNS Extensions to Support IPv6 Address Aggregation and Renumbering.
      - A6 RR.
-2929 - IANA considerations - Current summary of the DNS structures.
 2930 - Secret Key Establishment for DNS (TKEY RR).
 2931 - DNS Request and Transaction Signatures ( SIG(0)s ).
 3007 - Secure Domain Name System (DNS) Dynamic Update.
@@ -92,7 +90,6 @@
 3225 - Indicating of DNSSEC support in resolvers.
 3226 - DNSSEC and IPv6 A6 aware server/resolver message size requirements.
 3258 - Distributing Authoritative Name Servers via Shared Unicast Addresses.
-3368 - The 'go' URI Scheme for the Common Name Resolution Protocol.
 3363 - Describes the recommended behaviour in handling A6 and AAAA records.
 3364 - Describes the recommended behaviour in handling A6 and AAAA records.
 3401 - Dynamic Delegation Discovery System (DDDS).
@@ -171,50 +168,45 @@
 5074 - DNSSEC Lookaside Validation (DLV).
 5155 - DNS Security (DNSSEC) Hashed Authenticated Denial of Existence.
 5158 - 6to4 Reverse DNS Delegation Specification.
+5358 - Preventing Use of Recursive Nameservers in Reflector Attacks
+5395 - IANA considerations - Current summary of the DNS structures.
+5452 - Measures for Making DNS More Resilient against Forged Answers
 
 
 Main DNS functionality (CORE):
  - RFCs:
     1034 - Describes the main facilities of the DNS protocol.
     1035 - Shows details to the RFC 1034.
+    2181 - Clarifications to the DNS specification.
+    3425 - Obsoletes IQuery.
+    4343 - Domain Name System (DNS) Case Insensitivity Clarification.
+    4592 - The Role of Wildcards in the Domain Name System.
+    2136 - New OPCODE: UPDATE; Allows dynamic updates of a zone of a nameserver.
+    2671 - Extension Mechanisms for DNS (EDNS0).
+    2672 - Non-terminal dns name redirection, DName RR.
+    2673 - Binary labels in the Domain Name System.
+    2782 - A DNS RR for specifying the location of services (DNS SRV).
+    5001 - DNS Name Server Identifier (NSID) Option.
+    2874 - DNS Extensions to Support IPv6 Address Aggregation and Renumbering (A6 RR).
+    3596 - AAAA RR type declaration and definition.
  - Implemented in core library.
 
 Information about the core DNS (ICORE [I=information]):
  - RFCs:
-    1101 - Shows how to get network information through DNS.
-         - Allows mapping of network addresses to network numbers.
-         - *.in-addr.arpa A RRs are mapped to subnet masks.
-    1123 - Defines which actions must be supported by internet hosts including
-           the DNS.
-    1383 - Some ideas in routing through DNS and some other discussions.
-    1535 - Shows a security problem with widely deployed DNS software and non rooted
-           FQDNs.
     1536 - Common DNS implementation errors and suggested fixes.
-    1591 - Domain name system structure and delegation.
-    1713 - Domain name system debug facilities and software.
     1794 - Domain name system support for load balancing.
-    1912 - Common DNS operational and configuration errors.
-    2181 - Clarifications to the DNS specification.
     2308 - Negative caching of DNS queries.
-    2540 - Detached Domain Name System (DNS) Information.
-    3425 - Obsoletes IQuery.
     3597 - Handling of Unknown DNS Resource Record (RR) Types.
-    4343 - Domain Name System (DNS) Case Insensitivity Clarification.
-    4367 - What's in a Name: False Assumptions about DNS Names.
-    4592 - The Role of Wildcards in the Domain Name System.
     4697 - Observed DNS Resolution Misbehavior.
- - Recognized (or not) while developing yaadns.
-
-Additional information (AINFO):
- - RFCs:
-    1401 - Shows 3 letters between IAB and DISA trying to clarify about the future
-           domain name system.
-    2606 - Reserved Top Level DNS Names.
-    2826 - Technical comment on the unique of the DNS root.
-    2929 - IANA considerations - Current summary of the DNS structures.
-    3467 - Role of the Domain Name System (DNS).
+    5452 - Measures for Making DNS More Resilient against Forged Answers
+    5395 - IANA considerations - Current summary of the DNS structures.
+         - Lists all currently official number assignments.
     3833 - Threat Analysis of the Domain Name System (DNS).
- - Recognized in yaadns.
+    3363 - Describes the recommended behaviour in handling A6 and AAAA records.
+    3364 - Describes the recommended behaviour in handling A6 and AAAA records.
+    4074 - Common Misbehavior Against DNS Queries for IPv6 Addresses.
+    4472 - Operational Considerations and Issues with IPv6 DNS.
+ - Recognized while developing the core.
 
 I18n issues (I18N or IDN):
  - RFCs:
@@ -227,49 +219,10 @@ I18n issues (I18N or IDN):
            Names (IDN) Registration and Administration for Chinese, Japanese, and
            Korean.
     4690 - Review and Recommendations for Internationalized Domain Names (IDNs).
- - Implemented in yaadns.
-
-Additional RRs/Extensions (EXT):
- - RFCs:
-    1183 - new RRs: AFS Data Base location RR, Responsible Person RR,
-           X25 RR, ISDN RR, Route Through RR
-    1464 - Shows how to use TXT records to store arbitrary information. Uses a key
-           value architecture.
-    1706 - NSAP resource records and NSAP name translation.
-    1712 - Encoding of geographical information.
-    1876 - Encoding of geographical information.
-    1995 - Incremental zone transfer protocol (IXFR).
-    1996 - DNS NOTIFY mechanism for prompt notification of zone changes.
-    2136 - New OPCODE: UPDATE
-         - Allows dynamic updates to a zone file of a nameserver.
-    2671 - Extension Mechanisms for DNS (EDNS0).
-    2672 - Non-terminal dns name redirection, DName RR.
-    2673 - Binary labels in the Domain Name System.
-    2782 - A DNS RR for specifying the location of services (DNS SRV).
-    3123 - A DNS RR Type for Lists of Address Prefixes (APL RR).
-    4701 - A DNS Resource Record (RR) for Encoding Dynamic Host Configuration
-           Protocol (DHCP) Information (DHCID RR).
-    4892 - Requirements for a Mechanism Identifying a Name Server Instance.
-    5001 - DNS Name Server Identifier (NSID) Option.
- - Partly supported.
-
-IPv6 Extension (IPV6):
- - RFCs:
-    2874 - DNS Extensions to Support IPv6 Address Aggregation and Renumbering.
-         - A6 RR.
-    3363 - Describes the recommended behaviour in handling A6 and AAAA records.
-    3364 - Describes the recommended behaviour in handling A6 and AAAA records.
-    3596 - AAAA RR type declaration and definition.
-    3646 - DNS Configuration options for Dynamic Host Configuration Protocol
-           for IPv6.
-    3681 - Delegation of E.F.F.3.IP6.ARPA.
-    3901 - DNS IPv6 Transport Operational Guidelines.
-    4074 - Common Misbehavior Against DNS Queries for IPv6 Addresses.
-    4339 - IPv6 Host Configuration of DNS Server Information Approaches.
-    4472 - Operational Considerations and Issues with IPv6 DNS.
-    5006 - IPv6 Router Advertisement Option for DNS Configuration.
-    5158 - 6to4 Reverse DNS Delegation Specification.
- - Modulized in yaadns.
+ - IDNA can be used totally independent from DNS. Therefore, we exspect the user to
+   use an UI library which converts UTF-8 into IDN strings before passing them to
+   the resolver. The resolver can work with IDN strings the same way as with normal
+   ASCII strings.
 
 DNSSEC Extension (DNSSEC):
  - RFCs:
@@ -330,10 +283,102 @@ DDDS Extension (DDDS):
            Delegation Discovery Service (DDDS).
     4848 - Domain-Based Application Service Location Using URIs and the Dynamic
            Delegation Discovery Service (DDDS).
- - Not yet supported nor recognized.
+ - DDDS is a nice standard which can easily be integrated into the resolver. Moreover,
+   it can even be used with the current resolver if you parse the rdata yourself.
+   However, I have never heard that DDDS is really used and therefore, we haven't
+   implemented it yet.
 
-Unsupported Extensions (UNSUPP):
+Unsupported Techniques (UNSUPP TECH):
  - RFCs:
+    1535 - Shows a security problem with widely deployed DNS software and non rooted
+           FQDNs.
+         - We do not support the obsolete interface of local search trees and non
+           rootet FQDNs. If you need this functionality, we recommend to add this
+           into the IDN library you use. We only provide a resolution in the DNS,
+           not any domain transformation and corrections.
+    2540 - Detached Domain Name System (DNS) Information.
+         - Shows how to save DNS information in a binary form or a text form detached
+           from the Domain Name System. We provide the information attached to the
+           DNS, the user has to care for this RFC if he wants to distribute it
+           detached from the DNS.
+    1995 - Incremental zone transfer protocol (IXFR).
+         - A resolver does not need to know AXFR or IXFR because it does not manage
+           a zone and therefore cannot handle zone transfers.
+    1996 - DNS NOTIFY mechanism for prompt notification of zone changes.
+         - Only master servers can send this to slave servers. A resolver is never a
+           server, thus, we do not need this.
+    3123 - A DNS RR Type for Lists of Address Prefixes (APL RR).
+         - Experimental RR which provides CIDR information for subnets. Who uses such
+           information? Denied!
+    4701 - A DNS Resource Record (RR) for Encoding Dynamic Host Configuration
+           Protocol (DHCP) Information (DHCID RR).
+         - This RR is used by the DHCP protocol and can be resolved by this resolver.
+           However, parsing the rdata has to be done by the DHCP application. This is
+           not in the scope of an resolver, but in the scope of DHCP software.
+    3646 - DNS Configuration options for Dynamic Host Configuration Protocol
+           for IPv6.
+         - Same reason as 4701.
+    5158 - 6to4 Reverse DNS Delegation Specification.
+         - Allows to push 6to4 information into a zone file of a server.
+           Only informational, the same effect can be achieved with the supported
+           UPDATE command or other mechanisms.
+    2163 - Using the internet DNS to distribute MIXER conformant global address
+           mapping (MCGAM).
+         - Unused and historic RR type.
+
+Unsupported Informational RFCs (UNSUPP INFO):
+ - RFCs:
+    1123 - Defines which actions must be supported by internet hosts including
+           the DNS.
+         - This RFC does not define any technical details and tells only what an
+           host in the internet should support. We implement the DNS protocol
+           exactly, therefore, we always conform to this protocol.
+    1591 - Domain name system structure and delegation.
+         - We are not interested in information which top-level domains exist and
+           how to administrate them. It has nothing to do with the technical details.
+    1713 - Domain name system debug facilities and software.
+         - This RFC is an advert for DNS debug software. Sorry dudes, but adverts suck.
+    1912 - Common DNS operational and configuration errors.
+         - Only of interest for server administrators. We only implement a resolver!
+           Mentions only one bug in resolvers which says, that the user input should
+           be checked that it is not already an IP. This is hopefully done by the
+           user input library, not by us. We allow to resolve every name.
+    4367 - What's in a Name: False Assumptions about DNS Names.
+         - Lists some false assumptions what users/clients/servers expect behind a name
+           by only evaluating the name. This is not in the scope of a resolver.
+    5358 - Preventing Use of Recursive Nameservers in Reflector Attacks
+         - Shows how reflector-attacks work and suggest to stop providing recursive
+           services to everyone and add IP access based authorization.
+         - Not part of a resolver.
+    1401 - Shows 3 letters between IAB and DISA trying to clarify about the future
+           domain name system.
+         - No technical details. Only historical information.
+    2606 - Reserved Top Level DNS Names.
+         - We recognize this RFC in our examples, but we do not prevent the resolution
+           of the domains mentioned here. This should be checked by the input library.
+    2826 - Technical comment on the unique of the DNS root.
+         - We support only one DNS root. However, there is no technical stuff in this
+           RFC, therefore, we can safely ignore it.
+    3467 - Role of the Domain Name System (DNS).
+         - Mentions that the DNS should not be overloaded and only be used for the stuff
+           it is intended for. Would give a great blog entry but not usefull for a
+           resolver implementation.
+    4892 - Requirements for a Mechanism Identifying a Name Server Instance.
+         - Important for new standards. It does not declare a standard itself, but lists
+           facts which have to be considered in possible new standards.
+    3681 - Delegation of E.F.F.3.IP6.ARPA.
+         - 6bone is no longer active.
+    3901 - DNS IPv6 Transport Operational Guidelines.
+         - Shows the problem when DNS is served only by IPv6 and an IPv4 resolver cannot
+           access it or vice versa. Contains only information for server administrators.
+    4339 - IPv6 Host Configuration of DNS Server Information Approaches.
+           "Therefore, the objective of this document is to help the audience
+            select the approaches suitable for IPv6 host configuration of
+            recursive DNS servers."
+           Contains no technical information.
+    5006 - IPv6 Router Advertisement Option for DNS Configuration.
+         - Allows routers to send IPv6 packets with information about recursive nameservers.
+           Does not extend the DNS standard.
     881 - Outlines a plan for domain names in the ARPA-NET.
     897 - Implementation schedule of the DNS in the internet.
     921 - Revision of the RFCs 881/897.
@@ -341,25 +386,62 @@ Unsupported Extensions (UNSUPP):
     1032 - Domain registration guideline at NIC (DDN).
          - Should be used in conjunction with RFC 920.
     1033 - Shows Domain admins how to maintain their part in the DNS.
-    1480 - Structure of the *.us. domain name.
-    1611 - Server portion of Management Information Base (MIB) with network
+    1611/1612 - Server portion of Management Information Base (MIB) with network
            management protocols.
-    1612 - Client portion of Management Information Base (MIB) with network
-           management protocols.
+         - Both marked as historic.
     1982 - Serial number arithmetics.
-    2163 - Using the internet DNS to distribute MIXER conformant global address
-           mapping (MCGAM).
+         - Shows how DNS server admins should increase their SOA serial numbers.
     2182 - Selection and operation of secondary dns servers.
+         - Information for people running name servers.
     2219 - Use of DNS aliases for several services.
-         - Declaration of the "www" abbreviation.
-    2317 - Classless in-addr.arpa delegation.
+         - eg., declaration of the "www" abbreviation.
+         - Information for users and name server runners, not for resolvers.
     2870 - Root Name Server Operational Requirements.
+         - Information for name server admins.
+    2317 - Classless in-addr.arpa delegation.
+         - Information for admins to allow subnet delegation.
     3071 - Reflections on the DNS, RFC 1591, and Categories of Domains.
+         - Only informational about ICANN's role as root owner.
     3258 - Distributing Authoritative Name Servers via Shared Unicast Addresses.
-    3368 - The 'go' URI Scheme for the Common Name Resolution Protocol.
+         - Information for domain name server admins.
     4027 - Domain Name System Media Types.
+         - Defines media-types for dns. Only usefull for detached information.
     4183 - A Suggested Scheme for DNS Resolution of Networks and Gateways.
+         - same reason as 2317
     4185 - National and Local Characters for DNS Top Level Domain (TLD) Names.
+         - Administrational information.
+
+
+Unsupported Extensions to the user interface (UNSUPP UI):
+ - RFCs:
+    1101 - Allows to map class A/B/C networks to an domain name.
+         - Works the same way as a single ip but omits the zero parts of the ip.
+         - The current core allows the resolution of this type but the UI does not
+           implement it, yet, because it is only rarely used.
+    1383 - Some ideas in routing through DNS and some other discussions.
+         - This RFC uses TXT records to store routing information in the DNS. Our
+           core handles TXT records correctly, however, the UI does not provide an
+           interface for that.
+           This technique is not used in the internet. The RFC should be marked
+           obsolete.
+    1183 - new RRs: AFS Data Base location RR, Responsible Person RR,
+           X25 RR, ISDN RR, Route Through RR.
+         - These RRs can be resolved by the core, but an explicit API is not supported,
+           because the RFC is experimental and not widely used. It probably will become
+           obsolete in future.
+    1464 - Shows how to use TXT records to store arbitrary information. Uses a key
+           value architecture.
+         - Experimential RFC which is not widely spread and probably will become obsolete.
+           TXT records can be used with this resolver, however, the key-value parsing
+           has to be done by the user.
+    1706 - NSAP resource records and NSAP name translation.
+         - The RR can be retrieved, but is not directly supported because it is not
+           widely used in the internet and will probably become obsolete.
+    1712 - Encoding of geographical information.
+    1876 - Encoding of geographical information.
+         - Both attempts create a new RR which allows to retrieve geographical information
+           for a domain name. Again, it can be resolved by the resolver, but the rrdata
+           is not encoded and has to be handled by the user.
     4501 - Domain Name System Uniform Resource Identifiers.
- - Not yet supported nor recognized.
+         - URIs are not part of this library.
 
