@@ -55,6 +55,7 @@ TODO =1.0:
         - saw/net.h: remove
         - fip/error.h: Move error codes into libons.
         - fip: Added debug info printings.
+        - yaadns: Update rfc list.
     * David Herrmann 2009/02/23
         - memoria/rbtree.c: Fix key comparison.
                             Add ways to iterate through an RB-tree.
