@@ -1,0 +1,39 @@
+This directory contains documentation about the development of yaadns.
+DNS software has to be planned carefully. There are about 123 RFCs (state of
+february 2009) which describe all DNS functionality.
+
+The first step was reading all of them. Hard work, but has to be done.
+The second step was ordering them. "detailed-rfc.txt" contains a list of all
+RFCs with a short description. Furthermore, they are sorted into several
+categories:
+ - CORE: RFCs which change the core implementation of a resolver.
+ - ICORE: Informational or BP RFCs which affect the core of a resolver.
+ - I18N: RFCs which do not change the core/protocol and only form an additional
+         layer of the user interface which allows to use internationalized
+         domain names.
+ - DNSSEC: All security extensions of DNS.
+ - DDDS: Dynamic Delegation Discovery System: Not implemented in this resolver
+         because it is not widely used. However, you can resolve DDDS RRs with
+         the resolver and parse them yourself.
+ - UNSUPP: All DNS related RFCs which do not affect a resolver. These includes
+           administrational RFCs or obsolete extensions.
+
+Then, we started to create an algorithm which is used by our resolver. We first
+created the algorithm described by the base RFCs 1034/1035. This can be found
+in "algorithm/core_1.txt".
+Then we started extending this algorithm with the other RFCs in CORE and ICORE.
+You can see them in "algorithm" named as core_2.txt, core_3.txt and so on.
+Each higher core implements some more RFCs.
+This finally resulted in an algorithm which implements all RFCs related to an
+asychronous recursive resolver. However, this algorithm is highly abstract and
+contains no information about it's implementation in C. Therefore, the next step
+was creating an API which will be used for this algorithm, which can be found in
+api.txt. So, the last step was implementing this API in the source.
+
+update_rfclist.sh is a shell script that checks whether there are new DNS
+related RFCs. It synchronizes detailed-rfc.txt with the list maintained by the
+BIND developers.
+Of course, we additionally read the DNS-EXT mailing-list and follow the current
+DNS development and, thus, update this list also manually.
+
+pinboard.txt is only a temporary pinboard used by the developers.

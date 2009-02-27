@@ -1,0 +1,214 @@
+This algorithm implements the DNS protocol explained in the RFCs:
+ - 1034
+ - 1035
+
+The other core files highly depend on this file. They extend or
+change the algorithm mentioned here. The highest core file is always
+the algorithm which is implemented in the resolver.
+
+However, the RFCs are highly separated into "Standards" and
+"proposed Standards" or lower. This file implements all DNS related
+RFCs which are currently a STANDARD!
+Though, the internet does really *NOT* use this standard but many
+extensions which were made to it.
+
+
+############### Algorithm ###############
+
+This algorithm can be started at any position if all the data which is
+created by the previous steps is provided by the user.
+
+
+### Step 1 ###
+Three ways to input data:
+1:  Takes a single string as argument which is interpreted as a domain
+    name which should be resolved to IPv4 addresses.
+    Following steps are done on this name:
+    - Check that the user did not input an IP address. If they did, we
+      return the IP.
+    - We continue continue with step 2 and supply the domain as QNAME,
+      IN as QCLASS and A as QTYPE. If it returns "unexistant domain",
+      we add the values from the local search path one by one and try
+      until we don't get this error or our search path exceeds.
+      If we get any other return value than "unexistant domain", we
+      immediately return it to the user.
+2:  Takes as single argument an IP address which should be resolved to
+    a domain name.
+    - We append it to IN-ADDR.ARPA.
+    - We continue with step 2 and supply this domain as QNAME, IN as
+      QCLASS and PTR as QTYPE. We return the result directly to the
+      user.
+3:  An string with two integers. We directly continue with step 2 and
+    supply the string as QNAME and the two integers as QTYPE and QCLASS.
+    The result is directly returned to the user.
+
+### Step 2 ###
+We get a string as QNAME and two integers as QCLASS and QTYPE.
+We first validate QNAME:
+ - Each label is checked to have at most 63 characters.
+ - The string is converted into internal form (len-octet/str-octets).
+ - The result is checked to be shorter or equal to 255 bytes.
+ - Zero length is reserved for the root node.
+If valid, we continue with step 3.
+
+### Step 3 ###
+We check our local authoritative data whether there is a direct match and
+return it. If there is no direct match, we check whether QNAME is a child
+of such an authoritative zone and check whether we have NS records for
+our child or another child between QNAME and the zone. If not, we continue
+with step 4, otherwise we check whether there are glue address records for
+the NS RR which we can use with our connection. If not, we continue with
+step 5, if there are, we continue with step 6.
+
+### Step 4 ###
+
+### Step 5 ###
+
+### Step 6 ###
+
+
+
+
+
+
+If we sent a query of type:
+ QNAME: Domain
+ QCLASS: any class
+ QTYPE: any type
+We validate our response:
+ - The ID must match a local request.
+ - QR must be set.
+ - OPCODE must match the local request.
+ - TC must not be set, otherwise we restart
+   the query as TCP. If it is still set,
+   we return internal-failure.
+ - RD must match the local request.
+ - Z is ignored.
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+By convention, domain names can be stored with arbitrary case, but
+domain name comparisons for all present domain functions are done in a
+case-insensitive manner, assuming an ASCII character set, and a high
+order zero bit.  This means that you are free to create a node with
+label "A" or a node with label "a", but not both as brothers; you could
+refer to either using "a" or "A".
+
+Each node has a set of resource information, which may be empty.
+
+The order of RRs in a set is not significant, and need
+not be preserved by name servers, resolvers, or other parts of the DNS.
+
+If a CNAME RR is present at a node, no other data should be
+present; this ensures that the data for a canonical name and its aliases
+cannot be different.  This rule also insures that a cached CNAME can be
+used without checking with an authoritative server for other RR types.
+
+The one exception to this rule is that queries which match the CNAME
+type are not restarted.
+
+The most important field in the header is a four bit field called an
+opcode which separates different queries.  Of the possible 16 values,
+one (standard query) is part of the official protocol, two (inverse
+query and status query) are options, one (completion) is obsolete, and
+the rest are unassigned.
+
+Hence responses to QCLASS=* queries can never be authoritative.
+
+Therefore, the RRs returned in inverse queries should never be cached.
+
+3.8. Status queries (Experimental)
+To be defined.
+
+3.9. Completion queries (Obsolete)
+The optional completion services described in RFCs 882 and 883 have been
+deleted.
+
+The class partition is simple.  The database for any class is organized,
+delegated, and maintained separately from all other classes.  Since, by
+convention, the name spaces are the same for all classes, the separate
+classes can be thought of as an array of parallel namespace trees.
+
+The authoritative data for a zone is simply all of the RRs attached to
+all of the nodes from the top node of the zone down to leaf nodes or
+nodes above cuts around the bottom edge of the zone.
+
+Though logically part of the authoritative data, the RRs that describe
+the top node of the zone are especially important to the zone's
+management.  These RRs are of two types: name server RRs that list, one
+per RR, all of the servers for the zone, and a single SOA RR that
+describes zone management parameters.
+
+The RRs that describe cuts around the bottom of the zone are NS RRs that
+name the servers for the subzones.  Since the cuts are between nodes,
+these RRs are NOT part of the authoritative data of the zone, and should
+be exactly the same as the corresponding RRs in the top node of the
+subzone.  Since name servers are always associated with zone boundaries,
+NS RRs are only found at nodes which are the top node of some zone.  In
+the data that makes up a zone, NS RRs are found at the top node of the
+zone (and are authoritative) and at cuts around the bottom of the zone
+(where they are not authoritative), but never in between.
+
+The recursion available, or RA bit, is set or cleared by a
+name server in all responses.  The bit is true if the name
+server is willing to provide recursive service for the client,
+regardless of whether the client requested recursive service.
+That is, RA signals availability rather than use.
+
+the client can verify
+that recursive mode was used by checking that both RA and RD are set in
+the reply.  Note that the name server should never perform recursive
+service unless asked via RD, since this interferes with trouble shooting
+of name servers and their databases.
+
+If recursive service is requested and available, the recursive response
+to a query will be one of the following:
+   - The answer to the query, possibly preface by one or more CNAME
+     RRs that specify aliases encountered on the way to an answer.
+   - A name error indicating that the name does not exist.  This
+     may include CNAME RRs that indicate that the original query
+     name was an alias for a name which does not exist.
+   - A temporary error indication.
+If recursive service is not requested or is not available, the non-
+recursive response will be one of the following:
+   - An authoritative name error indicating that the name does not
+     exist.
+   - A temporary error indication.
+   - Some combination of:
+     RRs that answer the question, together with an indication
+     whether the data comes from a zone or is cached.
+     A referral to name servers which have zones which are closer
+     ancestors to the name than the server sending the reply.
+   - RRs that the name server thinks will prove useful to the
+     requester.
+
+A * label appearing in a query name has no special effect, but can be
+used to test for wildcards in an authoritative zone; such a query is the
+only way to get a response containing RRs with an owner name with * in
+it.  The result of such a query should not be cached.
+
+"*.<anydomain>"
+
+Similarly, a resolver can make a query
+with a QTYPE which matches multiple types, and cache the fact that some
+of the types are not present.
+
