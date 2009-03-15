@@ -3,21 +3,20 @@
 #  This file is part of ONS, see COPYING for details.
 #
 
-ONS is distributed with the GNU autotools. However, there are ways to install
-ONS on platforms without the GNU autotools. For further information look into
-the documentation.
 
-Autotools:
-Please change into the ./libraries directory and execute the common commands to
-install programs with the GNU autotools:
- -- ./configure --help=short
- -- ./configure [probably options]
- -- make
- -- su -
- -- make install
- -- exit
+Please change into the "./core" directory, it contains several scripts which can
+be used to build ONS.
+ - Users on systems which support an SH like shell like bash, zsh, csh, ... please
+   execute the file "./build.sh".
+ - Users on systems which support a WINDOWS BATCH like syntax please execute the
+   file "./build.bat".
+Other build methods are currently not supported. If you have a system where none
+of these build scripts runs on, please notice us and we try to create additional
+build scripts.
 
-Please look into the documentation to get a detailed explanation how to install
-ONS with autotools. The documentation contains also information about how to
-install ONS on supported platforms that do not use GNU autotools.
+Please look into the documentation to get a detailed explanation on how these scripts
+work and how to modify their behaviour and adjust them to your needs.
+
+
+-- David Herrmann -- 2009/03/15 --
 

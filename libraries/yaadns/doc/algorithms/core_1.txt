@@ -15,76 +15,12 @@ extensions which were made to it.
 
 ############### Algorithm ###############
 
-This algorithm can be started at any position if all the data which is
-created by the previous steps is provided by the user.
-
-
-### Step 1 ###
-Three ways to input data:
-1:  Takes a single string as argument which is interpreted as a domain
-    name which should be resolved to IPv4 addresses.
-    Following steps are done on this name:
-    - Check that the user did not input an IP address. If they did, we
-      return the IP.
-    - We continue continue with step 2 and supply the domain as QNAME,
-      IN as QCLASS and A as QTYPE. If it returns "unexistant domain",
-      we add the values from the local search path one by one and try
-      until we don't get this error or our search path exceeds.
-      If we get any other return value than "unexistant domain", we
-      immediately return it to the user.
-2:  Takes as single argument an IP address which should be resolved to
-    a domain name.
-    - We append it to IN-ADDR.ARPA.
-    - We continue with step 2 and supply this domain as QNAME, IN as
-      QCLASS and PTR as QTYPE. We return the result directly to the
-      user.
-3:  An string with two integers. We directly continue with step 2 and
-    supply the string as QNAME and the two integers as QTYPE and QCLASS.
-    The result is directly returned to the user.
-
-### Step 2 ###
-We get a string as QNAME and two integers as QCLASS and QTYPE.
-We first validate QNAME:
- - Each label is checked to have at most 63 characters.
- - The string is converted into internal form (len-octet/str-octets).
- - The result is checked to be shorter or equal to 255 bytes.
- - Zero length is reserved for the root node.
-If valid, we continue with step 3.
-
-### Step 3 ###
-We check our local authoritative data whether there is a direct match and
-return it. If there is no direct match, we check whether QNAME is a child
-of such an authoritative zone and check whether we have NS records for
-our child or another child between QNAME and the zone. If not, we continue
-with step 4, otherwise we check whether there are glue address records for
-the NS RR which we can use with our connection. If not, we continue with
-step 5, if there are, we continue with step 6.
-
-### Step 4 ###
-
-### Step 5 ###
-
-### Step 6 ###
 
 
 
 
 
-
-If we sent a query of type:
- QNAME: Domain
- QCLASS: any class
- QTYPE: any type
-We validate our response:
- - The ID must match a local request.
- - QR must be set.
- - OPCODE must match the local request.
- - TC must not be set, otherwise we restart
-   the query as TCP. If it is still set,
-   we return internal-failure.
- - RD must match the local request.
- - Z is ignored.
- 
+<still in development>
 
 
 
@@ -92,19 +28,7 @@ We validate our response:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+############### PINBOARD ###############
 
 By convention, domain names can be stored with arbitrary case, but
 domain name comparisons for all present domain functions are done in a

@@ -76,12 +76,16 @@ ONS_EXTERN_C_BEGIN
  *  - void ARR_NAME_remove(ARR_NAME *array, mem_index_t index): Removes the the element at \index. (mem_array_remove)
  *  - void ARR_NAME_shift(ARR_NAME *array): Removes the first element. (mem_array_shift)
  */
+static inline void MEM_NULL(void *null) {
+    return;
+}
 #define MEM_ARRAY_DEFINE(ARR_NAME, ELE_TYPE, INITIAL_VAR, FREE, DOUBLE, FUNC_FREE) \
     typedef struct ARR_NAME { \
         mem_index_t used; \
         mem_index_t size; \
         ELE_TYPE *list; \
     } ARR_NAME; \
+    static void (* ARR_NAME##_free_func )(void*) = FUNC_FREE; \
     static inline void ARR_NAME##_init(ARR_NAME *array) { \
         ONS_ASSERT(array != NULL); \
         array->used = 0; \
@@ -91,7 +95,7 @@ ONS_EXTERN_C_BEGIN
     static inline void ARR_NAME##_clear(ARR_NAME *array) { \
         size_t i; \
         ONS_ASSERT(array != NULL); \
-        (FUNC_FREE)?(for(i = 0; i < array->used; ++i) (FUNC_FREE)(array->list[i])):0; \
+        if(ARR_NAME##_free_func != NULL) {for(i = 0; i < array->used; ++i) (ARR_NAME##_free_func)(&(array->list[i]));}; \
         array->used = array->size = 0; \
         mem_free(array->list); \
         array->list = NULL; \
@@ -124,7 +128,7 @@ ONS_EXTERN_C_BEGIN
     static inline void ARR_NAME##_pop(ARR_NAME *array) { \
         ONS_ASSERT(array != NULL); \
         ONS_ASSERT(array->used); \
-        (FUNC_FREE)?((FUNC_FREE)(array->list[array->used - 1])):0; \
+        if(ARR_NAME##_free_func != NULL) {(ARR_NAME##_free_func)(&(array->list[array->used - 1]));} \
         ARR_NAME##_pop2(array); \
     } \
     static inline ELE_TYPE *ARR_NAME##_insert(ARR_NAME *array, mem_index_t index) { \
@@ -141,7 +145,7 @@ ONS_EXTERN_C_BEGIN
         ONS_ASSERT(array != NULL); \
         ONS_ASSERT(index < array->used); \
         ONS_ASSERT(array->used); \
-        (FUNC_FREE)?((FUNC_FREE)(array->list[array->used - 1])):0; \
+        if(ARR_NAME##_free_func != NULL) {(ARR_NAME##_free_func)(&(array->list[array->used - 1]));} \
         memmove(array->list + index, array->list + index + 1, (array->used - index - 1) * sizeof(ELE_TYPE)); \
         ARR_NAME##_pop2(array); \
     } \

@@ -10,13 +10,27 @@
 # - Created: 19. April 2008
 # - Lead-Dev: - David Herrmann
 # - Contributors: /
-# - Last-Change: 7. February 2009
+# - Last-Change: 15. March 2009
 #
 
 #
-# You can clean all unnecessary stuff with "./clean".
-# Please use it only if you got the source from the development repos.
+# This script cleans the whole GIT repository. If you do not have a
+# local copy of the GIT repo, this script does nothing.
 #
+# This script should only be used by developers. Users can safely
+# ignore this script.
+#
+
+
+echo "                                                "
+echo "           #####################                "
+echo "           ##    ONS clean    ##                "
+echo "           #####################                "
+echo "                                                "
+echo "This script cleans the GIT repository directory."
+echo "     It should only be used by developers.      "
+echo "                                                "
+
 
 # We try to find the directory of this script and change
 # into the "libraries" subdir.
@@ -37,19 +51,22 @@ fi
 if test -f ./clean ; then
     CREATION_TIME=$(grep Created ./clean | grep -v TIME)
     if test "$CREATION_TIME" != "# - Created: 19. April 2008" ; then
-        echo "Invalid directory."
+        echo "Error: Please change into the directory of the ./clean script."
         exit 1;
     fi
 else
-    echo "Invalid directory."
+    echo "Error: Please change into the directory of the ./clean script."
     exit 1;
 fi
 
+
 # Remove every file which is not under revision control.
 if test -d .git ; then
+    rm .gitignore
     git clean -df
+    git checkout .gitignore
     echo "Successfully cleaned the directory."
 else
-    echo "You do not use a development repository."
+    echo "Error: You do not use a development repository."
 fi
 

@@ -1,0 +1,120 @@
+#
+#  (COPYRIGHT) Copyright (C) 2008, 2009, The ONS Team.
+#  This file is part of ONS, see COPYING for details.
+#
+
+#
+# File information:
+# - Created: 17. January 2009
+# - Lead-Dev: - David Herrmann
+# - Contributors: /
+# - Last-Change: 17. January 2009
+#
+
+
+#
+# Global configuration.
+#
+
+prefix = @prefix@
+srcdir = @srcdir@
+RM = @RMPROG@
+@SET_MAKE@
+
+SUBMAKE = ${MAKE} --no-print-directory
+
+SUBDIRS = @subdirs@
+
+
+#
+# Global rules.
+#
+
+all: build
+
+.PHONY: all build sub-clean sub-distclean clean distclean install uninstall
+
+
+#
+# Building routines.
+#
+
+build:
+	@if test "x${SUBDIRS}" != "x" ; then \
+		for i in ${SUBDIRS}; do \
+			if test -d $$i ; then \
+				echo "Building $$i..."; \
+				cd $$i; \
+				${SUBMAKE} build; \
+				cd ..; \
+			fi \
+		done \
+	fi
+
+
+
+#
+# Cleaning routines.
+#
+
+sub-clean:
+	@if test "x${SUBDIRS}" != "x" ; then \
+		for i in ${SUBDIRS}; do \
+			if test -d $$i ; then \
+				echo "Cleaning $$i..."; \
+				cd $$i; \
+				${SUBMAKE} clean; \
+				cd ..; \
+			fi \
+		done \
+	fi
+
+sub-distclean:
+	@if test "x${SUBDIRS}" != "x" ; then \
+		for i in ${SUBDIRS}; do \
+			if test -d $$i ; then \
+				echo "Dist-cleaning $$i..."; \
+				cd $$i; \
+				${SUBMAKE} distclean; \
+				cd ..; \
+			fi \
+		done \
+	fi
+
+clean: sub-clean
+
+distclean: sub-distclean
+	@${RM} -Rvf ${srcdir}/Makefile ${srcdir}/aclocal.m4 ${srcdir}/autom4te.cache \
+				${srcdir}/config.log ${srcdir}/config.status ${srcdir}/ltmain.sh \
+				${srcdir}/configure ${srcdir}/libtool ${srcdir}/missing ${srcdir}/stamp-h
+
+
+#
+# Installing routines.
+#
+
+install: build
+	@test -d ${prefix} || mkdir -vp ${prefix}
+	@if test "x${SUBDIRS}" != "x" ; then \
+		for i in ${SUBDIRS}; do \
+			if test -d $$i ; then \
+				echo "Installing $$i..."; \
+				cd $$i; \
+				${SUBMAKE} install; \
+				cd ..; \
+			fi \
+		done \
+	fi
+
+uninstall:
+	@if test "x${SUBDIRS}" != "x" ; then \
+		for i in ${SUBDIRS}; do \
+			if test -d $$i ; then \
+				echo "Uninstalling $$i..."; \
+				cd $$i; \
+				${SUBMAKE} uninstall; \
+				cd ..; \
+			fi \
+		done \
+	fi
+

@@ -8,7 +8,7 @@
  * - Created: 22. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 24. February 2009
+ * - Last-Change: 15. March 2009
  */
 
 /* This file contains global declarations for all libraries
@@ -73,6 +73,7 @@ extern 'C' {
     #define ONS_CONF_LITTLE_ENDIAN
     #define ONS_CONF_HAVE_PRAGMA_PACK
     #define ONS_CONF_WINDOWS
+    #define ONS_CONF_DEBUG
 #else
     /* Use autoconf if nothing is predefined. */
     #include <ons/setup.h>
@@ -136,8 +137,8 @@ extern void ons_debug_error(const char *format, ...);
 #define ONS_ABORT(msg) ons_fatal_error("ONS failed in %s at %u: %s\n", __FILE__, __LINE__, msg)
 #ifdef ONS_DEBUG
     #define ONS_ASSERT(x) ((x)?ONS_ABORT("Assertation failed."):0)
-    #define ONS_DEBUG(x) ons_debug_error("(Debug) Please report this bug! ONS failed in %s at %u: %s\n", __FILE__, __LINE__, x)
-    #define ONS_iDEBUG(x, i) ons_debug_error("(Debug) Please report this bug! ONS failed in %s at %u: %s (%i)\n", __FILE__, __LINE__, x, i)
+    #define ONS_DEBUG_MSG(x) ons_debug_error("(Debug) Please report this bug! ONS failed in %s at %u: %s\n", __FILE__, __LINE__, x)
+    #define ONS_DEBUG_IMSG(x, i) ons_debug_error("(Debug) Please report this bug! ONS failed in %s at %u: %s (%i)\n", __FILE__, __LINE__, x, i)
 #else
     #define ONS_ASSERT(x)
     #define ONS_iDEBUG(x, i)
