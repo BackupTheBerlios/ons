@@ -98,8 +98,10 @@ AC_DEFUN([ONS_C_C99],
     AC_MSG_CHECKING([for C99 support])
     if test x$ac_cv_prog_cc_c99 = "xno" ; then
         AC_MSG_RESULT([no])
+        ons_cv_c99="no";
     else
         AC_MSG_RESULT([yes])
+        ons_cv_c99="yes";
     fi
 ])
 

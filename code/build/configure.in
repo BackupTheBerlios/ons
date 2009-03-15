@@ -461,7 +461,7 @@ dnl
 dnl Generate makefiles / config.h output.
 dnl
 
-AC_OUTPUT([Makefile.in], [echo timestamp > stamp-h])
+AC_OUTPUT([Makefile], [echo timestamp > stamp-h])
 
 
 dnl
@@ -548,7 +548,7 @@ ONS is now configured for your system.
 
     Prefix:                     $prefix
     CFlags:                     $CFLAGS
-    C99 support:                $ac_cv_prog_cc_c99
+    C99 support:                $ons_cv_c99
     Compiler warnings:          $ons_cv_enable_warnings
     Debug mode:                 $ons_cv_enable_debug
 

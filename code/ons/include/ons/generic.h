@@ -61,6 +61,7 @@ extern 'C' {
  * This API is required and must be supported on all systems.
  */
 #define ONS_SYSTEM
+#include <stdint.h>
 
 
 /* API: String

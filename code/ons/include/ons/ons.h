@@ -138,6 +138,9 @@ extern 'C' {
  *  - The C compiler must halt (and return != 0) on compilation errors.
  *  - The C compiler must support indented macros. For instance: "    #define ANYTHING"
  *  - One byte must be equal to 8 bit.
+ *  - This header must make fixed-size integers available as described in stdint.h
+ *    in ISO-C99.
+ *  - The C compiler must support anonymous unions/structs/enums.
  */
 
 
@@ -254,6 +257,7 @@ static inline void ons_fdebug(const char *format, ...) {
 /* ONS_ASSERT: This macro is equal to ISO-c89 assert() but does not depend on NDEBUG but on ONS_DEBUG.
  * ONS_DMSG: (debug message) This macro prints a message to stdout that a bug occurred and should be
  *                           reported when ONS_DEBUG is defined.
+ * ONS_ABORT: Prints a message and aborts.
  */
 #ifdef ONS_DEBUG
     #define ONS_ASSERT(x) ((x)?(ons_ferr("ONS assertation failed in %s at %u: %s\n", __FILE__, __LINE__, msg),0):0)
@@ -261,6 +265,18 @@ static inline void ons_fdebug(const char *format, ...) {
 #else
     #define ONS_ASSERT(x) (0)
     #define ONS_DMSG(...) (0)
+#endif
+#define ONS_ABORT(...) (ons_fdebug("ONS failed in %s at %u: ", __FILE__, __LINE__), ons_fdebug(__VA_ARGS__), ons_ferr("\n"), 0)
+
+
+/* Structure packing mechanism.
+ * If __attribute__((__packed__)) is supported, we declare ONS_ATTR_PACK
+ * to __attribute__((__packed__)).
+ */
+#ifdef ONS_MACHINE_ATTR
+    #define ONS_ATTR_PACK __attribute__((__packed__))
+#else
+    #define ONS_ATTR_PACK
 #endif
 
 
