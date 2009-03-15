@@ -8,83 +8,12 @@ dnl File information:
 dnl - Created: 22. December 2008
 dnl - Lead-Dev: - David Herrmann
 dnl - Contributors: /
-dnl - Last-Change: 24. February 2009
+dnl - Last-Change: 15. March 2009
 dnl
 
 dnl
-dnl This autoconf file checks your system for all qualifications needed for
-dnl all libraries which are part of ONS.
-dnl Every library adds it's checks here and if one library does not run on
-dnl one platform, all libraries will not run on this platform.
-dnl
-dnl The following list contains all checks which are guaranteed to be done
-dnl by this configure script. Keep this list up-to-date!
-dnl
-dnl The following checks are not done and assumed to succeed:
-dnl - Valid ISO-C89 standard library.
-dnl - The system must be little or big endian (no hybrid modes).
-dnl   - little endian is taken as default.
-dnl - POSIX sed compatible program.
-dnl - POSIX grep compatible program.
-dnl - NULL has to be equal to binary 0x0 in every datatype.
-dnl - __VA_ARGS__ must be supported.
-dnl
-dnl The following must be present, otherwise configure fails.
-dnl - Valid ISO-C99 compiler. If only a C89 compiler is present
-dnl   configure trys to compile in C89 mode.
-dnl - POSIX install compatible program.
-dnl - POSIX make compatible program.
-dnl - C compiler halts on compilation errors.
-dnl - C compiler supports indented macros.
-dnl - One byte must be equal to eight bits.
-dnl - netinet/in.h must be available.
-dnl - sys/socket.h must be available.
-dnl - => Defines always HAVE_NETINET_IN_H and HAVE_SYS_SOCKET_H.
-dnl - Sets one of the following nonblocking options:
-dnl   - NONBLOCK_POSIX: uses fcntl(O_NONBLOCK)
-dnl   - NONBLOCK_BSD: uses fcntl(O_NDELAY)
-dnl   - NONBLOCK_SYSV: uses ioctl(FIONBIO)
-dnl
-dnl The following checks check for system dependent issues and set various
-dnl macros and variables.
-dnl - Sets the macros which are required to enable system extensions.
-dnl   The following macros are set if not already defined:
-dnl   - _ALL_SOURCE for AIX 3, Interix and others.
-dnl   - _GNU_SOURCE for GNU systems including linux.
-dnl   - _POSIX_PTHREAD_SEMANTICS for Solaris threading extension.
-dnl   - _TANDEM_SOURCE for HP-NonStop.
-dnl   - __EXTENSIONS__ for Solaris extensions.
-dnl   - _MINIX on Minix systems.
-dnl   - _POSIX_1_SOURCE to enable POSIX.1 features.
-dnl   - _POSIX_SOURCE to enable POSIX features.
-dnl - Checks for endianness and:
-dnl   - sets $ons_cv_endianness to "LittleEndian" or "BigEndian"
-dnl   - defines LITTLE_ENDIAN on little endian machines
-dnl   - defines BIG_ENDIAN on big endian machines
-dnl   One of these two values are guaranteed to be set/defined.
-dnl - Checks for mmap() and MAP_ANON(YMOUS):
-dnl   - Defines HAVE_MMAP if mmap() is available in sys/mmap.h.
-dnl   - Defines HAVE_DECL_MAP_ANONYMOUS if MAP_ANONYMOUS is declared.
-dnl   - Defines HAVE_DECL_MAP_ANON if MAP_ANON is declared.
-dnl - Checks for strnlen() and sets HAVE_STRNLEN if available.
-dnl - Defines HAVE_UNISTD_H if unistd.h is available.
-dnl - Defines HAVE_SYS_UN_H if sys/un.h is available.
-dnl - Defines HAVE_UNIX_SOCKETS if "struct sockaddr_un" is available.
-dnl   - If available, PATH_SIZE is defined to the size of the sun_path member.
-dnl - Defines HAVE_SA_LEN, HAVE_SIN_LEN, HAVE_SIN6_LEN and HAVE_SUN_LEN if the
-dnl   related sockaddr structure has a "*_len" member.
-dnl - Checks whether at least one of "#pragma pack()" or __attribute__((__packed__))
-dnl   is supported and defines HAVE_ATTR_PACK and/or HAVE_PRAGMA_PACK respectively.
-dnl - Defines NO_IPV6 if IPv6 is not supported.
-dnl - Defines HAVE_SYS_TYPES_H if sys/types.h is available.
-dnl - Defines HAVE_EXT_SOCKET if socket() accepts binary options in the "type" argument.
-dnl - Defines HAVE_ACCEPT4 if the accept4() syscall is available.
-dnl - Defines HAVE_SYS_IOCTL_H if sys/ioctl.h is available.
-dnl - Defines HAVE_FCNTL_H if sys/fcntl.h is available.
-dnl - Defines HAVE_GETTIMEOFDAY if gettimeofday() is available. This includes the
-dnl   sys/time.h header.
-dnl - Defines HAVE_PTHREAD_H if pthread.h is available.
-dnl - Defines DEBUG if debug mode is enabled.
+dnl This configure file checks all necessary configuration options on your
+dnl system and creates the <ons/machine.h> header file for you.
 dnl
 
 
@@ -96,18 +25,16 @@ dnl is not done because every system using autoconf should have them.
 dnl
 
 AC_PREREQ(2.61)
-AC_INIT([ONS], [0.1.0.0], [dh.herrmann@gmail.com])
-AC_CONFIG_SRCDIR([ons/src/ons.c])
+AC_INIT([ONS], [0.1.1.0], [ons@xccd.eu])
+AC_CONFIG_SRCDIR([../build.sh])
 AC_PREFIX_DEFAULT([/usr])
-AC_CONFIG_HEADER([ons/include/ons/config.h])
-
+AC_CONFIG_HEADER([config.h])
 # These programs are crucial and autoconf should stop with an error if they are
 # not available. However, some autoconf versions do not. We ignore this here.
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PATH_PROGS(RMPROG, rm, /bin/rm)
-
 # Define canonical host.
 AC_CANONICAL_HOST
 
@@ -115,7 +42,16 @@ AC_CANONICAL_HOST
 dnl
 dnl [[ ENABLE SYSTEM EXTENSIONS ]]
 dnl
-dnl Set system dependent macros like _GNU_SOURCE or _ALL_SOURCE.
+dnl Sets the macros which are required to enable system extensions.
+dnl The following macros are set if not already defined:
+dnl   - _ALL_SOURCE for AIX 3, Interix and others.
+dnl   - _GNU_SOURCE for GNU systems including linux.
+dnl   - _POSIX_PTHREAD_SEMANTICS for Solaris threading extension.
+dnl   - _TANDEM_SOURCE for HP-NonStop.
+dnl   - __EXTENSIONS__ for Solaris extensions.
+dnl   - _MINIX on Minix systems.
+dnl   - _POSIX_1_SOURCE to enable POSIX.1 features.
+dnl   - _POSIX_SOURCE to enable POSIX features.
 dnl
 
 AC_USE_SYSTEM_EXTENSIONS
@@ -131,8 +67,8 @@ ONS_C_C99
 ONS_C_HALT_ON_ERROR
 ONS_C_INDENTED_MACROS
 ONS_C_EIGHT_BIT_SYSTEM
-ONS_C_ENDIANNESS
 ONS_C_NO_PADDING
+ONS_C_ENDIANNESS
 
 
 dnl
@@ -482,11 +418,7 @@ dnl [[ MODULE COMPILATION ]]
 dnl
 
 ons_enable_memoria="no"
-ons_enable_saw="no"
-ons_enable_fip="no"
-ons_enable_yaadns="no"
 ons_modules="ons"
-ons_makefiles="Makefile ons/Makefile"
 
 AC_MSG_CHECKING(for module list)
 AC_ARG_ENABLE(modules,
@@ -503,48 +435,6 @@ AC_ARG_ENABLE(modules,
                 if test $ons_enable_memoria = "no" ; then
                     ons_enable_memoria="yes"
                     ons_modules="$ons_modules memoria"
-                    ons_makefiles="$ons_makefiles memoria/Makefile"
-                fi
-                ;;
-            saw)
-                if test $ons_enable_saw = "no" ; then
-                    ons_enable_saw="yes"
-                    ons_modules="$ons_modules saw"
-                    ons_makefiles="$ons_makefiles saw/Makefile"
-                fi
-                ;;
-            fip)
-                if test $ons_enable_saw = "no" ; then
-                    ons_enable_saw="yes"
-                    ons_modules="$ons_modules saw"
-                    ons_makefiles="$ons_makefiles saw/Makefile"
-                fi
-                if test $ons_enable_fip = "no" ; then
-                    ons_enable_fip="yes"
-                    ons_modules="$ons_modules fip"
-                    ons_makefiles="$ons_makefiles fip/Makefile"
-                fi
-                ;;
-            yaadns)
-                if test $ons_enable_memoria = "no" ; then
-                    ons_enable_memoria="yes"
-                    ons_modules="$ons_modules memoria"
-                    ons_makefiles="$ons_makefiles memoria/Makefile"
-                fi
-                if test $ons_enable_saw = "no" ; then
-                    ons_enable_saw="yes"
-                    ons_modules="$ons_modules saw"
-                    ons_makefiles="$ons_makefiles saw/Makefile"
-                fi
-                if test $ons_enable_fip = "no" ; then
-                    ons_enable_fip="yes"
-                    ons_modules="$ons_modules fip"
-                    ons_makefiles="$ons_makefiles fip/Makefile"
-                fi
-                if test $ons_enable_yaadns = "no" ; then
-                    ons_enable_yaadns="yes"
-                    ons_modules="$ons_modules yaadns"
-                    ons_makefiles="$ons_makefiles yaadns/Makefile"
                 fi
                 ;;
             *)
@@ -555,20 +445,12 @@ AC_ARG_ENABLE(modules,
 ],
 [
     ons_enable_memoria="yes"
-    ons_enable_saw="yes"
-    ons_enable_fip="yes"
-    ons_enable_yaadns="yes"
-    ons_modules="ons memoria saw fip yaadns"
-    ons_makefiles="Makefile ons/Makefile memoria/Makefile saw/Makefile fip/Makefile yaadns/Makefile"
+    ons_modules="ons memoria"
 ])
 AC_MSG_RESULT($ons_modules)
 
-if test "x$srvx_cv_modules" = "x" ; then
-    srvx_cv_modules=" none"
-fi
-
-subdirs="$ons_modules"
-AC_SUBST([subdirs])
+modules="$ons_modules"
+AC_SUBST([modules])
 AC_SUBST([CFLAGS])
 AC_SUBST([LFLAGS])
 
@@ -579,7 +461,7 @@ dnl
 dnl Generate makefiles / config.h output.
 dnl
 
-AC_OUTPUT($ons_makefiles, [echo timestamp > stamp-h])
+AC_OUTPUT([Makefile.in], [echo timestamp > stamp-h])
 
 
 dnl
@@ -590,60 +472,60 @@ dnl to not collide with other application's autotool's definitions.
 dnl But some definitions are not allowed to be prefixed (eg., datatype macros).
 dnl
 
-if test -f ons/include/ons/config.h ; then
-    ons_path="ons"
-    AC_MSG_NOTICE([Creating setup.h out of config.h])
+if test -f config.h ; then
+    AC_MSG_NOTICE([Creating machine.h out of config.h])
 
-    # First grep everything we are interested in.
+    # Newline character.
     TMP_NL="
 "
-    TMP_SYSEXT=$(grep -A 1 _ALL_SOURCE <$ons_path/include/ons/config.h)
-    TMP_SYSEXT="$TMP_SYSEXT$TMP_NL$(grep -A 1 _GNU_SOURCE <$ons_path/include/ons/config.h)"
-    TMP_SYSEXT="$TMP_SYSEXT$TMP_NL$(grep -A 1 _POSIX_PTHREAD_SEMANTICS <$ons_path/include/ons/config.h)"
-    TMP_SYSEXT="$TMP_SYSEXT$TMP_NL$(grep -A 1 _TANDEM_SOURCE <$ons_path/include/ons/config.h)"
-    TMP_SYSEXT="$TMP_SYSEXT$TMP_NL$(grep -A 1 __EXTENSIONS__ <$ons_path/include/ons/config.h)"
-    TMP_SYSEXT="$TMP_SYSEXT$TMP_NL$(grep _MINIX <$ons_path/include/ons/config.h)"
-    TMP_SYSEXT="$TMP_SYSEXT$TMP_NL$(grep _POSIX_1_SOURCE <$ons_path/include/ons/config.h)"
-    TMP_SYSEXT="$TMP_SYSEXT$TMP_NL$(grep _POSIX_SOURCE <$ons_path/include/ons/config.h)"
+    # First grep everything we are interested in.
+    TMP_SYSEXT=$(grep -A 1 _ALL_SOURCE <config.h)
+    TMP_SYSEXT="$TMP_SYSEXT$TMP_NL$(grep -A 1 _GNU_SOURCE <config.h)"
+    TMP_SYSEXT="$TMP_SYSEXT$TMP_NL$(grep -A 1 _POSIX_PTHREAD_SEMANTICS <config.h)"
+    TMP_SYSEXT="$TMP_SYSEXT$TMP_NL$(grep -A 1 _TANDEM_SOURCE <config.h)"
+    TMP_SYSEXT="$TMP_SYSEXT$TMP_NL$(grep -A 1 __EXTENSIONS__ <config.h)"
+    TMP_SYSEXT="$TMP_SYSEXT$TMP_NL$(grep _MINIX <config.h)"
+    TMP_SYSEXT="$TMP_SYSEXT$TMP_NL$(grep _POSIX_1_SOURCE <config.h)"
+    TMP_SYSEXT="$TMP_SYSEXT$TMP_NL$(grep _POSIX_SOURCE <config.h)"
 
-    TMP_ENDIAN=$(grep BIG_ENDIAN <$ons_path/include/ons/config.h)
-    TMP_ENDIAN="$TMP_ENDIAN$TMP_NL$(grep LITTLE_ENDIAN <$ons_path/include/ons/config.h)"
+    TMP_ENDIAN=$(grep BIG_ENDIAN <config.h)
+    TMP_ENDIAN="$TMP_ENDIAN$TMP_NL$(grep LITTLE_ENDIAN <config.h)"
     TMP_ENDIAN=$(echo "$TMP_ENDIAN" | sed -e 's/^#define\s\{1,\}\(ONS_CONF_\)\{0,1\}\(.*\)$/#define ONS_CONF_\2/g')
 
-    TMP_MMAP=$(grep HAVE_MMAP <$ons_path/include/ons/config.h)
+    TMP_MMAP=$(grep HAVE_MMAP <config.h)
     # both ANON and ANONYMOUS in this grep
-    TMP_MMAP="$TMP_MMAP$TMP_NL$(grep HAVE_DECL_MAP_ANON <$ons_path/include/ons/config.h)"
+    TMP_MMAP="$TMP_MMAP$TMP_NL$(grep HAVE_DECL_MAP_ANON <config.h)"
     TMP_MMAP=$(echo "$TMP_MMAP" | sed -e 's/^#define\s\{1,\}\(ONS_CONF_\)\{0,1\}\(.*\)$/#define ONS_CONF_\2/g')
 
-    TMP_MISC=$(grep HAVE_STRNLEN <$ons_path/include/ons/config.h)
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_SYS_UN_H <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_SYS_SOCKET_H <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_NETINET_IN_H <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_UNISTD_H <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_UNIX_SOCKETS <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep PATH_SIZE <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_SA_LEN <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_SIN_LEN <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_SIN6_LEN <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_SUN_LEN <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_ATTR_PACKED <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_PRAGMA_PACK <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep NO_IPV6 <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_SYS_TYPES_H <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_EXT_SOCKET <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_ACCEPT4 <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_SYS_IOCTL_H <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_FCNTL_H <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep NONBLOCK_POSIX <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep NONBLOCK_BSD <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep NONBLOCK_SYSV <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_GETTIMEOFDAY <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_PTHREAD_H <$ons_path/include/ons/config.h)"
-    TMP_MISC="$TMP_MISC$TMP_NL$(grep DEBUG <$ons_path/include/ons/config.h)"
+    TMP_MISC=$(grep HAVE_STRNLEN <config.h)
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_SYS_UN_H <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_SYS_SOCKET_H <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_NETINET_IN_H <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_UNISTD_H <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_UNIX_SOCKETS <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep PATH_SIZE <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_SA_LEN <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_SIN_LEN <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_SIN6_LEN <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_SUN_LEN <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_ATTR_PACKED <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_PRAGMA_PACK <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep NO_IPV6 <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_SYS_TYPES_H <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_EXT_SOCKET <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_ACCEPT4 <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_SYS_IOCTL_H <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_FCNTL_H <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep NONBLOCK_POSIX <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep NONBLOCK_BSD <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep NONBLOCK_SYSV <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_GETTIMEOFDAY <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_PTHREAD_H <config.h)"
+    TMP_MISC="$TMP_MISC$TMP_NL$(grep DEBUG <config.h)"
     TMP_MISC=$(echo "$TMP_MISC" | sed -e 's/^#define\s\{1,\}\(ONS_CONF_\)\{0,1\}\(.*\)$/#define ONS_CONF_\2/g')
 
-    # Write into setup.h
-    echo "$TMP_NL$TMP_SYSEXT$TMP_NL$TMP_ENDIAN$TMP_NL$TMP_MMAP$TMP_NL$TMP_MISC$TMP_NL" >$ons_path/include/ons/setup.h
+    # Write into machine.h
+    echo "$TMP_NL$TMP_SYSEXT$TMP_NL$TMP_ENDIAN$TMP_NL$TMP_MMAP$TMP_NL$TMP_MISC$TMP_NL" >../ons/include/ons/machine.h
 else
     AC_MSG_ERROR([Generated config.h not found!])
 fi
@@ -662,13 +544,15 @@ ONS is now configured for your system.
     Host:                       $host
     Build:                      $build
     Operating system:           $host_os
-    CFlags:                     $CFLAGS
-    Prefix:                     $prefix
     Endianness:                 $ons_cv_endianness
 
-    Modules:                    $ons_modules
+    Prefix:                     $prefix
+    CFlags:                     $CFLAGS
+    C99 support:                $ac_cv_prog_cc_c99
     Compiler warnings:          $ons_cv_enable_warnings
     Debug mode:                 $ons_cv_enable_debug
+
+    Modules:                    $ons_modules
     Anonymous mmap():           $ons_cv_map_anon
     Unix sockets:               $ons_cv_unix_sockets
     #pragma pack supported:     $ons_cv_pack_pragma

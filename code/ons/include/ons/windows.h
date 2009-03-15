@@ -27,6 +27,22 @@ extern 'C' {
 #endif
 
 
+/* API: Machine
+ * We compile the constants out of machine.h defined ONS_CONF_* constants. The
+ * machine.h header is already included in ons.h.
+ */
+#define ONS_MACHINE_LITTLEENDIAN
+#define ONS_MACHINE_PACK
+
+#ifndef ONS_CONF_NO_IPV6
+    #define ONS_MACHINE_IPV6
+#endif
+
+#ifdef ONS_CONF_DEBUG
+    #define ONS_MACHINE_DEBUG 5
+#endif
+
+
 /* API: System
  * This API is required and must be supported on all systems.
  */

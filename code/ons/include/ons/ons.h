@@ -135,6 +135,9 @@ extern 'C' {
  *  - The "inline" keyword must be supported as described in the ISO-C99 standard.
  *  - The binary representation of a null-pointer must be zero in any type.
  *  - Integer types must not have padding.
+ *  - The C compiler must halt (and return != 0) on compilation errors.
+ *  - The C compiler must support indented macros. For instance: "    #define ANYTHING"
+ *  - One byte must be equal to 8 bit.
  */
 
 
@@ -151,8 +154,11 @@ extern 'C' {
  */
 
 
-/* The "Machine" API is created on compile time. We include the
- * created header here.
+/* The "machine.h" file is created on compile time. We include this
+ * created header here. This header includes several ONS_CONF_* macros which
+ * are set by the configuration script on compile time and are used to set the
+ * right API macros. These ONS_CONF_* macros shall not be used directly by
+ * any application.
  */
 #include <ons/machine.h>
 

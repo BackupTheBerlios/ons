@@ -23,7 +23,7 @@ RM = @RMPROG@
 
 SUBMAKE = ${MAKE} --no-print-directory
 
-SUBDIRS = @subdirs@
+MODULES = @modules@
 
 
 #

@@ -27,6 +27,36 @@ extern 'C' {
 #endif
 
 
+/* API: Machine
+ * We compile the constants out of machine.h defined ONS_CONF_* constants. The
+ * machine.h header is already included in ons.h.
+ */
+#define ONS_MACHINE
+#ifdef ONS_CONF_LITTLE_ENDIAN
+    #define ONS_MACHINE_LITTLEENDIAN
+#elif defined(ONS_CONF_BIGENDIAN)
+    #define ONS_MACHINE_BIGENDIAN
+#else
+    #error "Your system was not detected as little- or bigendian system."
+#endif
+
+#ifdef ONS_CONF_HAVE_PRAGMA_PACK
+    #define ONS_MACHINE_PACK
+#elif defined(ONS_CONF_HAVE_ATTR_PACKED)
+    #define ONS_MACHINE_ATTR
+#else
+    #error "Your system supports neither '#pragma pack' nor '__attribute__((__packed__))'."
+#endif
+
+#ifndef ONS_CONF_NO_IPV6
+    #define ONS_MACHINE_IPV6
+#endif
+
+#ifdef ONS_CONF_DEBUG
+    #define ONS_MACHINE_DEBUG 5
+#endif
+
+
 /* API: System
  * This API is required and must be supported on all systems.
  */

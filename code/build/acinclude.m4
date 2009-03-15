@@ -8,12 +8,12 @@ dnl File information:
 dnl - Created: 22. December 2008
 dnl - Lead-Dev: - David Herrmann
 dnl - Contributors: /
-dnl - Last-Change: 1. January 2009
+dnl - Last-Change: 15. March 2009
 dnl
 
 dnl
 dnl This file contains outsourced autoconf macros.
-dnl Each macros is documented in it's comments.
+dnl Each macro is documented in it's comment.
 dnl
 
 
@@ -98,7 +98,6 @@ AC_DEFUN([ONS_C_C99],
     AC_MSG_CHECKING([for C99 support])
     if test x$ac_cv_prog_cc_c99 = "xno" ; then
         AC_MSG_RESULT([no])
-        AC_MSG_ERROR([Your compiler does not support C99.])
     else
         AC_MSG_RESULT([yes])
     fi

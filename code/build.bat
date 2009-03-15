@@ -11,3 +11,11 @@ REM - Contributors: /
 REM - Last-Change: 15. March 2009
 REM
 
+REM
+REM This file buils the ONS library on WINDOWS systems.
+REM
+
+
+@echo off
+echo Error: This BUILD script is currently under development.
+
