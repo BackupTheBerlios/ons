@@ -42,6 +42,19 @@ ONS_EXTERN_C_BEGIN
     }
 #endif
 
+
+/* Bit manipulation.
+ * These macros manipulate the single bits of a value.
+ * MEM_LROT(bit, val, k) rotates the \bit bit value \val for \k bytes to the left.
+ * MEM_RROT(bit, val, k) rotates the \bit bit value \val for \k bytes to the right.
+ * - MEM_LROT(32, 0x1, 4) would rotate the 32bit value 0x1 for 4 bits to the left and, hence, return 0x10.
+ * MEM_BIT(x) returns a value with the \x'th bit set.
+ */
+#define MEM_LROT(bit, val, k) (( (val) << (k) ) | ( (val) >> ((bit) - (k)) ))
+#define MEM_RROT(bit, val, k) (( (val) >> (k) ) | ( (val) << ((bit) - (k)) ))
+#define MEM_BIT(x) (0x1 << (x))
+
+
 #include <memoria/alloc.h>
 #include <memoria/array.h>
 #include <memoria/list.h>

@@ -42,6 +42,8 @@ TODO =1.0:
     - Add ioctl-options support.
 
 [ ONS v0.1.1.0 (TESTING) ]
+	* David Herrmann 2009/03/20
+		- Finish new Makefile.in which compiles all libraries into libons.so.
 	* David Herrmann 2009/03/15
 		- Create new "code" directory and rebuild the whole ONS library with a totally
 		  new design.

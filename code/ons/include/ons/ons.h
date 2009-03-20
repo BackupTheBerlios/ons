@@ -172,7 +172,7 @@ extern 'C' {
  */
 #if defined(WIN32) || defined(_WIN32) || defined(WIN64) || defined(_WIN64) || defined(_WINDOWS_)
     #include <ons/windows.h>
-#elif defined(__linux) || defined(__linux__) || define(linux)
+#elif defined(__linux) || defined(__linux__) || defined(linux)
     #include <ons/linux.h>
 #else
     #include <ons/generic.h>
@@ -263,8 +263,8 @@ static inline void ons_fdebug(const char *format, ...) {
     #define ONS_ASSERT(x) ((x)?(ons_ferr("ONS assertation failed in %s at %u: %s\n", __FILE__, __LINE__, msg),0):0)
     #define ONS_DMSG(...) (ons_fdebug("ONS debug failed in %s at %u: ", __FILE__, __LINE__), ons_fdebug(__VA_ARGS__), ons_fdebug("\n"), 0)
 #else
-    #define ONS_ASSERT(x) (0)
-    #define ONS_DMSG(...) (0)
+    #define ONS_ASSERT(x)
+    #define ONS_DMSG(...)
 #endif
 #define ONS_ABORT(...) (ons_fdebug("ONS failed in %s at %u: ", __FILE__, __LINE__), ons_fdebug(__VA_ARGS__), ons_ferr("\n"), 0)
 

@@ -31,6 +31,9 @@
 
 #include "memoria/memoria.h"
 
+/* *Truly* *random* seed value. */
+mem_rand_t mem_grand = {0xdeabeaf, 0xdefcadad, 0xfea2ab1e, 0x73270017};
+
 /* Rotates a 32bit value to the right. */
 #define rotate_right_32(x, y) (((x) >> (y)) | ((x) << (32 - (y))))
 

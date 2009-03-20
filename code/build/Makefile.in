@@ -8,113 +8,109 @@
 # - Created: 17. January 2009
 # - Lead-Dev: - David Herrmann
 # - Contributors: /
-# - Last-Change: 15. March 2009
+# - Last-Change: 20. March 2009
+#
+
+#
+# Compiles libons.
+# Each module has an own meta-target here and needs to be
+# placed into @modules@ to be compiled.
+#
+# If you want to add new modules, please search for NEW_MOD in this
+# file and add the module in all sections which have NEW_MOD in their
+# comments.
 #
 
 
 #
-# Global configuration.
+# Global variables.
 #
 
-prefix = @prefix@
-srcdir = @srcdir@
-RM = @RMPROG@
+prefix=@prefix@
+srcdir=..
+MODULES=@modules@
+RM=@RMPROG@
+INSTALL=@INSTALL@
+MKDIR=mkdir
 @SET_MAKE@
+SUBMAKE=${MAKE} --no-print-directory
+CC=@CC@
+CFLAGS=@CFLAGS@
+LFLAGS=@LFLAGS@
+BINARY=libons.so
 
-SUBMAKE = ${MAKE} --no-print-directory
 
-MODULES = @modules@
+#
+# includes and sources
+#
+# NEW_MOD: Add a new sections here.
+#
+
+ONS_INCLUDES=ons.h generic.h linux.h windows.h machine.h
+# no sources
+
+MEMORIA_INCLUDES=memoria.h alloc.h array.h list.h
+MEMORIA_SOURCES=random.c
+MEMORIA_TSOURCES=$(foreach file,$(MEMORIA_SOURCES),$(srcdir)/memoria/src/$(file))
+
+
+#
+# Prefix the sources/headers/etc. with the right directory paths
+# used for compilation and installation.
+# INCLUDES contains the directories which need to be copied to
+# /usr/include for installation.
+# LIBRARIES contains the files which need to be copied to /usr/lib
+# for installation.
+# SOURCES contains the relative paths to all files which need to
+# be compiled.
+#
+# NEW_MOD: Add module to all variables.
+#
+
+INCLUDES=$(foreach module,$(MODULES),$(srcdir)/$(module)/include/$(module))
+SOURCES=$(MEMORIA_TSOURCES)
+OBJECTS=$(SOURCES:%.c=%.o)
+COMPILE=$(CC) $(CFLAGS) -c $(foreach module,$(MODULES),-I$(srcdir)/$(module)/include)
 
 
 #
 # Global rules.
 #
 
-all: build
+all: $(srcdir)/$(BINARY)
 
-.PHONY: all build sub-clean sub-distclean clean distclean install uninstall
+.PHONY: all clean distclean install uninstall
 
+$(srcdir)/$(BINARY): $(OBJECTS)
+	$(CC) $(LFLAGS) $(OBJECTS) -o $(srcdir)/$(BINARY)
 
-#
-# Building routines.
-#
+clean:
+	@$(RM) -vf $(foreach module,$(MODULES),$(srcdir)/$(module)/src/*.o) $(srcdir)/$(BINARY)
 
-build:
-	@if test "x${SUBDIRS}" != "x" ; then \
-		for i in ${SUBDIRS}; do \
-			if test -d $$i ; then \
-				echo "Building $$i..."; \
-				cd $$i; \
-				${SUBMAKE} build; \
-				cd ..; \
-			fi \
-		done \
-	fi
+distclean: clean
+	@${RM} -Rvf $(srcdir)/build/Makefile $(srcdir)/build/aclocal.m4 $(srcdir)/build/autom4te.cache \
+				$(srcdir)/build/config.log $(srcdir)/build/config.status $(srcdir)/build/ltmain.sh \
+				$(srcdir)/build/configure $(srcdir)/build/install-sh $(srcdir)/build/missing $(srcdir)/build/stamp-h \
+				$(srcdir)/build/config.guess $(srcdir)/build/config.h $(srcdir)/build/config.h.in $(srcdir)/build/config.log \
+				$(srcdir)/build/config.sub $(srcdir)/ons/include/ons/machine.h
 
-
-
-#
-# Cleaning routines.
-#
-
-sub-clean:
-	@if test "x${SUBDIRS}" != "x" ; then \
-		for i in ${SUBDIRS}; do \
-			if test -d $$i ; then \
-				echo "Cleaning $$i..."; \
-				cd $$i; \
-				${SUBMAKE} clean; \
-				cd ..; \
-			fi \
-		done \
-	fi
-
-sub-distclean:
-	@if test "x${SUBDIRS}" != "x" ; then \
-		for i in ${SUBDIRS}; do \
-			if test -d $$i ; then \
-				echo "Dist-cleaning $$i..."; \
-				cd $$i; \
-				${SUBMAKE} distclean; \
-				cd ..; \
-			fi \
-		done \
-	fi
-
-clean: sub-clean
-
-distclean: sub-distclean
-	@${RM} -Rvf ${srcdir}/Makefile ${srcdir}/aclocal.m4 ${srcdir}/autom4te.cache \
-				${srcdir}/config.log ${srcdir}/config.status ${srcdir}/ltmain.sh \
-				${srcdir}/configure ${srcdir}/libtool ${srcdir}/missing ${srcdir}/stamp-h
-
-
-#
-# Installing routines.
-#
-
-install: build
-	@test -d ${prefix} || mkdir -vp ${prefix}
-	@if test "x${SUBDIRS}" != "x" ; then \
-		for i in ${SUBDIRS}; do \
-			if test -d $$i ; then \
-				echo "Installing $$i..."; \
-				cd $$i; \
-				${SUBMAKE} install; \
-				cd ..; \
-			fi \
-		done \
-	fi
+install: all
+	@test -d $(prefix) || mkdir -vp $(prefix)
+	@cp -Rv $(INCLUDES) $(prefix)/include
+	@chmod 755 $(foreach module,$(MODULES),$(prefix)/include/$(module))
+	@chmod 644 $(foreach module,$(MODULES),$(prefix)/include/$(module)/*.h)
+	@$(INSTALL) -m 755 -v $(srcdir)/$(BINARY) $(prefix)/lib/
 
 uninstall:
-	@if test "x${SUBDIRS}" != "x" ; then \
-		for i in ${SUBDIRS}; do \
-			if test -d $$i ; then \
-				echo "Uninstalling $$i..."; \
-				cd $$i; \
-				${SUBMAKE} uninstall; \
-				cd ..; \
-			fi \
-		done \
-	fi
+	@$(RM) -vRf $(foreach module,$(MODULES),$(prefix)/include/$(module)) $(prefix)/lib/$(BINARY)
+
+
+#
+# Source rules.
+#
+# NEW_MOD: Add a rule for the modules C sources here.
+#
+
+$(srcdir)/memoria/src/%.o: $(foreach file,$(MEMORIA_INCLUDES),$(srcdir)/memoria/include/memoria/$(file))
+	$(COMPILE) $(srcdir)/memoria/src/$*.c -o $(srcdir)/memoria/src/$*.o
 
