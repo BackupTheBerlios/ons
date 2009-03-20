@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 15. March 2009
+ * - Last-Change: 20. March 2009
  */
 
 /* This interface wraps the traditional malloc()'ish functions

@@ -37,7 +37,7 @@ SUBMAKE=${MAKE} --no-print-directory
 CC=@CC@
 CFLAGS=@CFLAGS@
 LFLAGS=@LFLAGS@
-BINARY=libons.so
+BINARY=@BINARY@
 
 
 #
@@ -86,6 +86,7 @@ $(srcdir)/$(BINARY): $(OBJECTS)
 
 clean:
 	@$(RM) -vf $(foreach module,$(MODULES),$(srcdir)/$(module)/src/*.o) $(srcdir)/$(BINARY)
+	@$(RM) -vf $(srcdir)/examples/*.o
 
 distclean: clean
 	@${RM} -Rvf $(srcdir)/build/Makefile $(srcdir)/build/aclocal.m4 $(srcdir)/build/autom4te.cache \
@@ -109,10 +110,13 @@ uninstall:
 # Example rules.
 #
 
-examples: $(srcdir)/examples/mem_array
+examples: $(srcdir)/examples/mem_array.bin
 
-$(srcdir)/examples/mem_array: $(srcdir)/examples/mem_array.c $(srcdir)/examples/include.h $(srcdir)/$(BINARY)
-	$(CC) $(CFLAGS) $(foreach module,$(MODULES),-I$(srcdir)/$(module)/include) $(srcdir)/examples/mem_array.c -o $(srcdir)/examples/mem_array $(srcdir)/$(BINARY)
+$(srcdir)/examples/mem_array.bin: $(srcdir)/examples/mem_array.o $(srcdir)/$(BINARY)
+	$(CC) $(CFLAGS) $(LFLAGS) $(srcdir)/examples/mem_array.o -o $(srcdir)/examples/mem_array.bin $(srcdir)/$(BINARY)
+
+$(srcdir)/examples/mem_array.o: $(srcdir)/examples/mem_array.c $(srcdir)/examples/include.h
+	$(CC) $(CFLAGS) -c $(foreach module,$(MODULES),-I$(srcdir)/$(module)/include) $(srcdir)/examples/mem_array.c -o $(srcdir)/examples/mem_array.o
 
 
 #

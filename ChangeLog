@@ -42,15 +42,17 @@ TODO =1.0:
     - Add ioctl-options support.
 
 [ ONS v0.1.1.0 (TESTING) ]
-	* David Herrmann 2009/03/20
-		- Finish new Makefile.in which compiles all libraries into libons.so.
-		- Add examples.
-		- Fix typos in MEM_DEFINE_ARRAY and extend examples.
-	* David Herrmann 2009/03/15
-		- Create new "code" directory and rebuild the whole ONS library with a totally
-		  new design.
-		- Create build scripts for POSIX-SH like environments and WINDOWS-BATCH like
-		  environments.
+    * David Herrmann 2009/03/20
+        - Finish new Makefile.in which compiles all libraries into libons.so.
+        - Add examples.
+        - Fix typos in MEM_DEFINE_ARRAY and extend examples.
+        - Fix compoilation on MaxOS-X.
+        - Fix example-compilation.
+    * David Herrmann 2009/03/15
+        - Create new "code" directory and rebuild the whole ONS library with a totally
+          new design.
+        - Create build scripts for POSIX-SH like environments and WINDOWS-BATCH like
+          environments.
     * David Herrmann 2009/02/24
         - Finish main documentation.
         - Finish libons documentation.

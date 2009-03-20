@@ -8,7 +8,7 @@ dnl File information:
 dnl - Created: 22. December 2008
 dnl - Lead-Dev: - David Herrmann
 dnl - Contributors: /
-dnl - Last-Change: 15. March 2009
+dnl - Last-Change: 20. March 2009
 dnl
 
 dnl
@@ -109,7 +109,16 @@ else
     ons_cv_enable_debug="no"
     ons_cv_enable_warnings="no"
 fi
-LFLAGS="-shared -fPIC"
+
+T_HOST=`echo "$host" | grep -o darwin`
+if [[ $T_HOST = "darwin" ]] ; then
+    LFLAGS="-dynamiclib -dylib -fPIC"
+    BINARY="libons.dylib"
+else
+    LFLAGS="-shared -fPIC"
+    BINARY="libons.so"
+fi
+AC_SUBST([BINARY])
 
 
 dnl
@@ -490,12 +499,12 @@ if test -f config.h ; then
 
     TMP_ENDIAN=$(grep BIG_ENDIAN <config.h)
     TMP_ENDIAN="$TMP_ENDIAN$TMP_NL$(grep LITTLE_ENDIAN <config.h)"
-    TMP_ENDIAN=$(echo "$TMP_ENDIAN" | sed -e 's/^#define\s\{1,\}\(ONS_CONF_\)\{0,1\}\(.*\)$/#define ONS_CONF_\2/g')
+    TMP_ENDIAN=$(echo "$TMP_ENDIAN" | sed -e 's/^#define[ \t]\{1,\}\(ONS_CONF_\)\{0,1\}\(.*\)$/#define ONS_CONF_\2/g')
 
     TMP_MMAP=$(grep HAVE_MMAP <config.h)
     # both ANON and ANONYMOUS in this grep
     TMP_MMAP="$TMP_MMAP$TMP_NL$(grep HAVE_DECL_MAP_ANON <config.h)"
-    TMP_MMAP=$(echo "$TMP_MMAP" | sed -e 's/^#define\s\{1,\}\(ONS_CONF_\)\{0,1\}\(.*\)$/#define ONS_CONF_\2/g')
+    TMP_MMAP=$(echo "$TMP_MMAP" | sed -e 's/^#define[ \t]\{1,\}\(ONS_CONF_\)\{0,1\}\(.*\)$/#define ONS_CONF_\2/g')
 
     TMP_MISC=$(grep HAVE_STRNLEN <config.h)
     TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_SYS_UN_H <config.h)"
@@ -522,7 +531,7 @@ if test -f config.h ; then
     TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_GETTIMEOFDAY <config.h)"
     TMP_MISC="$TMP_MISC$TMP_NL$(grep HAVE_PTHREAD_H <config.h)"
     TMP_MISC="$TMP_MISC$TMP_NL$(grep DEBUG <config.h)"
-    TMP_MISC=$(echo "$TMP_MISC" | sed -e 's/^#define\s\{1,\}\(ONS_CONF_\)\{0,1\}\(.*\)$/#define ONS_CONF_\2/g')
+    TMP_MISC=$(echo "$TMP_MISC" | sed -e 's/^#define[ \t]\{1,\}\(ONS_CONF_\)\{0,1\}\(.*\)$/#define ONS_CONF_\2/g')
 
     # Write into machine.h
     echo "$TMP_NL$TMP_SYSEXT$TMP_NL$TMP_ENDIAN$TMP_NL$TMP_MMAP$TMP_NL$TMP_MISC$TMP_NL" >../ons/include/ons/machine.h

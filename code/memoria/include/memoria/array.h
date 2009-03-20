@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 17. March 2009
+ * - Last-Change: 20. March 2009
  */
 
 /* The array interface implements several memory structures
