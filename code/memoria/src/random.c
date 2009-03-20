@@ -31,6 +31,11 @@
 
 #include "memoria/memoria.h"
 
+/* The current handler called if memory allocation failed.
+ * If it is NULL no handler is called.
+ */
+void (*mem_outofmem)(void) = NULL;
+
 /* *Truly* *random* seed value. */
 mem_rand_t mem_grand = {0xdeabeaf, 0xdefcadad, 0xfea2ab1e, 0x73270017};
 

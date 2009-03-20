@@ -111,8 +111,8 @@ uninstall:
 
 examples: $(srcdir)/examples/mem_array
 
-$(srcdir)/examples/mem_array: $(srcdir)/examples/mem_array.c $(srcdir)/examples/include.h
-	$(CC) $(CFLAGS) $(foreach module,$(MODULES),-I$(srcdir)/$(module)/include) $(srcdir)/examples/mem_array.c -o $(srcdir)/examples/mem_array
+$(srcdir)/examples/mem_array: $(srcdir)/examples/mem_array.c $(srcdir)/examples/include.h $(srcdir)/$(BINARY)
+	$(CC) $(CFLAGS) $(foreach module,$(MODULES),-I$(srcdir)/$(module)/include) $(srcdir)/examples/mem_array.c -o $(srcdir)/examples/mem_array $(srcdir)/$(BINARY)
 
 
 #

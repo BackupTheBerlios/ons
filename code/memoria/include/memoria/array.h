@@ -43,7 +43,7 @@ ONS_EXTERN_C_BEGIN
  * of the array structure, \ELE_TYPE is the element type which is saved in the array and
  * \INITIAL_VAL is the number of elements which get allocated first.
  * \FREE specifies whether to shrink the allocated space if an element gets deleted and
- * \DOUBLE specifies whether \INITIAL_VAR should be doubled or simple added to the currently
+ * \DOUBLE specifies whether \INITIAL_VAL should be doubled or simple added to the currently
  * allocated elements when new space needs to be allocated.
  * \FUNC_FREE is a function of type \void (*func)(ELE_TYPE*) which is called on each element
  * before it is deleted. If NULL, nothing is done. The space where the element is located is
@@ -88,11 +88,12 @@ ONS_EXTERN_C_BEGIN
         size_t size; \
         ELE_TYPE *list; \
     } ARR_NAME; \
-    static void (* ARR_NAME##_free_func)(void*) = FUNC_FREE; \
+    static void (* ARR_NAME##_free_func)(ELE_TYPE*) = FUNC_FREE; \
     static inline void ARR_NAME##__resize(ARR_NAME *array, size_t size) { \
-        size_t i; \
+        size_t i, tmp; \
         ONS_ASSERT(array != NULL); \
-        if(size == 0) { \
+        if(size == array->used) return; \
+        else if(size == 0) { \
             array->used = array->size = 0; \
             mem_free(array->list); \
             array->list = NULL; \
@@ -101,7 +102,10 @@ ONS_EXTERN_C_BEGIN
             array->used = size; \
         } \
         else { \
-            for(i = (INITIAL_VAL)? (INITIAL_VAL): 1; i < size; ++i) ((DOUBLE)? (i = i << 1): (i += (INITIAL_VAL))); \
+            for(i = (INITIAL_VAL)? (INITIAL_VAL): 1; i < size; ++i) { \
+                if(i < ((DOUBLE)? (tmp = i << 1): (tmp = i + (INITIAL_VAL)))) i = tmp; \
+                else i = size; \
+            } \
             array->used = size; \
             array->size = i; \
             array->list = mem_realloc(array->list, array->size * sizeof(ELE_TYPE)); \
@@ -123,7 +127,7 @@ ONS_EXTERN_C_BEGIN
         --array->used; \
         if(FREE) { \
             if(DOUBLE) size = array->size >> 1; \
-            else size = array->size - INITIAL_VAR; \
+            else size = array->size - INITIAL_VAL; \
             if(array->used <= size) { \
                 if(size == 0) ARR_NAME##__resize(array, 0); \
                 else { \
@@ -160,7 +164,7 @@ ONS_EXTERN_C_BEGIN
     static inline void ARR_NAME##_pop(ARR_NAME *array) { \
         ONS_ASSERT(array != NULL); \
         ONS_ASSERT(array->used > 0); \
-        ARR_NAME##__free(array, array->used - 1); \
+        ARR_NAME##__free(array, array->used - 1, array->used - 1); \
         ARR_NAME##__pop(array); \
     } \
     static inline void ARR_NAME##_resize(ARR_NAME *array, size_t size) { \
@@ -183,8 +187,8 @@ ONS_EXTERN_C_BEGIN
         ONS_ASSERT(array != NULL); \
         ONS_ASSERT(index < array->used); \
         ONS_ASSERT(array->used); \
-        ARR_NAME##__free(array, array->used - 1, array->used - 1); \
-        memmove(array->list + index, array->list + index + 1, (array->used - index) * sizeof(ELE_TYPE)); \
+        ARR_NAME##__free(array, index, index); \
+        memmove(array->list + index, array->list + index + 1, (array->used - index - 1) * sizeof(ELE_TYPE)); \
         ARR_NAME##__pop(array); \
     } \
     static inline void ARR_NAME##_shift(ARR_NAME *array) { \
