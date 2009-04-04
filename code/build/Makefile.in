@@ -8,7 +8,7 @@
 # - Created: 17. January 2009
 # - Lead-Dev: - David Herrmann
 # - Contributors: /
-# - Last-Change: 20. March 2009
+# - Last-Change: 21. March 2009
 #
 
 #
@@ -50,7 +50,7 @@ ONS_INCLUDES=ons.h generic.h linux.h windows.h machine.h
 # no sources
 
 MEMORIA_INCLUDES=memoria.h alloc.h array.h list.h
-MEMORIA_SOURCES=random.c
+MEMORIA_SOURCES=random.c hash.c list.c rbtree.c splay.c table.c
 MEMORIA_TSOURCES=$(foreach file,$(MEMORIA_SOURCES),$(srcdir)/memoria/src/$(file))
 
 
@@ -110,13 +110,19 @@ uninstall:
 # Example rules.
 #
 
-examples: $(srcdir)/examples/mem_array.bin
+examples: $(srcdir)/examples/mem_array.bin $(srcdir)/examples/mem_list.bin
 
 $(srcdir)/examples/mem_array.bin: $(srcdir)/examples/mem_array.o $(srcdir)/$(BINARY)
-	$(CC) $(CFLAGS) $(LFLAGS) $(srcdir)/examples/mem_array.o -o $(srcdir)/examples/mem_array.bin $(srcdir)/$(BINARY)
+	$(CC) $(srcdir)/examples/mem_array.o -o $(srcdir)/examples/mem_array.bin $(srcdir)/$(BINARY)
 
 $(srcdir)/examples/mem_array.o: $(srcdir)/examples/mem_array.c $(srcdir)/examples/include.h
 	$(CC) $(CFLAGS) -c $(foreach module,$(MODULES),-I$(srcdir)/$(module)/include) $(srcdir)/examples/mem_array.c -o $(srcdir)/examples/mem_array.o
+
+$(srcdir)/examples/mem_list.bin: $(srcdir)/examples/mem_list.o $(srcdir)/$(BINARY)
+	$(CC) $(srcdir)/examples/mem_list.o -o $(srcdir)/examples/mem_list.bin $(srcdir)/$(BINARY)
+
+$(srcdir)/examples/mem_list.o: $(srcdir)/examples/mem_list.c $(srcdir)/examples/include.h
+	$(CC) $(CFLAGS) -c $(foreach module,$(MODULES),-I$(srcdir)/$(module)/include) $(srcdir)/examples/mem_list.c -o $(srcdir)/examples/mem_list.o
 
 
 #

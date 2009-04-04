@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 20. March 2009
+ * - Last-Change: 3. April 2009
  */
 
 /* Main and public header of memoria.
@@ -43,16 +43,81 @@ ONS_EXTERN_C_BEGIN
 #endif
 
 
+/* Hashes arbitrary values.
+ * Takes as argument a pointer to an array \str of \len bytes and returns
+ * a hashed value for this array. The algorithm is really fast, however,
+ * it is not intended for usage in cryptographic functions.
+ * The hash function is created to change the hash strongly if even only one bit
+ * changes in the whole array.
+ *
+ * If you don't know how to create an hashtable out of a this hash function, please
+ * see the documentation of Memoria which shows how to create a hashtable.
+ * If you don't want to create a hashtable yourself, use any API provided by Memoria
+ * that uses this hash function.
+ */
+typedef uint32_t mem_hash_t;
+extern uint32_t mem_hash(const char *str, size_t len);
+
+
+/* Compare two elements.
+ * The type of \comparison and \original depend on the context where this callback
+ * is called. However, they are almost always of the same type.
+ * The callback should return:
+ *   < 0 if /comparison is smaller than /original
+ *   = 0 if both are the same
+ *   > 0 if /comparison is greater than /original
+ */
+typedef signed int (*mem_match_t)(const void *comparison, const void *original);
+
+
 /* Bit manipulation.
  * These macros manipulate the single bits of a value.
  * MEM_LROT(bit, val, k) rotates the \bit bit value \val for \k bytes to the left.
  * MEM_RROT(bit, val, k) rotates the \bit bit value \val for \k bytes to the right.
  * - MEM_LROT(32, 0x1, 4) would rotate the 32bit value 0x1 for 4 bits to the left and, hence, return 0x10.
- * MEM_BIT(x) returns a value with the \x'th bit set.
+ * MEM_BIT(x) returns a value with the \x'th bit set. (0 is the first bit)
+ * MEM_BITS(x) returns a \x bit value with all bits set. (even the last bit of 64bit is supported)
  */
 #define MEM_LROT(bit, val, k) (( (val) << (k) ) | ( (val) >> ((bit) - (k)) ))
 #define MEM_RROT(bit, val, k) (( (val) >> (k) ) | ( (val) << ((bit) - (k)) ))
-#define MEM_BIT(x) (0x1 << (x))
+#define MEM_BIT(x) (0x1ULL << (x))
+#define MEM_BITS(x) ((MEM_BIT((x) - 1) - 1) | MEM_BIT((x) - 1))
+
+
+/* Mask manipulation macro.
+ * These macros help you moving masks to other positions.
+ *
+ * MEM_MASK_HIGH(bits, mask) Returns a value of size \bits with the most upper bits set.
+ *                           \mask must be a power of 2.
+ * \bits cannot be bigger than 64.
+ * Example:
+ *   MEM_MASK_HIGH(16, 8) represents two values (in binary):
+ *     \bits: 0000 0000 0000 0000
+ *     \mask: 0000 0000 0000 1000
+ *   Now this macro converts the mask into:
+ *     \mask: 0000 0000 0000 0111
+ *   that is, it sets all bits below the mask. Remember, \mask has to be a power of 2!
+ *   At last step, this macro moves this mask to the most upper position:
+ *     \mask: 1110 0000 0000 0000
+ *   and returns this value.
+ *
+ * MEM_MASK_LOW(bits, mask) Same as MEM_MASK_HIGH but sets the lowest bits.
+ *
+ * MEM_MASK_MOV(bits, mask, value) Moves the mask to the left. Returns 0 if it cannot be moved.
+ * Example:
+ *   MEM_MASK_MOV(16, 8, 7):
+ *     \bits: 0000 0000 0000 0000
+ *     \mask: 0000 0000 0000 1000
+ *     \value: 0000 0000 0000 0111
+ *   returns:
+ *     \value: 0000 0000 0011 1000
+ *   If called with:
+ *     \value: 0011 1000 0000 0000
+ *   then it would return 0, because there is not enough space to move the mask to.
+ */
+#define MEM_MASK_HIGH(bits, mask) (~(MEM_BITS(bits) / (mask)))
+#define MEM_MASK_LOW(bits, mask) ((mask) - 1)
+#define MEM_MASK_MOV(bits, mask, value) (((value) & MEM_MASK_HIGH((bits), (mask)))?0:((value) * (mask)))
 
 
 #include <memoria/alloc.h>

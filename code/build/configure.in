@@ -95,10 +95,10 @@ AC_MSG_RESULT([$ons_cv_enable_debug])
 if test x"$ons_cv_enable_warnings" = xyes; then
     if test x"$ons_cv_enable_debug" = xyes; then
         CFLAGS="-fPIC -g -O0 -Wall"
+        AC_DEFINE([DEBUG], [1], [Define if Debug mode is enabled.])
     else
         CFLAGS="-fPIC -O2 -Wall -DNDEBUG"
         ons_cv_enable_debug="no"
-        AC_DEFINE([DEBUG], [1], [Define if Debug mode is enabled.])
     fi
 elif test x"$ons_cv_enable_debug" = xyes; then
     CFLAGS="-fPIC -g -O0"
@@ -112,7 +112,7 @@ fi
 
 T_HOST=`echo "$host" | grep -o darwin`
 if [[ $T_HOST = "darwin" ]] ; then
-    LFLAGS="-dynamiclib -dylib -fPIC"
+    LFLAGS="-dynamiclib -fPIC"
     BINARY="libons.dylib"
 else
     LFLAGS="-shared -fPIC"

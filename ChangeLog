@@ -42,6 +42,23 @@ TODO =1.0:
     - Add ioctl-options support.
 
 [ ONS v0.1.1.0 (TESTING) ]
+    * David Herrmann 2009/04/04
+        - Fix llist to remove elements correctly.
+    * David Herrmann 2009/04/03
+        - Make hash table dynamic.
+        - Fix ONS_CONF_DEBUG to be correctly set in configure.in.
+        - Fix mem_list_clear backends again.
+        - Make mem_realloc() behave like mem_malloc() if the pointer equals NULL.
+    * David Herrmann 2009/04/02
+        - Write frontend for a generic double linked list API.
+        - Fix bug in mem_list_clear backends.
+        - Write hash table list backend.
+    * David Herrmann 2009/04/01
+        - Write the backend for a generic double linked list API.
+    * David Herrmann 2009/03/24
+        - Extend mem_array interface to support merges and manual resizing.
+        - Rewrite mem_list interface to look always the same and support
+          different backends.
     * David Herrmann 2009/03/20
         - Finish new Makefile.in which compiles all libraries into libons.so.
         - Add examples.

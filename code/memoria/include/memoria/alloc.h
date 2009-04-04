@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 20. March 2009
+ * - Last-Change: 4. April 2009
  */
 
 /* This interface wraps the traditional malloc()'ish functions
@@ -75,16 +75,17 @@ static inline void *mem_zmalloc(size_t size) {
  * If the old size was bigger than \size, the first \size bytes of the old
  * data are preserved.
  * Calls the global out-of-mem handler if the allocation fails.
- * If \size or \mem equals zero the behaviour is undefined.
+ * If \size or equals zero the behaviour is undefined.
+ * If \mem is NULL, the behaviour equals mem_malloc().
  * The returned value must be freed with mem_free() or free().
  */
 static inline void *mem_realloc(void *mem, size_t size) {
     void *ret;
 
-    ONS_ASSERT(mem != NULL);
     ONS_ASSERT(size > 0);
 
-    ret = realloc(mem, size);
+    if(mem) ret = realloc(mem, size);
+    else ret = mem_malloc(size);
     MEM_IFNULL(ret);
     return ret;
 }

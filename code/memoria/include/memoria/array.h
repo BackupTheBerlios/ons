@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 20. March 2009
+ * - Last-Change: 3. April 2009
  */
 
 /* The array interface implements several memory structures
@@ -92,12 +92,12 @@ ONS_EXTERN_C_BEGIN
     static inline void ARR_NAME##__resize(ARR_NAME *array, size_t size) { \
         size_t i, tmp; \
         ONS_ASSERT(array != NULL); \
-        if(size == array->used) return; \
-        else if(size == 0) { \
+        if(size == 0) { \
             array->used = array->size = 0; \
             mem_free(array->list); \
             array->list = NULL; \
         } \
+        else if(size == array->used) return; \
         else if(size <= array->size && (!FREE || size > ((DOUBLE)? (array->size >> 1): (array->size - INITIAL_VAL)))) { \
             array->used = size; \
         } \
@@ -154,7 +154,7 @@ ONS_EXTERN_C_BEGIN
     } \
     static inline void ARR_NAME##_clear(ARR_NAME *array) { \
         ONS_ASSERT(array != NULL); \
-        ARR_NAME##__free(array, 0, array->used - 1); \
+        if(array->used > 0) ARR_NAME##__free(array, 0, array->used - 1); \
         ARR_NAME##__resize(array, 0); \
     } \
     static inline ELE_TYPE *ARR_NAME##_push(ARR_NAME *array) { \

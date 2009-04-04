@@ -260,10 +260,10 @@ static inline void ons_fdebug(const char *format, ...) {
  * ONS_ABORT: Prints a message and aborts.
  */
 #ifdef ONS_DEBUG
-    #define ONS_ASSERT(x) ((x)?(ons_ferr("ONS assertation failed in %s at %u: %s\n", __FILE__, __LINE__, msg),0):0)
+    #define ONS_ASSERT(exp) ((exp)?0:(ons_ferr("ONS assertation failed in %s at %u.\n", __FILE__, __LINE__),0))
     #define ONS_DMSG(...) (ons_fdebug("ONS debug failed in %s at %u: ", __FILE__, __LINE__), ons_fdebug(__VA_ARGS__), ons_fdebug("\n"), 0)
 #else
-    #define ONS_ASSERT(x)
+    #define ONS_ASSERT(exp)
     #define ONS_DMSG(...)
 #endif
 #define ONS_ABORT(...) (ons_fdebug("ONS failed in %s at %u: ", __FILE__, __LINE__), ons_fdebug(__VA_ARGS__), ons_ferr("\n"), 0)
