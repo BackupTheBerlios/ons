@@ -8,7 +8,7 @@
  * - Created: 22. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 15. March 2009
+ * - Last-Change: 7. April 2009
  */
 
 /* Main and public header of ONS.
@@ -278,6 +278,22 @@ static inline void ons_fdebug(const char *format, ...) {
 #else
     #define ONS_ATTR_PACK
 #endif
+
+
+/* Error codes of all ONS libraries.
+ * An error code is always of type "unsigned int" and is named ONS_E_XYZ.
+ * The first error number is 0, the last error number is ONS_E_LAST.
+ * If you want to get a string naming an error, please implement this
+ * yourself. It will not get a part of ONS because we do not provide i18n
+ * or l10n in our library.
+ * Several sublibraries provide ways which ease the use of sorting these
+ * error codes into logical groups. Please read their documentation.
+ */
+typedef unsigned int ons_err_t;
+enum {
+    ONS_E_NONE = 0, /* No error occurred. Everything went fine. */
+    ONS_E_LAST
+};
 
 
 #ifdef __cplusplus
