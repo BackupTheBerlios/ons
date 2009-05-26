@@ -8,7 +8,7 @@
  * - Created: 28. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 20. March 2009
+ * - Last-Change: 26. May 2009
  */
 
 /* This file is based on:
@@ -29,7 +29,10 @@
 */
 
 
+#include "config/machine.h"
 #include "memoria/memoria.h"
+#include "memoria/alloc.h"
+#include "memoria/array.h"
 
 /* The current handler called if memory allocation failed.
  * If it is NULL no handler is called.
@@ -55,7 +58,7 @@ mem_rand_t mem_grand = {0xdeabeaf, 0xdefcadad, 0xfea2ab1e, 0x73270017};
 void mem_isaac_gen(mem_isaac_t *ctx) {
     register uint32_t a, b, x, y, *m, *mm, *m2, *r, *mend;
 
-    ONS_ASSERT(ctx != NULL);
+    SUNDRY_ASSERT(ctx != NULL);
 
     mm = ctx->randmem;
     r = ctx->randrsl;
@@ -94,7 +97,7 @@ void mem_isaac_seed(mem_isaac_t *ctx) {
     uint32_t a, b, c, d, e, f, g, h;
     uint32_t *m, *r;
 
-    ONS_ASSERT(ctx != NULL);
+    SUNDRY_ASSERT(ctx != NULL);
 
     ctx->randa = ctx->randb = ctx->randc = 0;
     m = ctx->randmem;

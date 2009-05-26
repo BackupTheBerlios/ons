@@ -18,6 +18,7 @@
 
 #include "config/machine.h"
 #include "sundry/sundry.h"
+#include "sundry/time.h"
 
 #include <stdlib.h>
 #include <string.h>

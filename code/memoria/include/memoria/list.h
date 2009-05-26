@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 4. April 2009
+ * - Last-Change: 26. May 2009
  */
 
 /* List interface
@@ -20,10 +20,16 @@
  */
 
 
-#ifndef ONS_INCLUDED_memoria_list_h
-#define ONS_INCLUDED_memoria_list_h
-ONS_EXTERN_C_BEGIN
+#include <sundry/sundry.h>
 
+#ifndef MEMORIA_INCLUDED_memoria_list_h
+#define MEMORIA_INCLUDED_memoria_list_h
+SUNDRY_EXTERN_C_BEGIN
+
+
+#include <stdint.h>
+#include <memoria/memoria.h>
+#include <memoria/alloc.h>
 
 /* The color of an RBTree node. */
 typedef enum mem_color_t {
@@ -269,7 +275,7 @@ extern mem_binfo_t *mem_blist[MEM_BACKEND_LAST];
  * Whereas <function> is one of:
  *    - prepend, append, push, thrust, remove
  * as they are described above.
- * <api> is a one of:
+ * <api> is one of:
  *    -   g: generic API.
  *    -   b: generic API with base.
  *    -   n: named generic API.
@@ -381,9 +387,9 @@ static inline void *mem_llist_prepend(void *list_first,
                                       void **node_next,
                                       void **node_prev)
 {
-    ONS_ASSERT(ref && ref_prev && node && node_next && node_prev);
-    ONS_ASSERT(!*ref_prev || (ref_prev_next && *ref_prev_next == ref));
-    ONS_ASSERT(!*node_next && !*node_prev);
+    SUNDRY_ASSERT(ref && ref_prev && node && node_next && node_prev);
+    SUNDRY_ASSERT(!*ref_prev || (ref_prev_next && *ref_prev_next == ref));
+    SUNDRY_ASSERT(!*node_next && !*node_prev);
 
     *node_next = ref;
     *node_prev = *ref_prev;
@@ -413,9 +419,9 @@ static inline void *mem_llist_append(void *list_last,
                                      void **node_next,
                                      void **node_prev)
 {
-    ONS_ASSERT(ref && ref_next && node && node_next && node_prev);
-    ONS_ASSERT(!*ref_next || (ref_next_prev && *ref_next_prev == ref));
-    ONS_ASSERT(!*node_next && !*node_prev);
+    SUNDRY_ASSERT(ref && ref_next && node && node_next && node_prev);
+    SUNDRY_ASSERT(!*ref_next || (ref_next_prev && *ref_next_prev == ref));
+    SUNDRY_ASSERT(!*node_next && !*node_prev);
 
     *node_prev = ref;
     *node_next = *ref_next;
@@ -441,8 +447,8 @@ static inline void *mem_llist_push(void *ref,
                                    void **node_next,
                                    void **node_prev)
 {
-    ONS_ASSERT((!ref && !ref_next) || (ref && ref_next && !*ref_next));
-    ONS_ASSERT(node && node_next && !*node_next && node_prev && !*node_prev);
+    SUNDRY_ASSERT((!ref && !ref_next) || (ref && ref_next && !*ref_next));
+    SUNDRY_ASSERT(node && node_next && !*node_next && node_prev && !*node_prev);
 
     if(!ref) {
         *node_next = *node_prev = NULL;
@@ -469,8 +475,8 @@ static inline void *mem_llist_thrust(void *ref,
                                      void **node_next,
                                      void **node_prev)
 {
-    ONS_ASSERT((!ref && !ref_prev) || (ref && ref_prev && !*ref_prev));
-    ONS_ASSERT(node && node_next && !*node_next && node_prev && !*node_prev);
+    SUNDRY_ASSERT((!ref && !ref_prev) || (ref && ref_prev && !*ref_prev));
+    SUNDRY_ASSERT(node && node_next && !*node_next && node_prev && !*node_prev);
 
     if(!ref) {
         *node_next = *node_prev = NULL;
@@ -497,9 +503,9 @@ static inline void mem_llist_remove(void *node,
                                     void **prev_next,
                                     void **next_prev)
 {
-    ONS_ASSERT(node && node_next && node_prev);
-    ONS_ASSERT(!prev_next || *prev_next == node);
-    ONS_ASSERT(!next_prev || *next_prev == node);
+    SUNDRY_ASSERT(node && node_next && node_prev);
+    SUNDRY_ASSERT(!prev_next || *prev_next == node);
+    SUNDRY_ASSERT(!next_prev || *next_prev == node);
 
     if(prev_next) *prev_next = *node_next;
     if(next_prev) *next_prev = *node_prev;
@@ -509,6 +515,6 @@ static inline void mem_llist_remove(void *node,
     mem_llist_remove((void*)(one), (void**)(two), (void**)(three), (void**)(four), (void**)(five))
 
 
-ONS_EXTERN_C_END
-#endif /* ONS_INCLUDED_memoria_list_h */
+SUNDRY_EXTERN_C_END
+#endif /* MEMORIA_INCLUDED_memoria_list_h */
 

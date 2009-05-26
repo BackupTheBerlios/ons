@@ -8,7 +8,7 @@
  * - Created: 22. February 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 3. April 2009
+ * - Last-Change: 26. May 2009
  */
 
 /* Red-Black Tree implementation.
@@ -17,7 +17,11 @@
  */
 
 
+#include "config/machine.h"
 #include "memoria/memoria.h"
+#include "memoria/alloc.h"
+#include "memoria/array.h"
+
 #include <string.h>
 
 
@@ -53,7 +57,7 @@ static inline signed int mem_rbt_comp(mem_list_t *list, mem_node_t *comparison, 
 mem_node_t *mem_rbt_first(mem_list_t *tree) {
     mem_node_t *iter;
 
-    ONS_ASSERT(tree != NULL);
+    SUNDRY_ASSERT(tree != NULL);
     if(!tree->root) return NULL;
 
     iter = tree->root;
@@ -63,7 +67,7 @@ mem_node_t *mem_rbt_first(mem_list_t *tree) {
 mem_node_t *mem_rbt_last(mem_list_t *tree) {
     mem_node_t *iter;
 
-    ONS_ASSERT(tree != NULL);
+    SUNDRY_ASSERT(tree != NULL);
     if(!tree->root) return NULL;
 
     iter = tree->root;
@@ -71,7 +75,7 @@ mem_node_t *mem_rbt_last(mem_list_t *tree) {
     return iter;
 }
 mem_node_t *mem_rbt_next(mem_node_t *node) {
-    ONS_ASSERT(node != NULL);
+    SUNDRY_ASSERT(node != NULL);
 
     if(node->right) {
         node = node->right;
@@ -88,7 +92,7 @@ mem_node_t *mem_rbt_next(mem_node_t *node) {
     }
 }
 mem_node_t *mem_rbt_prev(mem_node_t *node) {
-    ONS_ASSERT(node != NULL);
+    SUNDRY_ASSERT(node != NULL);
 
     if(node->left) {
         node = node->left;
@@ -120,8 +124,8 @@ static mem_node_t *mem_rbt_push(mem_list_t *tree, mem_node_t *node, signed int p
     mem_node_t *iter;
     signed int comp;
 
-    ONS_ASSERT(tree != NULL);
-    ONS_ASSERT(node != NULL);
+    SUNDRY_ASSERT(tree != NULL);
+    SUNDRY_ASSERT(node != NULL);
 
     /* Algorithm:
      * If the tree is empty, add the new child as new black root node.
@@ -202,8 +206,8 @@ static mem_node_t *mem_rbt_push(mem_list_t *tree, mem_node_t *node, signed int p
     }
     else {
         node->prev = mem_rbt_prev(node);
-        ONS_ASSERT(node->prev != NULL);
-        ONS_ASSERT(node->prev->next == NULL);
+        SUNDRY_ASSERT(node->prev != NULL);
+        SUNDRY_ASSERT(node->prev->next == NULL);
         node->next = node->prev->next;
         node->prev->next = node;
         tree->last = node;
@@ -220,8 +224,8 @@ static mem_node_t *mem_rbt_push(mem_list_t *tree, mem_node_t *node, signed int p
 static void mem_rbt_rotate(mem_list_t *tree, mem_node_t *node) {
     mem_node_t *parent;
 
-    ONS_ASSERT(tree != NULL);
-    ONS_ASSERT(node != NULL);
+    SUNDRY_ASSERT(tree != NULL);
+    SUNDRY_ASSERT(node != NULL);
     if(!node->parent) return;
 
     parent = node->parent;
@@ -272,7 +276,7 @@ static inline mem_node_t *mem_rbt_uncle(mem_node_t *node) {
 
 /* Resets a node to NULL except key/len/data. */
 static inline void mem_rbt_reset(mem_node_t *node) {
-    ONS_ASSERT(node != NULL);
+    SUNDRY_ASSERT(node != NULL);
     node->next = NULL;
     node->prev = NULL;
     node->color = MEM_RED;
@@ -286,7 +290,7 @@ static inline void mem_rbt_reset(mem_node_t *node) {
 void mem_rbtree_clear(mem_list_t *list) {
     mem_node_t *next, *cur;
 
-    ONS_ASSERT(list != NULL);
+    SUNDRY_ASSERT(list != NULL);
 
     next = list->first;
     while(next) {
@@ -307,9 +311,9 @@ void mem_rbtree_clear(mem_list_t *list) {
 mem_node_t *mem_rbtree_find(mem_list_t *list, void *key, size_t len) {
     mem_node_t *node, find;
 
-    ONS_ASSERT(list != NULL);
-    ONS_ASSERT(key != NULL);
-    ONS_ASSERT(len != 0);
+    SUNDRY_ASSERT(list != NULL);
+    SUNDRY_ASSERT(key != NULL);
+    SUNDRY_ASSERT(len != 0);
 
     memset(&find, 0, sizeof(mem_node_t));
     find.key = key;
@@ -323,8 +327,8 @@ mem_node_t *mem_rbtree_find(mem_list_t *list, void *key, size_t len) {
 mem_node_t *mem_rbtree_insert(mem_list_t *tree, mem_node_t *node) {
     mem_node_t *iter, *tmp;
 
-    ONS_ASSERT(tree != NULL && node != NULL && node->next == NULL && node->prev == NULL);
-    ONS_ASSERT(node->parent == NULL && node->tree == NULL);
+    SUNDRY_ASSERT(tree != NULL && node != NULL && node->next == NULL && node->prev == NULL);
+    SUNDRY_ASSERT(node->parent == NULL && node->tree == NULL);
 
     /* This key does already exist. We return the node. */
     if((tmp = mem_rbt_push(tree, node, 0)) != node) {
@@ -383,10 +387,10 @@ void mem_rbtree_remove(mem_list_t *tree, mem_node_t *node) {
     mem_node_t *iter, *tmp_parent, *neph;
     mem_color_t color;
 
-    ONS_ASSERT(tree != NULL);
-    ONS_ASSERT(node != NULL);
-    ONS_ASSERT(node->tree == tree);
-    ONS_ASSERT(tree->count > 0);
+    SUNDRY_ASSERT(tree != NULL);
+    SUNDRY_ASSERT(node != NULL);
+    SUNDRY_ASSERT(node->tree == tree);
+    SUNDRY_ASSERT(tree->count > 0);
 
     /* Remove root and return. */
     if(tree->count == 1) {

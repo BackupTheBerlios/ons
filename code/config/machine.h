@@ -38,7 +38,7 @@
  *    This file is deprecated and should only be used in exotic environments if
  *    you have no idea what your system is.
  */
-/* #include "macosx.machine.h" */
+#include "macosx.machine.h"
 /* #include "generic.machine.h" */
 
 
@@ -98,6 +98,8 @@
  *    - Full ISO-C89 compatible.
  *    - Variable argument lists of macros with __VA_ARGS__.
  *    - "inline" keyword
+ *    - "long long int" must be supported.
+ *    - C99 subobject initialization.
  *    - The binary representation of a null-pointer must be zero in any type.
  *    - Integer types must not have padding.
  *    - The C compiler must halt (and return != 0) on compilation errors.
@@ -126,9 +128,14 @@
  *
  *   ONS_THREAD_WIN:
  *          The thread backend is the Windows API.
+ *
+ * When ONS_THREAD_PTHREAD is enabled the following option can be set:
+ *   ONS_THREAD_PTHREAD_TMR: pthread supports the TMR (timer) extension. That is
+ *                           pthread_mutex_timedlock is available.
  */
 /* #define ONS_THREAD_PTHREAD */
 /* #define ONS_THREAD_WIN */
+/* #define ONS_THREAD_PTHREAD_TMR */
 
 
 /* CONFIG: Time
@@ -144,6 +151,8 @@
  *   ONS_TIME_WIN [void]
  *          The Windows API function GetSystemTimeAsFileTime() is available.
  */
+/* #define ONS_TIME_GTOD */
+/* #define ONS_TIME_WIN */
 
 
 /* CONFIG: Debug-facility

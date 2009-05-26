@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 3. April 2009
+ * - Last-Change: 26. May 2009
  */
 
 /* Main and public header of memoria.
@@ -16,12 +16,15 @@
  * visible to the user.
  */
 
-#include <ons/ons.h>
 
-#ifndef ONS_INCLUDED_memoria_memoria_h
-#define ONS_INCLUDED_memoria_memoria_h
-ONS_EXTERN_C_BEGIN
+#include <sundry/sundry.h>
 
+#ifndef MEMORIA_INCLUDED_memoria_memoria_h
+#define MEMORIA_INCLUDED_memoria_memoria_h
+SUNDRY_EXTERN_C_BEGIN
+
+
+#include <stdint.h>
 
 /* Classic strnlen() (Not part of C89/C99!)
  * Find the length of \string, but scan at most \len characters. If no
@@ -29,18 +32,13 @@ ONS_EXTERN_C_BEGIN
  * If '\0' is found the length is returned without the zero character.
  * If \string is NULL, 0 is returned.
  */
-#ifdef ONS_STRING_STRNLEN
-    #include <string.h>
-    #define mem_strnlen(x, y) strnlen((x), (y))
-#else
-    static inline size_t mem_strnlen(const char *string, size_t len) {
-        unsigned int i;
+static inline size_t mem_strnlen(const char *string, size_t len) {
+    unsigned int i;
 
-        if(string == NULL) return 0;
-        for(i = 0; i < len; ++i) if(string[i] == '\0') return i;
-        return len;
-    }
-#endif
+    if(string == NULL) return 0;
+    for(i = 0; i < len; ++i) if(string[i] == '\0') return i;
+    return len;
+}
 
 
 /* Hashes arbitrary values.
@@ -120,11 +118,47 @@ typedef signed int (*mem_match_t)(const void *comparison, const void *original);
 #define MEM_MASK_MOV(bits, mask, value) (((value) & MEM_MASK_HIGH((bits), (mask)))?0:((value) * (mask)))
 
 
+/* Large flagset manipulation.
+ * This allows to create a flagset of unlimited size. That is, you can store as many flags as
+ * you want in this flagset, however, the amount of flags has to be defined at compile time.
+ *
+ * Usage example:
+ *   enum {
+ *     FLAG1,
+ *     FLAG2,
+ *     ...
+ *     FLAG100,
+ *     FLAG_NUM
+ *   };
+ *
+ *   Important: "FLAG_NUM" is no flag and cannot be stored in the bitset. It just contains the number
+ *              of flags.
+ *
+ *   MEM_DECLARE_FLAGSET(example_bitset, FLAG_NUM);
+ *
+ *   example_bitset bitset;
+ *   MEM_SETFLAG(&bitset, FLAG2);
+ *   if(MEM_HASFLAG(&bitset, FLAG2)) ...
+ *   MEM_CLRFLAG(&bitset, FLAG2);
+ */
+typedef unsigned long mem_flagpage_t;
+#define MEM_FLAGPAGE_BITS (8 * sizeof(mem_flagpage_t))
+#define MEM_FLAGSET_INDEX(flag) ((flag) / MEM_FLAGPAGE_BITS)
+#define MEM_FLAGSET_MASK(flag) (1UL << ((flag) % MEM_FLAGPAGE_BITS))
+#define MEM_DECLARE_FLAGSET(name, max) \
+    typedef struct name { \
+        mem_flagpage_t bits[((max + MEM_FLAGPAGE_BITS - 1) / MEM_FLAGPAGE_BITS)]; \
+    } name;
+#define MEM_HASFLAG(set, flag) ((set)->bits[MEM_FLAGSET_INDEX(flag)] & MEM_FLAGSET_MASK(flag))
+#define MEM_SETFLAG(set, flag) ((set)->bits[MEM_FLAGSET_INDEX(flag)] |= MEM_FLAGSET_MASK(flag))
+#define MEM_CLRFLAG(set, flag) ((set)->bits[MEM_FLAGSET_INDEX(flag)] &= ~MEM_FLAGSET_MASK(flag))
+
+
 #include <memoria/alloc.h>
 #include <memoria/array.h>
 #include <memoria/list.h>
 
 
-ONS_EXTERN_C_END
-#endif /* ONS_INCLUDED_memoria_memoria_h */
+SUNDRY_EXTERN_C_END
+#endif /* MEMORIA_INCLUDED_memoria_memoria_h */
 

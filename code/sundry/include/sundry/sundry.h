@@ -8,7 +8,7 @@
  * - Created: 25. May 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 25. May 2009
+ * - Last-Change: 26. May 2009
  */
 
 /* Miscellaneous
@@ -106,7 +106,7 @@ static inline void sundry_fdebug(const char *format, ...) {
     #define SUNDRY_FASSERT(exp, msg)
     #define SUNDRY_DEBUG(...)
 #endif
-#define SUNDRY_ABORT(...) (ons_fdebug("ONS failed in %s at %u: ", __FILE__, __LINE__), ons_fdebug(__VA_ARGS__), ons_ferr("\n"), 0)
+#define SUNDRY_ABORT(...) (sundry_fdebug("ONS failed in %s at %u: ", __FILE__, __LINE__), sundry_fdebug(__VA_ARGS__), sundry_ferr("\n"), 0)
 
 
 #ifdef __cplusplus

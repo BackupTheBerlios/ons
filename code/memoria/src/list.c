@@ -8,7 +8,7 @@
  * - Created: 22. March 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 4. April 2009
+ * - Last-Change: 26. May 2009
  */
 
 /* Implements the list managenent.
@@ -17,7 +17,10 @@
  */
 
 
+#include "config/machine.h"
 #include "memoria/memoria.h"
+#include "memoria/alloc.h"
+#include "memoria/array.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -65,7 +68,7 @@ mem_node_t *mem_node_new(unsigned int type) {
     mem_node_t *node;
     size_t size;
 
-    ONS_ASSERT(mem_valid_type(type));
+    SUNDRY_ASSERT(mem_valid_type(type));
 
     size = mem_blist[type]->size;
     node = mem_zmalloc(size);
@@ -74,17 +77,17 @@ mem_node_t *mem_node_new(unsigned int type) {
 
 
 void mem_node_free(mem_node_t *node) {
-    ONS_ASSERT(node != NULL);
-    ONS_ASSERT(!node->next && !node->prev);
+    SUNDRY_ASSERT(node != NULL);
+    SUNDRY_ASSERT(!node->next && !node->prev);
     mem_free(node->key);
     mem_free(node);
 }
 
 
 void mem_node_setkey(mem_node_t *node, void *key, size_t len) {
-    ONS_ASSERT(node != NULL);
-    ONS_ASSERT(!node->next && !node->prev);
-    ONS_ASSERT(key != NULL && len != 0);
+    SUNDRY_ASSERT(node != NULL);
+    SUNDRY_ASSERT(!node->next && !node->prev);
+    SUNDRY_ASSERT(key != NULL && len != 0);
     mem_free(node->key);
     node->key = mem_dup(key, len);
     node->len = len;
@@ -92,7 +95,7 @@ void mem_node_setkey(mem_node_t *node, void *key, size_t len) {
 
 
 void mem_node_setvalue(mem_node_t *node, void *data) {
-    ONS_ASSERT(node != NULL);
+    SUNDRY_ASSERT(node != NULL);
     node->value = data;
 }
 
@@ -100,7 +103,7 @@ void mem_node_setvalue(mem_node_t *node, void *data) {
 mem_list_t *mem_list_new(unsigned int type) {
     mem_list_t *list;
 
-    ONS_ASSERT(mem_valid_type(type));
+    SUNDRY_ASSERT(mem_valid_type(type));
 
     list = mem_zmalloc(sizeof(mem_list_t));
     list->type = type;
@@ -109,7 +112,7 @@ mem_list_t *mem_list_new(unsigned int type) {
 
 
 void mem_list_clear(mem_list_t *list) {
-    ONS_ASSERT(list != NULL);
+    SUNDRY_ASSERT(list != NULL);
 
     if(list->count == 0) return;
 
@@ -118,7 +121,7 @@ void mem_list_clear(mem_list_t *list) {
 
 
 void mem_list_free(mem_list_t *list) {
-    ONS_ASSERT(list != NULL);
+    SUNDRY_ASSERT(list != NULL);
 
     if(list->count) mem_list_clear(list);
     mem_free(list);
@@ -126,9 +129,9 @@ void mem_list_free(mem_list_t *list) {
 
 
 mem_node_t *mem_list_find(mem_list_t *list, void *key, size_t len) {
-    ONS_ASSERT(list != NULL);
+    SUNDRY_ASSERT(list != NULL);
     /* \len can be zero with hash backend. */
-    ONS_ASSERT(key != NULL);
+    SUNDRY_ASSERT(key != NULL);
 
     if(list->count == 0) return NULL;
 
@@ -137,15 +140,15 @@ mem_node_t *mem_list_find(mem_list_t *list, void *key, size_t len) {
 
 
 mem_node_t *mem_list_insert(mem_list_t *list, mem_node_t *node) {
-    ONS_ASSERT(list != NULL && node != NULL);
+    SUNDRY_ASSERT(list != NULL && node != NULL);
 
     return mem_blist[list->type]->insert(list, node);
 }
 
 
 void mem_list_remove(mem_list_t *list, mem_node_t *node) {
-    ONS_ASSERT(list != NULL && node != NULL);
-    ONS_ASSERT(list->count != 0);
+    SUNDRY_ASSERT(list != NULL && node != NULL);
+    SUNDRY_ASSERT(list->count != 0);
 
     mem_blist[list->type]->remove(list, node);
 }

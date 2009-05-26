@@ -8,7 +8,7 @@
  * - Created: 23. March 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 4. April 2009
+ * - Last-Change: 26. May 2009
  */
 
 /* Hash Table backend
@@ -47,7 +47,10 @@
 #define MEM_TBL_SIZE_MULT 1 /* Always use X as many space as elements. */
 
 
+#include "config/machine.h"
 #include "memoria/memoria.h"
+#include "memoria/alloc.h"
+#include "memoria/array.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -82,7 +85,7 @@ static inline mem_hash_t mem_tbl_gethash(void *val, size_t len) {
 
 /* Hashes a node if it is not already hashed. */
 static inline void mem_tbl_hash(mem_node_t *node) {
-    ONS_ASSERT(node != NULL);
+    SUNDRY_ASSERT(node != NULL);
 
     /* If \node->hash is NON-zero it is already hashed.
      * If it is zero, it might already been hashed and the hash was zero, however,
@@ -138,12 +141,12 @@ void mem_tbl_resize(mem_list_t *list, size_t size) {
     mem_hash_t hash;
     mem_node_t *node;
 
-    ONS_ASSERT(list != NULL);
+    SUNDRY_ASSERT(list != NULL);
 
     /* If the list is not initialized yet, we initialize it here. */
     if(!list->table) {
         /* Initialization should be done on the first INSERT. */
-        ONS_ASSERT(size == 1);
+        SUNDRY_ASSERT(size == 1);
 
         if(list->type == MEM_TABLE_STATIC) new_size = (list->size >= MEM_TBL_MIN)?list->size:1024;
         else new_size = MEM_TBL_MIN * MEM_TBL_SIZE_MULT;
@@ -174,7 +177,7 @@ void mem_tbl_resize(mem_list_t *list, size_t size) {
     if(new_size < (MEM_TBL_MIN * MEM_TBL_SIZE_MULT)) return;
 
     /* Allocate the new table. */
-    ONS_ASSERT(new_size > 0);
+    SUNDRY_ASSERT(new_size > 0);
     mem_free(list->table);
     list->table = mem_zmalloc(sizeof(mem_node_t*) * new_size);
     list->size = new_size;
@@ -218,7 +221,7 @@ void mem_tbl_resize(mem_list_t *list, size_t size) {
 void mem_table_clear(mem_list_t *list) {
     mem_node_t *next, *cur;
 
-    ONS_ASSERT(list != NULL);
+    SUNDRY_ASSERT(list != NULL);
 
     next = list->first;
     while(next) {
@@ -244,7 +247,7 @@ mem_node_t *mem_table_find(mem_list_t *list, void *key, size_t len) {
     mem_hash_t hash;
     mem_node_t *iter;
 
-    ONS_ASSERT(list != NULL && key != NULL);
+    SUNDRY_ASSERT(list != NULL && key != NULL);
     if(list->count == 0) return NULL;
 
     /* Create a temporary node that we need to search the list.
@@ -290,8 +293,8 @@ mem_node_t *mem_table_insert(mem_list_t *list, mem_node_t *node) {
     mem_node_t *iter;
     size_t mask, i;
 
-    ONS_ASSERT(list && node);
-    ONS_ASSERT(!node->next && !node->prev && !node->right);
+    SUNDRY_ASSERT(list && node);
+    SUNDRY_ASSERT(!node->next && !node->prev && !node->right);
 
     /* Got sure the hash exists. */
     mem_tbl_hash(node);
@@ -360,9 +363,9 @@ mem_node_t *mem_table_insert(mem_list_t *list, mem_node_t *node) {
 void mem_table_remove(mem_list_t *list, mem_node_t *node) {
     mem_node_t *iter;
 
-    ONS_ASSERT(list && node);
-    ONS_ASSERT(list->count > 0);
-    ONS_ASSERT(list->table[node->bucket]);
+    SUNDRY_ASSERT(list && node);
+    SUNDRY_ASSERT(list->count > 0);
+    SUNDRY_ASSERT(list->table[node->bucket]);
 
     /* Find the previous node. */
     iter = list->table[node->bucket];
@@ -370,7 +373,7 @@ void mem_table_remove(mem_list_t *list, mem_node_t *node) {
         if(iter->right == node) break;
         iter = iter->right;
     }
-    ONS_ASSERT(iter->right || list->table[node->bucket] == node);
+    SUNDRY_ASSERT(iter->right || list->table[node->bucket] == node);
 
     if(!iter->right) list->table[node->bucket] = node->right;
     else iter->right = node->right;

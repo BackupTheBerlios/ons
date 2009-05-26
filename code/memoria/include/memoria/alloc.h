@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 4. April 2009
+ * - Last-Change: 26. May 2009
  */
 
 /* This interface wraps the traditional malloc()'ish functions
@@ -17,13 +17,16 @@
  */
 
 
-#ifndef ONS_INCLUDED_memoria_alloc_h
-#define ONS_INCLUDED_memoria_alloc_h
-ONS_EXTERN_C_BEGIN
+#include <sundry/sundry.h>
+
+#ifndef MEMORIA_INCLUDED_memoria_alloc_h
+#define MEMORIA_INCLUDED_memoria_alloc_h
+SUNDRY_EXTERN_C_BEGIN
 
 
 #include <stdlib.h>
 #include <string.h>
+#include <memoria/memoria.h>
 
 /* Set this variable to the out-of-mem handler.
  * It is initialized with NULL and if it is NULL, no out-of-mem
@@ -41,7 +44,7 @@ extern void (*mem_outofmem)(void);
  * out-of-mem handler if it is set or prints a default error
  * message and aborts.
  */
-#define MEM_IFNULL(x) ((ret != NULL)?0:(((mem_outofmem)?mem_outofmem():0), ONS_ABORT("Memory allocation failed, out of memory!")))
+#define MEM_IFNULL(x) ((ret != NULL)?0:((((mem_outofmem)?(mem_outofmem(), 0):0), SUNDRY_ABORT("Memory allocation failed, out of memory!")), 0))
 
 /* Allocates a memory block of \size bytes and returns a pointer
  * to it. Calls the global out-of-mem handler if the allocation fails.
@@ -51,7 +54,7 @@ extern void (*mem_outofmem)(void);
 static inline void *mem_malloc(size_t size) {
     void *ret;
 
-    ONS_ASSERT(size > 0);
+    SUNDRY_ASSERT(size > 0);
 
     ret = malloc(size);
     MEM_IFNULL(ret);
@@ -61,6 +64,8 @@ static inline void *mem_malloc(size_t size) {
 /* Same as mem_malloc() but initializes the allocated memory to 0. */
 static inline void *mem_zmalloc(size_t size) {
     void *ret;
+
+    SUNDRY_ASSERT(size > 0);
 
     ret = mem_malloc(size);
     memset(ret, 0, size);
@@ -82,7 +87,7 @@ static inline void *mem_zmalloc(size_t size) {
 static inline void *mem_realloc(void *mem, size_t size) {
     void *ret;
 
-    ONS_ASSERT(size > 0);
+    SUNDRY_ASSERT(size > 0);
 
     if(mem) ret = realloc(mem, size);
     else ret = mem_malloc(size);
@@ -98,8 +103,8 @@ static inline void *mem_realloc(void *mem, size_t size) {
 static inline void *mem_dup(const void *mem, size_t size) {
     void *ret;
 
-    ONS_ASSERT(mem != NULL);
-    ONS_ASSERT(size > 0);
+    SUNDRY_ASSERT(mem != NULL);
+    SUNDRY_ASSERT(size > 0);
 
     ret = mem_malloc(size);
     memcpy(ret, mem, size);
@@ -114,7 +119,7 @@ static inline void *mem_dup(const void *mem, size_t size) {
 static inline char *mem_strdup(const char *str) {
     char *ret;
 
-    ONS_ASSERT(str != NULL);
+    SUNDRY_ASSERT(str != NULL);
 
     ret = strdup(str);
     MEM_IFNULL(ret);
@@ -130,6 +135,6 @@ static inline void mem_free(void *mem) {
 }
 
 
-ONS_EXTERN_C_END
-#endif /* ONS_INCLUDED_memoria_alloc_h */
+SUNDRY_EXTERN_C_END
+#endif /* MEMORIA_INCLUDED_memoria_alloc_h */
 

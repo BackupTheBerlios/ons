@@ -38,13 +38,24 @@ CC=gcc
 # Basic compiler flags.
 CFLAGS=-g -O0 -Wall -c
 
+# Phony targets.
+.PHONY=none clean \
+ sundry sundry_begin sundry_end sundry_build \
+ memoria memoria_begin memoria_end memoria_build
+
 
 #
-# Default target.
+# Default targets.
 #
 
 none:
 	@echo "Please specify a target."
+
+clean:
+	@echo "Removing the following files:"
+	@rm -fv $(CODEDIR)/sundry/src/*.o
+	@rm -fv $(CODEDIR)/memoria/src/*.o
+	@echo "Successfully cleaned the directory."
 
 
 #
@@ -57,6 +68,7 @@ SUNDRY_INCLUDES=sundry.h thread.h time.h
 SUNDRY_TSOURCES=$(foreach file,$(SUNDRY_SOURCES),$(CODEDIR)/sundry/src/$(file))
 SUNDRY_OBJECTS=$(SUNDRY_TSOURCES:%.c=%.o)
 SUNDRY_TINCLUDES=$(foreach file,$(SUNDRY_INCLUDES),$(CODEDIR)/sundry/include/sundry/$(file))
+SUNDRY_INCPATH=-I$(CODEDIR)/sundry/include
 
 sundry: sundry_begin sundry_build sundry_end
 
@@ -69,13 +81,33 @@ sundry_end:
 sundry_build: $(SUNDRY_OBJECTS)
 
 $(CODEDIR)/sundry/src/%.o: $(CONFIG) $(SUNDRY_TINCLUDES)
-	$(CC) $(CFLAGS) -I$(CODEDIR)/sundry/include $(CODEDIR)/sundry/src/$*.c -o $(CODEDIR)/sundry/src/$*.o
-
-$(CODE)/sundry/src/thread.o:
-	exit 1
+	$(CC) $(CFLAGS) $(SUNDRY_INCPATH) $(CODEDIR)/sundry/src/$*.c -o $(CODEDIR)/sundry/src/$*.o
 
 
+#
+# Module: Memoria
+# Metatargets to build memoria.
+#
 
+MEMORIA_SOURCES=random.c list.c rbtree.c splay.c table.c
+MEMORIA_INCLUDES=memoria.h alloc.h array.h list.h
+MEMORIA_TSOURCES=$(foreach file,$(MEMORIA_SOURCES),$(CODEDIR)/memoria/src/$(file))
+MEMORIA_OBJECTS=$(MEMORIA_TSOURCES:%.c=%.o)
+MEMORIA_TINCLUDES=$(foreach file,$(MEMORIA_INCLUDES),$(CODEDIR)/memoria/include/memoria/$(file))
+MEMORIA_INCPATH=-I$(CODEDIR)/sundry/include -I$(CODEDIR)/memoria/include
+
+memoria: memoria_begin memoria_build memoria_end
+
+memoria_begin:
+	@echo "Building module 'memoria'..."
+
+memoria_end:
+	@echo "Module 'memoria' successfully built."
+
+memoria_build: $(MEMORIA_OBJECTS)
+
+$(CODEDIR)/memoria/src/%.o: $(CONFIG) $(MEMORIA_TINCLUDES)
+	$(CC) $(CFLAGS) $(MEMORIA_INCPATH) $(CODEDIR)/memoria/src/$*.c -o $(CODEDIR)/memoria/src/$*.o
 
 
 

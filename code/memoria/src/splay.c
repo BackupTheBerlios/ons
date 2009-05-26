@@ -8,7 +8,7 @@
  * - Created: 22. March 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 3. April 2009
+ * - Last-Change: 26. May 2009
  */
 
 /* Splay Tree backend
@@ -19,7 +19,10 @@
  */
 
 
+#include "config/machine.h"
 #include "memoria/memoria.h"
+#include "memoria/alloc.h"
+#include "memoria/array.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -54,8 +57,8 @@ static mem_node_t *mem_stree_splay(mem_list_t *tree, mem_node_t *node, mem_node_
     mem_node_t *left, *right, *yank, tmp;
     signed int comp;
 
-    ONS_ASSERT(tree != NULL);
-    ONS_ASSERT(node != NULL);
+    SUNDRY_ASSERT(tree != NULL);
+    SUNDRY_ASSERT(node != NULL);
 
     tmp.left = NULL;
     tmp.right = NULL;
@@ -115,7 +118,7 @@ static mem_node_t *mem_stree_splay(mem_list_t *tree, mem_node_t *node, mem_node_
 void mem_splay_clear(mem_list_t *list) {
     mem_node_t *next, *cur;
 
-    ONS_ASSERT(list != NULL);
+    SUNDRY_ASSERT(list != NULL);
 
     next = list->first;
     while(next) {
@@ -136,9 +139,9 @@ void mem_splay_clear(mem_list_t *list) {
 mem_node_t *mem_splay_find(mem_list_t *tree, void *key, size_t len) {
     mem_node_t node;
 
-    ONS_ASSERT(tree != NULL);
-    ONS_ASSERT(key != NULL);
-    ONS_ASSERT(len != 0);
+    SUNDRY_ASSERT(tree != NULL);
+    SUNDRY_ASSERT(key != NULL);
+    SUNDRY_ASSERT(len != 0);
 
     if(tree->count == 0) return NULL;
 
@@ -155,7 +158,7 @@ mem_node_t *mem_splay_find(mem_list_t *tree, void *key, size_t len) {
 mem_node_t *mem_splay_insert(mem_list_t *tree, mem_node_t *node) {
     signed int ret;
 
-    ONS_ASSERT(tree != NULL && node != NULL && node->next == NULL && node->prev == NULL);
+    SUNDRY_ASSERT(tree != NULL && node != NULL && node->next == NULL && node->prev == NULL);
 
     if(!tree->root) {
         node->left = NULL;
@@ -206,16 +209,16 @@ mem_node_t *mem_splay_insert(mem_list_t *tree, mem_node_t *node) {
 void mem_splay_remove(mem_list_t *tree, mem_node_t *node) {
     mem_node_t *root;
 
-    ONS_ASSERT(tree != NULL);
-    ONS_ASSERT(node != NULL);
-    ONS_ASSERT(tree->count > 0);
+    SUNDRY_ASSERT(tree != NULL);
+    SUNDRY_ASSERT(node != NULL);
+    SUNDRY_ASSERT(tree->count > 0);
 
     tree->root = mem_stree_splay(tree, tree->root, node);
 
     /* The "splay" must have been successfull, otherwise, the user supplied a \node that
      * is not in \tree.
      */
-    ONS_ASSERT(tree->root == node);
+    SUNDRY_ASSERT(tree->root == node);
 
     if(tree->root->left) {
         /* Put an element without a right node at the top of the left subtree. */

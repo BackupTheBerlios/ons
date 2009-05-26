@@ -8,7 +8,7 @@
  * - Created: 13. May 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 25. May 2009
+ * - Last-Change: 26. May 2009
  */
 
 /* Thread wrapper.
@@ -29,9 +29,11 @@ SUNDRY_EXTERN_C_BEGIN
 
 /* Define the datatype for a thread object and mutexes. */
 #if defined(ONS_THREAD_PTHREAD)
+    #include <pthread.h>
     typedef pthread_t sundry_thread_t;
     typedef pthread_mutex_t sundry_mutex_t;
 #elif defined(ONS_THREAD_WIN)
+    #include <windows.h>
     typedef HANDLE sundry_thread_t;
     typedef HANDLE sundry_mutex_t;
 #else
@@ -39,7 +41,7 @@ SUNDRY_EXTERN_C_BEGIN
 #endif
 
 /* The type of the function which is started as a new thread. */
-typedef void (*sundry_thread_handler_t)(void *arg);
+typedef void *(*sundry_thread_handler_t)(void *arg);
 
 /* This starts a new thread.
  * \thread must point to an uninitialized user-allocated \sundry_thread_t object.
@@ -72,6 +74,7 @@ extern unsigned int sundry_mutex_trylock(sundry_mutex_t *mutex);
 /* Locks a mutex. This function returns when the timeout \timeout has exceeded and the mutex
  * could not be locked.
  * Returns 1 when the mutex has been successfully locked, otherwise it returns 0 after the timeout exceeded.
+ * This function is not available when PTHREAD is defined as backend but the TMR extension is not available.
  */
 extern unsigned int sundry_mutex_timedlock(sundry_mutex_t *mutex, sundry_time_t *timeout);
 

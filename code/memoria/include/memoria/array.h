@@ -21,10 +21,16 @@
  */
 
 
-#ifndef ONS_INCLUDED_memoria_array_h
-#define ONS_INCLUDED_memoria_array_h
-ONS_EXTERN_C_BEGIN
+#include <sundry/sundry.h>
 
+#ifndef MEMORIA_INCLUDED_memoria_array_h
+#define MEMORIA_INCLUDED_memoria_array_h
+SUNDRY_EXTERN_C_BEGIN
+
+
+#include <stdint.h>
+#include <memoria/memoria.h>
+#include <memoria/alloc.h>
 
 /** Template Dynamic Array
  ************************************************************************************************
@@ -91,7 +97,7 @@ ONS_EXTERN_C_BEGIN
     static void (* ARR_NAME##_free_func)(ELE_TYPE*) = FUNC_FREE; \
     static inline void ARR_NAME##__resize(ARR_NAME *array, size_t size) { \
         size_t i, tmp; \
-        ONS_ASSERT(array != NULL); \
+        SUNDRY_ASSERT(array != NULL); \
         if(size == 0) { \
             array->used = array->size = 0; \
             mem_free(array->list); \
@@ -112,7 +118,7 @@ ONS_EXTERN_C_BEGIN
         } \
     } \
     static inline ELE_TYPE *ARR_NAME##__push(ARR_NAME *array) { \
-        ONS_ASSERT(array != NULL); \
+        SUNDRY_ASSERT(array != NULL); \
         if(array->used == array->size) { \
             if(DOUBLE) array->size = array->size ? (array->size << 1) : (INITIAL_VAL); \
             else array->size += INITIAL_VAL; \
@@ -121,8 +127,8 @@ ONS_EXTERN_C_BEGIN
         return &array->list[array->used++]; \
     } \
     static inline void ARR_NAME##__pop(ARR_NAME *array) { \
-        ONS_ASSERT(array != NULL); \
-        ONS_ASSERT(array->used != 0); \
+        SUNDRY_ASSERT(array != NULL); \
+        SUNDRY_ASSERT(array->used != 0); \
         size_t size; \
         --array->used; \
         if(FREE) { \
@@ -139,71 +145,71 @@ ONS_EXTERN_C_BEGIN
     } \
     static inline void ARR_NAME##__free(ARR_NAME *array, size_t begin, size_t end) { \
         size_t i; \
-        ONS_ASSERT(array != NULL); \
-        ONS_ASSERT(end >= begin); \
-        ONS_ASSERT(array->used >= end); \
+        SUNDRY_ASSERT(array != NULL); \
+        SUNDRY_ASSERT(end >= begin); \
+        SUNDRY_ASSERT(array->used >= end); \
         if(ARR_NAME##_free_func != NULL) { \
             for(i = begin; i <= end; ++i) ((ARR_NAME##_free_func)(&(array->list[i]))); \
         } \
     } \
     static inline void ARR_NAME##_init(ARR_NAME *array) { \
-        ONS_ASSERT(array != NULL); \
+        SUNDRY_ASSERT(array != NULL); \
         array->used = 0; \
         array->size = 0; \
         array->list = NULL; \
     } \
     static inline void ARR_NAME##_clear(ARR_NAME *array) { \
-        ONS_ASSERT(array != NULL); \
+        SUNDRY_ASSERT(array != NULL); \
         if(array->used > 0) ARR_NAME##__free(array, 0, array->used - 1); \
         ARR_NAME##__resize(array, 0); \
     } \
     static inline ELE_TYPE *ARR_NAME##_push(ARR_NAME *array) { \
-        ONS_ASSERT(array != NULL); \
+        SUNDRY_ASSERT(array != NULL); \
         return ARR_NAME##__push(array); \
     } \
     static inline void ARR_NAME##_pop(ARR_NAME *array) { \
-        ONS_ASSERT(array != NULL); \
-        ONS_ASSERT(array->used > 0); \
+        SUNDRY_ASSERT(array != NULL); \
+        SUNDRY_ASSERT(array->used > 0); \
         ARR_NAME##__free(array, array->used - 1, array->used - 1); \
         ARR_NAME##__pop(array); \
     } \
     static inline void ARR_NAME##_resize(ARR_NAME *array, size_t size) { \
-        ONS_ASSERT(array != NULL); \
+        SUNDRY_ASSERT(array != NULL); \
         if(size < array->used) ARR_NAME##__free(array, size, array->used - 1); \
         ARR_NAME##__resize(array, size); \
     } \
     static inline ELE_TYPE *ARR_NAME##_insert(ARR_NAME *array, size_t index) { \
-        ONS_ASSERT(array != NULL); \
-        ONS_ASSERT(index <= array->used); \
+        SUNDRY_ASSERT(array != NULL); \
+        SUNDRY_ASSERT(index <= array->used); \
         ARR_NAME##__push(array); \
         memmove(array->list + index + 1, array->list + index, (array->used - index) * sizeof(ELE_TYPE)); \
         return &array->list[index]; \
     } \
     static inline ELE_TYPE *ARR_NAME##_thrust(ARR_NAME *array) { \
-        ONS_ASSERT(array != NULL); \
+        SUNDRY_ASSERT(array != NULL); \
         return ARR_NAME##_insert(array, 0); \
     } \
     static inline void ARR_NAME##_remove(ARR_NAME *array, size_t index) { \
-        ONS_ASSERT(array != NULL); \
-        ONS_ASSERT(index < array->used); \
-        ONS_ASSERT(array->used); \
+        SUNDRY_ASSERT(array != NULL); \
+        SUNDRY_ASSERT(index < array->used); \
+        SUNDRY_ASSERT(array->used); \
         ARR_NAME##__free(array, index, index); \
         memmove(array->list + index, array->list + index + 1, (array->used - index - 1) * sizeof(ELE_TYPE)); \
         ARR_NAME##__pop(array); \
     } \
     static inline void ARR_NAME##_shift(ARR_NAME *array) { \
-        ONS_ASSERT(array != NULL); \
+        SUNDRY_ASSERT(array != NULL); \
         ARR_NAME##_remove(array, 0); \
     } \
     static inline void ARR_NAME##_merge(ARR_NAME *array, const ARR_NAME *pnew, size_t index) { \
-        ONS_ASSERT(array != NULL && pnew != NULL && index <= array->used); \
+        SUNDRY_ASSERT(array != NULL && pnew != NULL && index <= array->used); \
         if(pnew->used == 0) return; \
         ARR_NAME##__resize(array, array->used + pnew->used); \
         memmove(array->list + index + pnew->used, array->list + index, (array->used - index) * sizeof(ELE_TYPE)); \
         memcpy(array->list + index, pnew->list, pnew->used * sizeof(ELE_TYPE)); \
     } \
     static inline void ARR_NAME##_rmerge(ARR_NAME *array, const ELE_TYPE *pnew, size_t len, size_t index) { \
-        ONS_ASSERT(array != NULL && pnew != NULL && index <= array->used); \
+        SUNDRY_ASSERT(array != NULL && pnew != NULL && index <= array->used); \
         if(len == 0) return; \
         ARR_NAME##__resize(array, array->used + len); \
         memmove(array->list + index + len, array->list + index, (array->used - index) * sizeof(ELE_TYPE)); \
@@ -264,7 +270,7 @@ extern void mem_isaac_seed(mem_isaac_t *r);
 extern void mem_isaac_gen(mem_isaac_t *r);
 
 static inline uint32_t mem_isaac_rand(mem_isaac_t *r) {
-    ONS_ASSERT(r != NULL);
+    SUNDRY_ASSERT(r != NULL);
 
     if(!r->randcnt--) {
         mem_isaac_gen(r);
@@ -312,6 +318,6 @@ static inline void mem_seed(mem_rand_t *x, uint32_t seed) {
 }
 
 
-ONS_EXTERN_C_END
-#endif /* ONS_INCLUDED_memoria_array_h */
+SUNDRY_EXTERN_C_END
+#endif /* MEMORIA_INCLUDED_memoria_array_h */
 

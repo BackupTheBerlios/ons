@@ -39,7 +39,7 @@ TODO =1.0:
         - fip: write
         - yaadns: write
  - memoria:
-    - unlimited bitset
+    - make safe for -std=c89 -pedantic -Wshadow
  - asynchio:
     - Add Win/BSD compatibility layer
     - Add ioctl-options support.

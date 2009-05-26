@@ -118,16 +118,17 @@ unsigned int sundry_mutex_trylock(sundry_mutex_t *mutex) {
 #endif
 }
 
+#if !defined(ONS_THREAD_PTHREAD) || defined(ONS_THREAD_PTHREAD_TMR)
 unsigned int sundry_mutex_timedlock(sundry_mutex_t *mutex, sundry_time_t *timeout) {
-#ifdef ONS_THREAD_PTHREAD
+#ifdef ONS_THREAD_PTHREAD_TMR
     struct timespec absolute;
-    sun_time_t current;
+    sundry_time_t current;
 #endif
 
     SUNDRY_ASSERT(mutex != NULL);
     SUNDRY_ASSERT(timeout != NULL);
 
-#ifdef ONS_THREAD_PTHREAD
+#ifdef ONS_THREAD_PTHREAD_TMR
     sundry_time(&current);
     absolute.tv_sec = current.secs + timeout->secs;
     /* \tv_nsec is 64bit wide, no overflow possible. */
@@ -144,4 +145,5 @@ unsigned int sundry_mutex_timedlock(sundry_mutex_t *mutex, sundry_time_t *timeou
     return (WaitForSingleObject(*mutex, (timeout->usec / 1000) + (timeout->secs * 1000)) == WAIT_OBJECT_0);
 #endif
 }
+#endif
 
