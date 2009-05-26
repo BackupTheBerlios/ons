@@ -17,11 +17,15 @@ TODO >1.0:
     - Add control message handling (cmsg.h)
     - Add all options to options.h.
     - Implement multicast support.
+ - misc:
+    - config file parser based on trees.
 
 TODO =1.0:
- - general:
-    - Update Makefile.win32.
- - Documentation:
+ - build:
+    - Write build.bat.
+    - Write generic build.
+    - Write machine.h configs.
+ - documentation:
     - complete rules and guidelines
     - add FAQ
     - Update documentation.
@@ -36,12 +40,22 @@ TODO =1.0:
         - yaadns: write
  - memoria:
     - unlimited bitset
-    - config file parser based on trees.
- - FIP:
+ - asynchio:
     - Add Win/BSD compatibility layer
     - Add ioctl-options support.
+    - Make access to io_global_list thread safe.
+
+TODO on version change:
+ - Change AC_INIT in configure.in.
 
 [ ONS v0.1.1.0 (TESTING) ]
+    * David Herrmann 2009/05/25
+        * ./code/build.sh: Add debug messages and show the user what is actually done.
+        * ./README: Update.
+        * ./INSTALL: Write install instructions.
+        * ./code/config/machine.h: Write configuration instructions.
+        * ./code/config/generic.machine.h: create
+        * ./code/config/macosx.machine.h: create
     * David Herrmann 2009/04/07
         - Add error codes to ONS.
         - Add new asynchio header/library.

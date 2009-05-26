@@ -8,7 +8,7 @@
  * - Created: 15. March 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 15. March 2009
+ * - Last-Change: 13. May 2009
  */
 
 /* LINUX specific API description
@@ -71,6 +71,20 @@ extern 'C' {
 #define ONS_STRING
 #define ONS_STRING_STRNLEN
 #include <string.h>
+
+
+/* API: Thread
+ * PThread should be available on linux systems.
+ */
+#define ONS_THREAD
+#define ONS_THREAD_PTHREAD
+
+
+/* API: Time
+ * This is provided through glibc.
+ */
+#define ONS_TIME
+#define ONS_TIME_GTOD
 
 
 #ifdef __cplusplus

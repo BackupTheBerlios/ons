@@ -10,7 +10,7 @@
 # - Created: 15. March 2009
 # - Lead-Dev: - David Herrmann
 # - Contributors: /
-# - Last-Change: 15. March 2009
+# - Last-Change: 25. May 2009
 #
 
 #
@@ -19,6 +19,15 @@
 #
 
 
+#
+# Remove "./" from the progname.
+#
+PROGNAME=$(echo $0 | sed -e 's/^\.\///g')
+
+
+#
+# Print help.
+#
 echo "                                                "
 echo "           #####################                "
 echo "           ##    ONS build    ##                "
@@ -26,6 +35,15 @@ echo "           #####################                "
 echo "                                                "
 echo "This script creates the ONS libraries on a POSIX"
 echo "    system which supports the GNU autotools.    "
+echo "                                                "
+echo "Invoke the script with ./$PROGNAME [parameters] "
+echo "          Where [parameters] can be:            "
+echo "       - 'build': Builds the libraries.         "
+echo "       - 'install': Installs the libraries.     "
+echo "       - 'uninstall': Uninstalls the libraries. "
+echo "       - 'rebuild': Cleans the caches and builds"
+echo "                    the libraries again.        "
+echo "                                                "
 echo "                                                "
 
 
@@ -69,7 +87,7 @@ check_ret() {
         # Do nothing.
         echo "nothing" >/dev/null
     else
-        echo "operation failed"
+        echo "Operation failed."
         exit 1
     fi
 }
@@ -84,6 +102,7 @@ if test -f ./build.sh ; then
         echo "Error: Please change into the directory of the ./build.sh script."
         exit 1;
     else
+        echo "Changing into directory './build/'."
         cd build
         check_ret $?
     fi
@@ -96,19 +115,23 @@ fi
 # Create the autotools only if they are not yet created.
 #
 if test $REBUILD = "yes" -o ! -f ./configure ; then
+    echo "Copying 'install-sh'."
     cp /usr/share/automake-1.10/install-sh .
     check_ret $?
+    echo "Copying 'config.sub'."
     cp /usr/share/automake-1.10/config.sub .
     check_ret $?
+    echo "Copying 'config.guess'."
     cp /usr/share/automake-1.10/config.guess .
     check_ret $?
-    echo "DO: autoreconf"
+    echo "Invoking 'autoreconf'."
     autoreconf
+    check_ret $?
     if test "x$CONFIGURE" = "x" ; then
-        echo "DO: ./configure --enable-warnings --enable-debug"
+        echo "CONF: ./configure --enable-warnings --enable-debug"
         ./configure --enable-warnings --enable-debug
     else
-        echo "DO: ./configure $CONFIGURE"
+        echo "CONF: ./configure $CONFIGURE"
         ./configure $CONFIGURE
     fi
     check_ret $?
@@ -119,7 +142,7 @@ fi
 # Build the source.
 #
 if test $BUILD = "yes" ; then
-    echo "DO: make"
+    echo "BUILD: make"
     make
     check_ret $?
 fi
@@ -129,8 +152,20 @@ fi
 # Install the source
 #
 if test $INSTALL = "yes" ; then
-    echo "DO: make install"
+    echo "INSTALL: make install"
     make install
     check_ret $?
 fi
 
+
+#
+# Helper function which creates a makefile depending on which modules
+# have to be compiled.
+#
+create_makefile() {
+    if test "x$1" = "x" ; then
+        MODULES="sundry"
+    else
+        MODULES="$1"
+    fi
+}

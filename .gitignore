@@ -1,17 +1,2 @@
 # Ignore object files.
 *.o
-# Ignore generated Makefiles.
-Makefile
-# Ignore autoconf files.
-aclocal.m4
-autom4te.cache
-config.guess
-config.log
-config.status
-config.sub
-configure
-install-sh
-config.h
-config.h.in
-setup.h
-stamp-h

@@ -26,9 +26,11 @@
   to use one single network issue and conforms to the Unix ideology to do only
   one thing but do it best. Thus, the softwares provide simple ways to do simple
   things but also complex ways to do complex thing.
+  The libraries only sparsely depend on each other, they are provided for
+  independant use, however, they are perfect to be used together.
 
 3. Installing ONS
-  See INSTALL or documentation for install instructions.
+  See INSTALL for install instructions.
 
 4. Using ONS
   See the documentation of ONS and the references of each library to get an

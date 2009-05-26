@@ -8,7 +8,7 @@
  * - Created: 22. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 7. April 2009
+ * - Last-Change: 13. May 2009
  */
 
 /* Main and public header of ONS.
@@ -33,8 +33,6 @@
  * For instance if your system has the gettimeofday() function call the
  * macro ONS_GETTIMEOFDAY is defined. If this function is not available,
  * the macro is not defined.
- * The value, which this macro is defined to, is not specified. Most of these
- * macros expand to (void).
  * Additionally, there may be macros which mark some variations of the
  * API. For instance the gettimeofday() call does not correctly validate
  * argument 2 on this machine (only a fictive example), then the macro
@@ -154,6 +152,40 @@ extern 'C' {
  * purport: strnlen() is not part of ISO-C89 and therefore is not available on
  *          all systems. However, if it is available on the system, this macro
  *          has to be defined and the required headers have to be included.
+ */
+
+
+/* API: Thread
+ * macro: ONS_THREAD [void]
+ *
+ * This API is defined if a threading library is available. The threading library
+ * has to support: starting threads, waiting for threads to finish and an interface
+ * for mutexes.
+ * One of the following backends *MUST* be defined.
+ *
+ * macro: ONS_THREAD_PTHREAD [void]
+ * purport: The thread backend is the POSIX threads library "pthread". Please don't
+ *          forget to link against pthread. The header <pthread.h> must be in your
+ *          system's include paths.
+ *
+ * macro: ONS_THREAD_WIN [void]
+ * purport: The thread backend is the Windows API. Please be sure that you link
+ *          the thread library to the binary if necessary.
+ */
+
+
+/* API: Time
+ * macro: ONS_TIME [void]
+ *
+ * This API defines whether time-controlling functions are available on the platform.
+ * One of the following backends must be specified.
+ *
+ * macro: ONS_TIME_GTOD [void]
+ * purport: The "gettimeofday()" function is available on your machine through <sys/time.h>
+ *          and conforms to POSIX.
+ *
+ * macro: ONS_TIME_WIN [void]
+ * purport: The Windows API function GetSystemTimeAsFileTime() is available.
  */
 
 
@@ -292,6 +324,9 @@ static inline void ons_fdebug(const char *format, ...) {
 typedef unsigned int ons_err_t;
 enum {
     ONS_E_NONE = 0, /* No error occurred. Everything went fine. */
+    ONS_E_BADTYPE, /* Invalid \type parameter. */
+    ONS_E_NOTSUPP, /* Operation not supported. */
+    ONS_E_BADFD, /* Invalid file descriptor. */
     ONS_E_LAST
 };
 

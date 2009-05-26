@@ -1,0 +1,219 @@
+#
+#  (COPYRIGHT) Copyright (C) 2008, 2009, The ONS Team.
+#  This file is part of ONS, see COPYING for details.
+#
+
+#
+# File information:
+# - Created: 17. January 2009
+# - Lead-Dev: - David Herrmann
+# - Contributors: /
+# - Last-Change: 26. May 2009
+#
+
+#
+# Compiles libons.
+# Each module has an own meta-target here. To build the module just
+# build the meta-target.
+#
+# If you want to add new modules, please search for NEW_MOD in this
+# file and add the module in all sections which have NEW_MOD in their
+# comments.
+#
+
+
+#
+# Configuration
+#
+
+# Relative path to the "code" directory.
+CODEDIR=.
+
+# Path to machine.h file.
+CONFIG=$(CODEDIR)/config/machine.h
+
+# Compiler to use.
+CC=gcc
+
+# Basic compiler flags.
+CFLAGS=-g -O0 -Wall -c
+
+
+#
+# Default target.
+#
+
+none:
+	@echo "Please specify a target."
+
+
+#
+# Module: Sundry
+# Metatargets to build sundry.
+#
+
+SUNDRY_SOURCES=thread.c time.c
+SUNDRY_INCLUDES=sundry.h thread.h time.h
+SUNDRY_TSOURCES=$(foreach file,$(SUNDRY_SOURCES),$(CODEDIR)/sundry/src/$(file))
+SUNDRY_OBJECTS=$(SUNDRY_TSOURCES:%.c=%.o)
+SUNDRY_TINCLUDES=$(foreach file,$(SUNDRY_INCLUDES),$(CODEDIR)/sundry/include/sundry/$(file))
+
+sundry: sundry_begin sundry_build sundry_end
+
+sundry_begin:
+	@echo "Building module 'sundry'..."
+
+sundry_end:
+	@echo "Module 'sundry' successfully built."
+
+sundry_build: $(SUNDRY_OBJECTS)
+
+$(CODEDIR)/sundry/src/%.o: $(CONFIG) $(SUNDRY_TINCLUDES)
+	$(CC) $(CFLAGS) -I$(CODEDIR)/sundry/include $(CODEDIR)/sundry/src/$*.c -o $(CODEDIR)/sundry/src/$*.o
+
+$(CODE)/sundry/src/thread.o:
+	exit 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#
+# Global variables.
+#
+
+#prefix=@prefix@
+#srcdir=..
+#MODULES=@modules@
+#RM=@RMPROG@
+#INSTALL=@INSTALL@
+#MKDIR=mkdir
+#@SET_MAKE@
+#SUBMAKE=${MAKE} --no-print-directory
+#CC=@CC@
+#CFLAGS=@CFLAGS@
+#LFLAGS=@LFLAGS@
+#BINARY=@BINARY@
+
+
+#
+# includes and sources
+#
+# NEW_MOD: Add a new sections here.
+#
+
+#ONS_INCLUDES=ons.h generic.h linux.h windows.h machine.h
+# no sources
+
+#MEMORIA_INCLUDES=memoria.h alloc.h array.h list.h
+#MEMORIA_SOURCES=random.c hash.c list.c rbtree.c splay.c table.c
+#MEMORIA_TSOURCES=$(foreach file,$(MEMORIA_SOURCES),$(srcdir)/memoria/src/$(file))
+
+#ASYNCHIO_INCLUDES=asynchio.h os_generic.h
+#ASYNCHIO_SOURCES=fd.c os_generic.c type_udp.c
+#ASYNCHIO_TSOURCES=$(foreach file,$(ASYNCHIO_SOURCES),$(srcdir)/asynchio/src/$(file))
+
+#SUNDRY_INCLUDES=thread.h
+#SUNDRY_SOURCES=thread.c
+#SUNDRY_TSOURCES=$(foreach file,$(SUNDRY_SOURCES),$(srcdir)/sundry/src/$(file))
+
+
+#
+# Prefix the sources/headers/etc. with the right directory paths
+# used for compilation and installation.
+# INCLUDES contains the directories which need to be copied to
+# /usr/include for installation.
+# LIBRARIES contains the files which need to be copied to /usr/lib
+# for installation.
+# SOURCES contains the relative paths to all files which need to
+# be compiled.
+#
+# NEW_MOD: Add module to all variables.
+#
+
+#INCLUDES=$(foreach module,$(MODULES),$(srcdir)/$(module)/include/$(module))
+#SOURCES=$(MEMORIA_TSOURCES) $(ASYNCHIO_TSOURCES) $(SUNDRY_TSOURCES)
+#OBJECTS=$(SOURCES:%.c=%.o)
+#COMPILE=$(CC) $(CFLAGS) -c $(foreach module,$(MODULES),-I$(srcdir)/$(module)/include)
+
+
+#
+# Global rules.
+#
+
+#all: $(srcdir)/$(BINARY)
+
+#.PHONY: all clean distclean install uninstall examples
+
+#$(srcdir)/$(BINARY): $(OBJECTS)
+#	$(CC) $(LFLAGS) $(OBJECTS) -o $(srcdir)/$(BINARY)
+
+#clean:
+#	@$(RM) -vf $(foreach module,$(MODULES),$(srcdir)/$(module)/src/*.o) $(srcdir)/$(BINARY)
+#	@$(RM) -vf $(srcdir)/examples/*.o
+
+#distclean: clean
+#	@${RM} -Rvf $(srcdir)/build/Makefile $(srcdir)/build/aclocal.m4 $(srcdir)/build/autom4te.cache \
+#				$(srcdir)/build/config.log $(srcdir)/build/config.status $(srcdir)/build/ltmain.sh \
+#				$(srcdir)/build/configure $(srcdir)/build/install-sh $(srcdir)/build/missing $(srcdir)/build/stamp-h \
+#				$(srcdir)/build/config.guess $(srcdir)/build/config.h $(srcdir)/build/config.h.in $(srcdir)/build/config.log \
+#				$(srcdir)/build/config.sub $(srcdir)/ons/include/ons/machine.h
+#
+#install: all
+#	@test -d $(prefix) || mkdir -vp $(prefix)
+#	@cp -Rv $(INCLUDES) $(prefix)/include
+#	@chmod 755 $(foreach module,$(MODULES),$(prefix)/include/$(module))
+#	@chmod 644 $(foreach module,$(MODULES),$(prefix)/include/$(module)/*.h)
+#	@$(INSTALL) -m 755 -v $(srcdir)/$(BINARY) $(prefix)/lib/
+#
+#uninstall:
+#	@$(RM) -vRf $(foreach module,$(MODULES),$(prefix)/include/$(module)) $(prefix)/lib/$(BINARY)
+#
+#
+##
+## Example rules.
+##
+#
+#examples: $(srcdir)/examples/mem_array.bin $(srcdir)/examples/mem_list.bin
+#
+#$(srcdir)/examples/mem_array.bin: $(srcdir)/examples/mem_array.o $(srcdir)/$(BINARY)
+#	$(CC) $(srcdir)/examples/mem_array.o -o $(srcdir)/examples/mem_array.bin $(srcdir)/$(BINARY)
+#
+#$(srcdir)/examples/mem_array.o: $(srcdir)/examples/mem_array.c $(srcdir)/examples/include.h
+#	$(CC) $(CFLAGS) -c $(foreach module,$(MODULES),-I$(srcdir)/$(module)/include) $(srcdir)/examples/mem_array.c -o $(srcdir)/examples/mem_array.o
+#
+#$(srcdir)/examples/mem_list.bin: $(srcdir)/examples/mem_list.o $(srcdir)/$(BINARY)
+#	$(CC) $(srcdir)/examples/mem_list.o -o $(srcdir)/examples/mem_list.bin $(srcdir)/$(BINARY)
+#
+#$(srcdir)/examples/mem_list.o: $(srcdir)/examples/mem_list.c $(srcdir)/examples/include.h
+#	$(CC) $(CFLAGS) -c $(foreach module,$(MODULES),-I$(srcdir)/$(module)/include) $(srcdir)/examples/mem_list.c -o $(srcdir)/examples/mem_list.o
+#
+#
+##
+## Source rules.
+##
+## NEW_MOD: Add a rule for the modules C sources here.
+##
+#
+#$(srcdir)/memoria/src/%.o: $(foreach file,$(MEMORIA_INCLUDES),$(srcdir)/memoria/include/memoria/$(file))
+#	$(COMPILE) $(srcdir)/memoria/src/$*.c -o $(srcdir)/memoria/src/$*.o
+#
+#$(srcdir)/asynchio/src/%.o: $(foreach file,$(ASYNCHIO_INCLUDES),$(srcdir)/asynchio/include/asynchio/$(file))
+#	$(COMPILE) $(srcdir)/asynchio/src/$*.c -o $(srcdir)/asynchio/src/$*.o
+#
+#$(srcdir)/sundry/src/%.o: $(foreach file,$(SUNDRY_INCLUDES),$(srcdir)/sundry/include/sundry/$(file))
+#	$(COMPILE) $(srcdir)/sundry/src/$*.c -o $(srcdir)/sundry/src/$*.o
+#

@@ -8,7 +8,7 @@ dnl File information:
 dnl - Created: 22. December 2008
 dnl - Lead-Dev: - David Herrmann
 dnl - Contributors: /
-dnl - Last-Change: 20. March 2009
+dnl - Last-Change: 25. May 2009
 dnl
 
 dnl
@@ -426,6 +426,8 @@ dnl
 dnl [[ MODULE COMPILATION ]]
 dnl
 
+ons_enable_asynchio="no"
+ons_enable_sundry="no"
 ons_enable_memoria="no"
 ons_modules="ons"
 
@@ -446,6 +448,18 @@ AC_ARG_ENABLE(modules,
                     ons_modules="$ons_modules memoria"
                 fi
                 ;;
+            sundry)
+                if test $ons_enable_sundry = "no" ; then
+                    ons_enable_sundry="yes"
+                    ons_modules="$ons_modules sundry"
+                fi
+                ;;
+            asynchio)
+                if test $ons_enable_asynchio = "no" ; then
+                    ons_enable_asynchio="yes"
+                    ons_modules="$ons_modules asynchio"
+                fi
+                ;;
             *)
                 ;;
         esac
@@ -453,8 +467,10 @@ AC_ARG_ENABLE(modules,
     IFS="$IFS_BACK"
 ],
 [
+    ons_enable_asynchio="yes"
+    ons_enable_sundry="yes"
     ons_enable_memoria="yes"
-    ons_modules="ons memoria"
+    ons_modules="ons memoria asynchio"
 ])
 AC_MSG_RESULT($ons_modules)
 

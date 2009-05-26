@@ -8,7 +8,7 @@
  * - Created: 5. April 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 7. April 2009
+ * - Last-Change: 13. May 2009
  */
 
 /* Main and public header of asynchio.
@@ -64,7 +64,7 @@ ONS_EXTERN_C_BEGIN
 
 /* Event Engine:
  * The event eninge allows to poll for events on objects. It is possible to
- * add ANY kind of object to this event eninge, however, if the operating
+ * add ANY kind of object to this event engine, however, if the operating
  * system does not support polling on this kind of object, the polling mechanism
  * is implemented with signals, pipes or threading mechanisms which may slow
  * down the event eninge.
@@ -73,25 +73,28 @@ ONS_EXTERN_C_BEGIN
  */
 
 
-/* Describes a single IO object. */
-typedef unsigned int io_fd_t;
+/* IO objects. */
+typedef size_t io_fd_t;
+#define IO_INVALID_FD 0
 
 /* Types of IO objects. */
 enum {
-    IO_FILE,
-    IO_SOCKET,
-    IO_L2CAP
+    IO_UDP,
+    IO_LAST
 };
 
 /* Creates/Frees IO objects. */
-extern io_fd_t io_open(signed int type, ...);
-extern io_fd_t io_merge(signed int type, ...);
-extern void io_shutdown(io_fd_t fd);
+extern io_fd_t io_open(ons_err_t *err, signed int type);
+extern io_fd_t io_merge(ons_err_t *err, signed int type);
 extern void io_close(io_fd_t fd);
 
+/* Modifies a file descriptor. */
+extern unsigned int io_control(io_fd_t fd, ...);
+extern ons_err_t io_err(io_fd_t fd);
+
 /* Basic IO. */
-extern size_t io_write(io_fd_t fd, const void *buffer, size_t size);
-extern size_t io_read(io_fd_t fd, void *buffer, size_t size);
+extern size_t io_write(io_fd_t fd, const void *buf, size_t len);
+extern size_t io_read(io_fd_t fd, void *buf, size_t len);
 
 
 ONS_EXTERN_C_END

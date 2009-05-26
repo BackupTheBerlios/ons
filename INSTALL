@@ -4,19 +4,125 @@
 #
 
 
-Please change into the "./core" directory, it contains several scripts which can
-be used to build ONS.
- - Users on systems which support an SH like shell like bash, zsh, csh, ... please
-   execute the file "./build.sh".
+ONS highly depends on functions which are not available on every operating system.
+Therefore, before building ONS you need to specify which system you use. A system
+can be identified by the architecture, the operating system and the system's C compiler.
+
+Steps to be taken:
+ - #0: Notes on upgrading and cross-compiling.
+ - #1: Check whether your system is supported.
+ - #2: Create build-configuration file.
+ - #3: Compile the libraries.
+ - #4: Install the libraries.
+
+Upgrading an existing version:
+    If possible uninstall the old version (./build.XY uninstall /path/to/directory) and then
+    simply install the new version. However, it should always be safe to install the new
+    libraries without uninstalling the previous ones.
+Cross-Compiling:
+    If you're cross-compiling, you should adjust the configuration to the properties of
+    the target platform, not the build-platform.
+    Furthermore, your current environment should build for the target platform by default,
+    hence, the makefiles do not need to be adjusted.
+
+Below is a list of officially supported platforms, however, ONS is designed to run on
+even more platforms but we cannot test every platform. Therefore ONS uses a simple
+configuration interface. Please see below whether your system is officially supported.
+If so, you do not need to create an own configuration. If it is not, you need to create
+an own configuration which is explained below this block.
+
+
+ONS trys to be compatible to nearly every operating system, however, this is almost
+never possible. Furthermore, we cannot test every operating system on a new release.
+Thus, we separate the systems into several groups:
+ - officially supported:
+    The system has official support and is tested on every new release.
+ - unofficially supported:
+    We support system specific APIs of this platform and provide build routines,
+    however, we do not test this platform on every new release.
+ - partially supported:
+    We know that the system provides at least a subset of the API of another system
+    that actually is supported.
+ - not supported:
+    We have no idea whether this system is supported or not.
+
+ - Operating System:
+    Most of the ONS libraries are generic, that is, they should run on all operating
+    systems. However, especially the network-functions and thread functions differ
+    on the operating systems, therefore, the libraries which wrap those functions need
+    system dependent code and they are supposed to run on:
+     - officially supported:
+         - Microsoft Windows: NT, XP, Vista, 7
+         - Linux: 2.4, 2.6
+         - MacOSX: all versions; especially greater than or equal to 10.5.
+     - unofficially supported:
+         - FreeBSD: actually all versions; especially greater than or equal to 5.5.
+         - OpenBSD: actually all versions; especially greater than or equal to 3.0.
+         - NetBSD: actually all versions; especially greater than or equal to 4.0.
+     - partially supported:
+         - It should run on most UNIX like operating systems.
+     - not supported:
+         - None.
+
+ - Architecture:
+    All ONS libraries are supposed to run on all known architectures. However, there are
+    always some exotic platforms therefore we specify some rules which must fit to the
+    platform to be supported.
+     - officially supported:
+         - x86 compatible
+         - amd64 compatible
+     - unofficially supported:
+         - none
+     - partially supported:
+         - none
+     - not supported:
+         - none
+
+ - Compiler:
+    We currently use NO compiler specific extensions. The compiler has to be compatible
+    to ISO-C89 and supported very few C99 features.
+     - officially supported:
+         - GCC: 4.0 and greater
+         - Microsoft VS-C++: 2005 and later.
+     - unofficially supported:
+         - none
+     - partially supported:
+         - none
+     - not supported:
+         - none
+
+Before we can start to compile the libraries, we need to tell them which platform we use.
+Therefore, we have to modify the file: "./code/config/machine.h". This file either includes
+a predefined configuration shipped with ONS or you have to define an own configuration inside
+this file. Please read the instructions inside this file to configure ONS.
+
+When you have done this, then we can start compiling and installing. Please go into the
+directory "./code/". The following scripts are provided:
+ - Users on systems which support an SH like shell like [bash, zsh, csh, ...] please
+   execute the file "./build.sh". This includes all BSDs, Linux, MacOSX and other Unixes.
  - Users on systems which support a WINDOWS BATCH like syntax please execute the
-   file "./build.bat".
+   file "./build.bat". This includes all Microsoft Windows.
+
+
+    You can compile ONS with:
+     - ./build.XY build
+
+    You can install ONS with:
+     - ./build.XY install /path/to/directory
+    Inside the install path the directories ./lib and ./include are created and the headers and
+    binaries are copied. On most UNIXes this is mostly "/usr/". On Windows there is no default.
+
+    You can uninstall ONS with:
+     - ./build.XY uninstall /path/to/directory
+    The path must be the same as the install-path.
+
+
 Other build methods are currently not supported. If you have a system where none
-of these build scripts runs on, please notice us and we try to create additional
-build scripts.
+of these build scripts run on, please notice us and we try to create additional
+build scripts. The file "./build.generic" lists steps on what to compile to create the libraries
+if you want to create your own build-script which should be *REALLY* easy with the comments inside
+this file.
 
-Please look into the documentation to get a detailed explanation on how these scripts
-work and how to modify their behaviour and adjust them to your needs.
 
-
--- David Herrmann -- 2009/03/15 --
+-- David Herrmann -- 2009/05/25 --
 

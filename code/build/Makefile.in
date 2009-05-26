@@ -8,7 +8,7 @@
 # - Created: 17. January 2009
 # - Lead-Dev: - David Herrmann
 # - Contributors: /
-# - Last-Change: 21. March 2009
+# - Last-Change: 13. May 2009
 #
 
 #
@@ -53,6 +53,14 @@ MEMORIA_INCLUDES=memoria.h alloc.h array.h list.h
 MEMORIA_SOURCES=random.c hash.c list.c rbtree.c splay.c table.c
 MEMORIA_TSOURCES=$(foreach file,$(MEMORIA_SOURCES),$(srcdir)/memoria/src/$(file))
 
+ASYNCHIO_INCLUDES=asynchio.h os_generic.h
+ASYNCHIO_SOURCES=fd.c os_generic.c type_udp.c
+ASYNCHIO_TSOURCES=$(foreach file,$(ASYNCHIO_SOURCES),$(srcdir)/asynchio/src/$(file))
+
+SUNDRY_INCLUDES=thread.h
+SUNDRY_SOURCES=thread.c
+SUNDRY_TSOURCES=$(foreach file,$(SUNDRY_SOURCES),$(srcdir)/sundry/src/$(file))
+
 
 #
 # Prefix the sources/headers/etc. with the right directory paths
@@ -68,7 +76,7 @@ MEMORIA_TSOURCES=$(foreach file,$(MEMORIA_SOURCES),$(srcdir)/memoria/src/$(file)
 #
 
 INCLUDES=$(foreach module,$(MODULES),$(srcdir)/$(module)/include/$(module))
-SOURCES=$(MEMORIA_TSOURCES)
+SOURCES=$(MEMORIA_TSOURCES) $(ASYNCHIO_TSOURCES) $(SUNDRY_TSOURCES)
 OBJECTS=$(SOURCES:%.c=%.o)
 COMPILE=$(CC) $(CFLAGS) -c $(foreach module,$(MODULES),-I$(srcdir)/$(module)/include)
 
@@ -133,4 +141,10 @@ $(srcdir)/examples/mem_list.o: $(srcdir)/examples/mem_list.c $(srcdir)/examples/
 
 $(srcdir)/memoria/src/%.o: $(foreach file,$(MEMORIA_INCLUDES),$(srcdir)/memoria/include/memoria/$(file))
 	$(COMPILE) $(srcdir)/memoria/src/$*.c -o $(srcdir)/memoria/src/$*.o
+
+$(srcdir)/asynchio/src/%.o: $(foreach file,$(ASYNCHIO_INCLUDES),$(srcdir)/asynchio/include/asynchio/$(file))
+	$(COMPILE) $(srcdir)/asynchio/src/$*.c -o $(srcdir)/asynchio/src/$*.o
+
+$(srcdir)/sundry/src/%.o: $(foreach file,$(SUNDRY_INCLUDES),$(srcdir)/sundry/include/sundry/$(file))
+	$(COMPILE) $(srcdir)/sundry/src/$*.c -o $(srcdir)/sundry/src/$*.o
 
