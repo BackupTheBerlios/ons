@@ -29,7 +29,7 @@
 
 
 /* Compares two nodes. */
-static inline signed int mem_stree_comp(mem_list_t *tree, mem_node_t *comparison, mem_node_t *original) {
+static signed int mem_stree_comp(mem_list_t *tree, mem_node_t *comparison, mem_node_t *original) {
     signed int res;
 
     if(tree->match) return tree->match(comparison, original);

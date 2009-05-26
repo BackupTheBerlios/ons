@@ -55,12 +55,12 @@ extern 'C' {
 /* This function prints an error message and exits the application.
  * If \format is NULL, a default message is printed.
  */
-static inline void sundry_verr(const char *format, va_list list) {
+static void sundry_verr(const char *format, va_list list) {
     if(format != NULL) vfprintf(stderr, format, list);
     else fprintf(stderr, "Discovered a fatal error. No error message specified; Exiting...\n");
     abort();
 }
-static inline void sundry_ferr(const char *format, ...) {
+static void sundry_ferr(const char *format, ...) {
     va_list list;
     va_start(list, format);
     sundry_verr(format, list);
@@ -72,11 +72,11 @@ static inline void sundry_ferr(const char *format, ...) {
 /* This function prints an error message and returns.
  * If \format is NULL, a default message is printed.
  */
-static inline void sundry_vdebug(const char *format, va_list list) {
+static void sundry_vdebug(const char *format, va_list list) {
     if(format != NULL) vfprintf(stderr, format, list);
     else fprintf(stderr, "Discovered a debug error. No debug message specified; Ignoring...\n");
 }
-static inline void sundry_fdebug(const char *format, ...) {
+static void sundry_fdebug(const char *format, ...) {
     va_list list;
 
     va_start(list, format);
@@ -98,15 +98,28 @@ static inline void sundry_fdebug(const char *format, ...) {
 #if defined(ONS_DEBUG_MODE) && ONS_DEBUG_MODE > 0
     #define SUNDRY_ASSERT(exp) ((exp)?0:(sundry_ferr("Assertation failed in %s at %u.\n", __FILE__, __LINE__),0))
     #define SUNDRY_FASSERT(exp, msg) ((exp)?0:(sundry_ferr("Assertation failed in %s at %u: %s\n", __FILE__, __LINE__, msg),0))
-    #if ONS_DEBUG_MODE > 2
-        #define SUNDRY_DEBUG(...) (sundry_fdebug("Debug failed in %s at %u: ", __FILE__, __LINE__), sundry_fdebug(__VA_ARGS__), sundry_fdebug("\n"), 0)
-    #endif
 #else
     #define SUNDRY_ASSERT(exp)
     #define SUNDRY_FASSERT(exp, msg)
-    #define SUNDRY_DEBUG(...)
 #endif
-#define SUNDRY_ABORT(...) (sundry_fdebug("ONS failed in %s at %u: ", __FILE__, __LINE__), sundry_fdebug(__VA_ARGS__), sundry_ferr("\n"), 0)
+static void SUNDRY_ABORT(const char *format, ...) {
+    va_list list;
+    va_start(list, format);
+    sundry_fdebug("ONS failed in %s at %u: ", __FILE__, __LINE__);
+    sundry_fdebug(format, list);
+    sundry_ferr("\n");
+    va_end(list);
+}
+static void SUNDRY_DEBUG(const char *format, ...) {
+#if ONS_DEBUG_MODE > 2
+    va_list list;
+    va_start(list, format);
+    sundry_fdebug("Debug failed in %s at %u: ", __FILE__, __LINE__);
+    sundry_vdebug(format, list);
+    sundry_fdebug("\n");
+    va_end(list);
+#endif
+}
 
 
 #ifdef __cplusplus

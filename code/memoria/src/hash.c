@@ -8,7 +8,7 @@
  * - Created: 20. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 21. March 2009
+ * - Last-Change: 26. May 2009
  */
 
 /* Hash list implementation.
@@ -22,7 +22,10 @@
  */
 
 
+#include "config/machine.h"
 #include "memoria/memoria.h"
+#include "memoria/alloc.h"
+#include "memoria/array.h"
 
 
 /** Hash Algorithm.
@@ -149,13 +152,13 @@
  * Use for hash table lookup, or anything where one collision in 2^^32 is
  * acceptable.  Do NOT use for cryptographic purposes.
  */
-#ifdef ONS_MACHINE_LITTLEENDIAN
+#ifdef ONS_ARCH_LITTLEENDIAN
 static uint32_t mem_hashlittle(const void *key, size_t length, uint32_t initval) {
     uint32_t a, b, c; /* internal state */
     union { const void *ptr; size_t i; } u; /* needed for Mac Powerbook G4 */
 
-    ONS_ASSERT(key != NULL);
-    ONS_ASSERT(length > 0);
+    SUNDRY_ASSERT(key != NULL);
+    SUNDRY_ASSERT(length > 0);
 
     /* Set up the internal state */
     a = b = c = 0xdeadbeef + ((uint32_t)length) + initval;
@@ -301,7 +304,7 @@ static uint32_t mem_hashlittle(const void *key, size_t length, uint32_t initval)
   mem_final(a, b, c);
   return c;
 }
-#endif /* ONS_MACHNE_LITTLEENDIAN */
+#endif /* ONS_ARCH_LITTLEENDIAN */
 
 /** mem_hashbig()
  * This function should only be available on big endian machines.
@@ -314,13 +317,13 @@ static uint32_t mem_hashlittle(const void *key, size_t length, uint32_t initval)
  * This is the same as hashlittle() but on big-endian machines.
  * hashbig() takes advantage of big-endian byte ordering.
  */
-#ifdef ONS_MACHINE_BIGENDIAN
+#ifdef ONS_ARCH_BIGENDIAN
 static uint32_t mem_hashbig(const void *key, size_t length, uint32_t initval) {
     uint32_t a, b, c;
     union { const void *ptr; size_t i; } u; /* to cast key to (size_t) happily */
 
-    ONS_ASSERT(key != NULL);
-    ONS_ASSERT(length > 0);
+    SUNDRY_ASSERT(key != NULL);
+    SUNDRY_ASSERT(length > 0);
 
     /* Set up the internal state */
     a = b = c = 0xdeadbeef + ((uint32_t)length) + initval;
@@ -404,7 +407,7 @@ static uint32_t mem_hashbig(const void *key, size_t length, uint32_t initval) {
     mem_final(a, b, c);
     return c;
 }
-#endif /* ONS_MACHINE_BIGENDIAN */
+#endif /* ONS_ARCH_BIGENDIAN */
 
 /* Wrapper for big and little endian hash functions.
  * Takes as argument a char array and a length argument
@@ -414,15 +417,15 @@ static uint32_t mem_hashbig(const void *key, size_t length, uint32_t initval) {
  * collisions and is almost perfectly balanced.
  */
 uint32_t mem_hash(const char *str, size_t len) {
-    ONS_ASSERT(str != NULL);
-    ONS_ASSERT(len > 0);
+    SUNDRY_ASSERT(str != NULL);
+    SUNDRY_ASSERT(len > 0);
 
-#ifdef ONS_MACHINE_LITTLEENDIAN
+#ifdef ONS_ARCH_LITTLEENDIAN
     return mem_hashlittle(str, len, 0xdefcadad);
-#elif defined(ONS_MACHINE_BIGENDIAN)
+#elif defined(ONS_ARCH_BIGENDIAN)
     return mem_hashbig(str, len, 0xdefcadad);
 #else
-    #error "Your machine must either be little- or bigendian."
+    #error "Your machine must either be little- or bigendian. Please review your configuration."
     return 0;
 #endif
 }

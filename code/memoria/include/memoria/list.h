@@ -379,7 +379,7 @@ extern mem_binfo_t *mem_blist[MEM_BACKEND_LAST];
  * \node_next must point to the "next" member of \node.
  * \node_prev must point to the "prev" member of \node.
  */
-static inline void *mem_llist_prepend(void *list_first,
+static void *mem_llist_prepend(void *list_first,
                                       void *ref,
                                       void **ref_prev,
                                       void **ref_prev_next,
@@ -411,7 +411,7 @@ static inline void *mem_llist_prepend(void *list_first,
  * \node_next must point to the "next" member of \node.
  * \node_prev must point to the "prev" member of \node.
  */
-static inline void *mem_llist_append(void *list_last,
+static void *mem_llist_append(void *list_last,
                                      void *ref,
                                      void **ref_next,
                                      void **ref_next_prev,
@@ -441,7 +441,7 @@ static inline void *mem_llist_append(void *list_last,
  * \node_next must point to the "next" member of \node.
  * \node_prev must point to the "prev" member of \node.
  */
-static inline void *mem_llist_push(void *ref,
+static void *mem_llist_push(void *ref,
                                    void **ref_next,
                                    void *node,
                                    void **node_next,
@@ -469,7 +469,7 @@ static inline void *mem_llist_push(void *ref,
  * \node_next must point to the "next" member of \node.
  * \node_prev must point to the "prev" member of \node.
  */
-static inline void *mem_llist_thrust(void *ref,
+static void *mem_llist_thrust(void *ref,
                                      void **ref_prev,
                                      void *node,
                                      void **node_next,
@@ -497,7 +497,7 @@ static inline void *mem_llist_thrust(void *ref,
  * \prev_next is the "next" member of the previous node.
  * \next_prev is the "prev" member of the next node.
  */
-static inline void mem_llist_remove(void *node,
+static void mem_llist_remove(void *node,
                                     void **node_next,
                                     void **node_prev,
                                     void **prev_next,

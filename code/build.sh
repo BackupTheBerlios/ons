@@ -34,15 +34,31 @@ echo "           ##    ONS build    ##                "
 echo "           #####################                "
 echo "                                                "
 echo "This script creates the ONS libraries on a POSIX"
-echo "    system which supports the GNU autotools.    "
+echo "       system which supports SH and MAKE.       "
 echo "                                                "
 echo "Invoke the script with ./$PROGNAME [parameters] "
 echo "          Where [parameters] can be:            "
+echo "                                                "
 echo "       - 'build': Builds the libraries.         "
 echo "       - 'install': Installs the libraries.     "
 echo "       - 'uninstall': Uninstalls the libraries. "
-echo "       - 'rebuild': Cleans the caches and builds"
-echo "                    the libraries again.        "
+echo "       - 'clean': Cleans the caches.            "
+echo "                                                "
+echo "       - 'path=/install/path': Points to the    "
+echo "                  path where to install ONS to  "
+echo "                  or where to remove ONS from.  "
+echo "                  It defaults to '/usr'.        "
+echo "       - 'pedantic': Compiles in strict mode.   "
+echo "                                                "
+echo "       - 'autodetect': Autodetects the          "
+echo "                       environment (default).   "
+echo "       - 'macos': Forces Mac OS environment.    "
+echo "       - 'linux': Forces Linux environment.     "
+echo "       - 'windows': Forces Windows environment. "
+echo "       - 'generic': Forces generic environment. "
+echo "                                                "
+echo "  The order of the parameters is not important. "
+echo "     They are sorted by the script itself.      "
 echo "                                                "
 echo "                                                "
 
@@ -50,30 +66,69 @@ echo "                                                "
 #
 # Check all parameters and print usage if an error occurred.
 #
-REBUILD="no"
+CLEAN="no"
 BUILD="no"
 INSTALL="no"
-CONFIGURE=""
+UNINSTALL="no"
+AUTODETECT="yes"
+MACOS="no"
+LINUX="no"
+WINDOWS="no"
+GENERIC="no"
+IPATH="/usr"
+PEDANTIC="no"
 for i in "$@" ; do
     case "$i" in
-        rebuild)
-            REBUILD="yes"
+        clean)
+            CLEAN="yes"
             ;;
         install)
             INSTALL="yes"
             ;;
+        uninstall)
+            UNINSTALL="yes"
+            ;;
         build)
             BUILD="yes"
+            CLEAN="yes"
+            ;;
+        autodetect)
+            AUTODETECT="yes"
+            ;;
+        pedantic)
+            PEDANTIC="yes"
+            ;;
+        macos)
+            MACOS="yes"
+            AUTODETECT="no"
+            ;;
+        linux)
+            LINUX="yes"
+            AUTODETECT="no"
+            ;;
+        windows)
+            WINDOWS="yes"
+            AUTODETECT="no"
+            ;;
+        generic)
+            GENERIC="yes"
+            AUTODETECT="no"
+            ;;
+        path=*)
+            IPATH=$(echo "$i" | sed -e 's/^path=//g')
+            if test "x$IPATH" = "x" ; then
+                echo "Invalid path argument: '$i'"
+                exit 1
+            fi
             ;;
         *)
-            echo "(Re)set configure options to: '$i'"
-            CONFIGURE=$i
-            REBUILD="yes"
+            echo "Invalid parameter: '$i'"
+            exit 1
             ;;
     esac
 done
-if test $REBUILD = "no" -a $BUILD = "no" -a $INSTALL = "no" ; then
-    echo "Error: Please specify at least one parameter of: REBUILD BUILD INSTALL"
+if test $CLEAN = "no" -a $BUILD = "no" -a $INSTALL = "no" ; then
+    echo "Error: Please specify at least one parameter of: CLEAN BUILD INSTALL"
     exit 1
 fi
 
@@ -94,6 +149,39 @@ check_ret() {
 
 
 #
+# System detection.
+# This sets $SYSTEM to the detected system.
+# Valid values are:
+#  - macos
+#  - linux
+#  - windows
+#  - generic
+#
+SYSTEM=""
+if test $MACOS = "yes" ; then
+    SYSTEM="macos"
+elif test $LINUX = "yes" ; then
+    SYSTEM="linux"
+elif test $WINDOWS = "yes" ; then
+    SYSTEM="windows"
+elif test $GENERIC = "yes" ; then
+    SYSTEM="generic"
+else
+    # Autodetection.
+    TMP=`uname -s`
+    if test $TMP = "Darwin" ; then
+        SYSTEM="macos"
+    elif test $TMP = "Linux" ; then
+        SYSTEM="linux"
+    else
+        SYSTEM="generic"
+        echo "Warning: Could not autodetect your system; now using generic configuration."
+    fi
+fi
+echo "Compiling for system: '$SYSTEM'"
+
+
+#
 # Check that we are in the right directory.
 #
 if test -f ./build.sh ; then
@@ -110,7 +198,7 @@ fi
 #
 # Create the autotools only if they are not yet created.
 #
-if test $REBUILD = "yes" ; then
+if test $CLEAN = "yes" ; then
     echo "CLEAN: make clean"
     make clean
     check_ret $?
@@ -121,8 +209,21 @@ fi
 # Build the source.
 #
 if test $BUILD = "yes" ; then
-    echo "BUILD: make sundry"
-    make sundry
+    echo "BUILD: make"
+
+    if test $PEDANTIC = "yes" ; then
+        CEXTRA="-pedantic -std=c89 -ansi -Wno-unused-function -Wshadow"
+    else
+        CEXTRA="-Wno-unused-function"
+    fi
+
+    if test $SYSTEM = "macos" ; then
+        make sundry memoria DFLAGS=-dynamiclib SUFFIX=dylib LIBS=-lpthread CONFDEF=ONS_SYS_MACOS "CEXTRA=$CEXTRA"
+    elif test $SYSTEM = "linux" ; then
+        make sundry memoria DFLAGS=-shared SUFFIX=so LIBS=-lpthread CONFDEF=ONS_SYS_LINUX "CEXTRA=$CEXTRA"
+    else
+        make sundry memoria "CEXTRA=$CEXTRA"
+    fi
     check_ret $?
 fi
 
@@ -132,7 +233,17 @@ fi
 #
 if test $INSTALL = "yes" ; then
     echo "INSTALL: make install"
-    make install
+    make install PREFIX=$IPATH
+    check_ret $?
+fi
+
+
+#
+# Uninstall the source
+#
+if test $UNINSTALL = "yes" ; then
+    echo "UNINSTALL: make uninstall"
+    make uninstall PREFIX=$IPATH
     check_ret $?
 fi
 

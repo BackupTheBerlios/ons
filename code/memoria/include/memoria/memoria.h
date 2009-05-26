@@ -32,7 +32,7 @@ SUNDRY_EXTERN_C_BEGIN
  * If '\0' is found the length is returned without the zero character.
  * If \string is NULL, 0 is returned.
  */
-static inline size_t mem_strnlen(const char *string, size_t len) {
+static size_t mem_strnlen(const char *string, size_t len) {
     unsigned int i;
 
     if(string == NULL) return 0;

@@ -57,7 +57,7 @@
 
 
 /* Compares two nodes. */
-static inline signed int mem_tbl_comp(mem_list_t *tree, mem_node_t *comparison, mem_node_t *original) {
+static signed int mem_tbl_comp(mem_list_t *tree, mem_node_t *comparison, mem_node_t *original) {
     signed int res;
 
     if(tree->match) return tree->match(comparison, original);
@@ -77,14 +77,14 @@ static inline signed int mem_tbl_comp(mem_list_t *tree, mem_node_t *comparison, 
 /* Returns the hash value of a \val \len pair.
  * If \len is 0, \val is interpreted as already hashed (32bit unsigned integer).
  */
-static inline mem_hash_t mem_tbl_gethash(void *val, size_t len) {
+static mem_hash_t mem_tbl_gethash(void *val, size_t len) {
     if(len > 0) return mem_hash(val, len);
     else return *(mem_hash_t*)val;
 }
 
 
 /* Hashes a node if it is not already hashed. */
-static inline void mem_tbl_hash(mem_node_t *node) {
+static void mem_tbl_hash(mem_node_t *node) {
     SUNDRY_ASSERT(node != NULL);
 
     /* If \node->hash is NON-zero it is already hashed.
@@ -100,7 +100,7 @@ static inline void mem_tbl_hash(mem_node_t *node) {
  * small enough. If you pass NULL for \mask then a new mask is created, otherwise the next
  * mask is returned.
  */
-static inline mem_hash_t mem_tbl_tokenize(mem_list_t *list, mem_hash_t mask) {
+static mem_hash_t mem_tbl_tokenize(mem_list_t *list, mem_hash_t mask) {
     if(!mask) return MEM_MASK_LOW(sizeof(mem_hash_t) * 8, list->size);
     else return MEM_MASK_MOV(sizeof(mem_hash_t) * 8, list->size, mask);
 }

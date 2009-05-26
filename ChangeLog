@@ -12,7 +12,7 @@
 #
 
 TODO >1.0:
- - FIP:
+ - asynchio:
     - Add network interface handling (if.h)
     - Add control message handling (cmsg.h)
     - Add all options to options.h.
@@ -23,32 +23,27 @@ TODO >1.0:
 TODO =1.0:
  - build:
     - Write build.bat.
-    - Write generic build.
-    - Write machine.h configs.
+    - Write XY.machine.h configs.
+    - Improve autodetection in build.sh.
+    - Rewrite INSTALL instructions.
  - documentation:
     - complete rules and guidelines
-    - add FAQ
     - Update documentation.
     - ROADMAP
     - add tutorials
-    - Doc state:
-        - overview: export thread example into a tutorial
-        - ons: update error codes; add eintr_count
-        - memoria: rewrite
-        - saw: rewrite; add flow-label and scope-id information and probably support.
-        - fip: write
-        - yaadns: write
  - memoria:
     - make safe for -std=c89 -pedantic -Wshadow
  - asynchio:
     - Add Win/BSD compatibility layer
     - Add ioctl-options support.
-    - Make access to io_global_list thread safe.
 
 TODO on version change:
  - Change AC_INIT in configure.in.
+ - Set ONS_DEBUG_MODE in machine.h to a proper value.
 
 [ ONS v0.1.1.0 (TESTING) ]
+    * David Herrmann 2009/05/26
+        * Rewrite build engine. This is hopefully the last time we rewrite it.
     * David Herrmann 2009/05/25
         * ./code/build.sh: Add debug messages and show the user what is actually done.
         * ./README: Update.

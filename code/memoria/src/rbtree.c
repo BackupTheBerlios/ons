@@ -26,7 +26,7 @@
 
 
 /* Compares two nodes. */
-static inline signed int mem_rbt_comp(mem_list_t *list, mem_node_t *comparison, mem_node_t *original) {
+static signed int mem_rbt_comp(mem_list_t *list, mem_node_t *comparison, mem_node_t *original) {
     signed int res;
 
     if(list->match) return list->match(comparison, original);
@@ -264,7 +264,7 @@ static void mem_rbt_rotate(mem_list_t *tree, mem_node_t *node) {
 /* Returns the uncle of a node.
  * Returns NULL if no uncle is present.
  */
-static inline mem_node_t *mem_rbt_uncle(mem_node_t *node) {
+static mem_node_t *mem_rbt_uncle(mem_node_t *node) {
     if(!node->parent || !node->parent->parent) return NULL;
     if(node->parent->parent->left == node->parent)
         return node->parent->parent->right;
@@ -275,7 +275,7 @@ static inline mem_node_t *mem_rbt_uncle(mem_node_t *node) {
 #define mem_rbt_cchange(node) ((node)->color = ((node)->color == MEM_RED) ? MEM_BLACK : MEM_RED)
 
 /* Resets a node to NULL except key/len/data. */
-static inline void mem_rbt_reset(mem_node_t *node) {
+static void mem_rbt_reset(mem_node_t *node) {
     SUNDRY_ASSERT(node != NULL);
     node->next = NULL;
     node->prev = NULL;

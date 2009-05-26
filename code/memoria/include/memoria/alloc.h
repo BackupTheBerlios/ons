@@ -51,7 +51,7 @@ extern void (*mem_outofmem)(void);
  * If \size equals zero the behaviour is undefined.
  * The returned value must be freed with mem_free() or free().
  */
-static inline void *mem_malloc(size_t size) {
+static void *mem_malloc(size_t size) {
     void *ret;
 
     SUNDRY_ASSERT(size > 0);
@@ -62,7 +62,7 @@ static inline void *mem_malloc(size_t size) {
 }
 
 /* Same as mem_malloc() but initializes the allocated memory to 0. */
-static inline void *mem_zmalloc(size_t size) {
+static void *mem_zmalloc(size_t size) {
     void *ret;
 
     SUNDRY_ASSERT(size > 0);
@@ -84,7 +84,7 @@ static inline void *mem_zmalloc(size_t size) {
  * If \mem is NULL, the behaviour equals mem_malloc().
  * The returned value must be freed with mem_free() or free().
  */
-static inline void *mem_realloc(void *mem, size_t size) {
+static void *mem_realloc(void *mem, size_t size) {
     void *ret;
 
     SUNDRY_ASSERT(size > 0);
@@ -100,7 +100,7 @@ static inline void *mem_realloc(void *mem, size_t size) {
  * Calls the global out-of-mem handler if the allocation fails.
  * If \size or \mem equals zero the behaviour is undefined.
  */
-static inline void *mem_dup(const void *mem, size_t size) {
+static void *mem_dup(const void *mem, size_t size) {
     void *ret;
 
     SUNDRY_ASSERT(mem != NULL);
@@ -116,7 +116,7 @@ static inline void *mem_dup(const void *mem, size_t size) {
  * Calls the global out-of-mem handler if the allocation fails.
  * If \str equals zero the behaviour is undefined.
  */
-static inline char *mem_strdup(const char *str) {
+static char *mem_strdup(const char *str) {
     char *ret;
 
     SUNDRY_ASSERT(str != NULL);
@@ -130,7 +130,7 @@ static inline char *mem_strdup(const char *str) {
  * If \mem is NULL, nothing is done.
  * \mem should be the pointer returned by the allocation functions.
  */
-static inline void mem_free(void *mem) {
+static void mem_free(void *mem) {
     if(mem) free(mem);
 }
 
