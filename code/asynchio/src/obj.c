@@ -81,6 +81,7 @@ struct asyn_backend_t asyn_backends[ASYN_LAST + 1] = {
 unsigned int asyn_open(asyn_obj_t **obj, unsigned int type, unsigned int opts) {
     unsigned int ret;
 
+    SUNDRY_ASSERT(obj != NULL);
     if(type >= ASYN_LAST) return ASYN_E_INVALTYPE;
 
     *obj = mem_zmalloc(sizeof(asyn_obj_t) + asyn_backends[type].size);
@@ -102,6 +103,7 @@ unsigned int asyn_merge(asyn_obj_t **obj, unsigned int type, unsigned int opts, 
     va_list list;
     unsigned int ret;
 
+    SUNDRY_ASSERT(obj != NULL);
     if(type >= ASYN_LAST) return ASYN_E_INVALTYPE;
 
     *obj = mem_zmalloc(sizeof(asyn_obj_t) + asyn_backends[type].size);
@@ -122,6 +124,7 @@ unsigned int asyn_merge(asyn_obj_t **obj, unsigned int type, unsigned int opts, 
 
 
 void asyn_close(asyn_obj_t *obj) {
+    SUNDRY_ASSERT(obj != NULL);
     SUNDRY_MASSERT(obj->type < ASYN_LAST, "Invalid type in asynch-object.");
     ASYN_BE_CALL(obj, close, (obj), (void)0);
     mem_free(obj);
@@ -137,7 +140,10 @@ signed int asyn_ctrl(asyn_obj_t *obj, asyn_opt_t opt, ...) {
     va_list list;
     signed int ret;
 
+    SUNDRY_ASSERT(obj != NULL);
     SUNDRY_MASSERT(obj->type < ASYN_LAST, "Invalid type in asynch-object.");
+    SUNDRY_MASSERT(opt & (ASYN_SET | ASYN_UNSET), "No SET/UNSET specified in option flag.");
+    SUNDRY_MASSERT((opt & (ASYN_SET | ASYN_UNSET)) != (ASYN_SET | ASYN_UNSET), "Cannot SET and UNSET simultaneously.");
 
     va_start(list, opt);
     /* This may destroy \obj by calling asyn_close(). */
@@ -149,6 +155,9 @@ signed int asyn_ctrl(asyn_obj_t *obj, asyn_opt_t opt, ...) {
 
 
 signed int asyn_write(asyn_obj_t *obj, const void *buf, size_t *len) {
+    SUNDRY_ASSERT(obj != NULL);
+    SUNDRY_ASSERT(buf != NULL);
+    SUNDRY_ASSERT(len != NULL);
     SUNDRY_MASSERT(obj->type < ASYN_LAST, "Invalid type in asynch-object.");
 
     /* This may destroy \obj by calling asyn_close(). */
@@ -157,6 +166,9 @@ signed int asyn_write(asyn_obj_t *obj, const void *buf, size_t *len) {
 
 
 signed int asyn_read(asyn_obj_t *obj, void *buf, size_t *len) {
+    SUNDRY_ASSERT(obj != NULL);
+    SUNDRY_ASSERT(buf != NULL);
+    SUNDRY_ASSERT(len != NULL);
     SUNDRY_MASSERT(obj->type < ASYN_LAST, "Invalid type in asynch-object.");
 
     /* This may destroy \obj by calling asyn_close(). */
