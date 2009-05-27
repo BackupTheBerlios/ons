@@ -109,6 +109,10 @@ enum asyn_error_t {
     ASYN_E_LAST
 };
 
+/* (De)Initializes the library. */
+extern unsigned int asyn_init();
+extern void asyn_deinit();
+
 /* Creates/Frees IO objects. */
 extern unsigned int asyn_open(asyn_obj_t **obj, unsigned int type, unsigned int opts);
 extern unsigned int asyn_merge(asyn_obj_t **obj, unsigned int type, unsigned int opts, ...);

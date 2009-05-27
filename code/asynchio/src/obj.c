@@ -78,6 +78,29 @@ struct asyn_backend_t asyn_backends[ASYN_LAST + 1] = {
                     :(((obj)->error = ASYN_E_NOTSUPP), (fail)))
 
 
+/* Library initialization.
+ * We check that asyn_init() does only ONE initialization and increment an
+ * internal counter to allow an application to call the init/deinit functions
+ * while other libraries of the application also can call them without causing
+ * any conflicts.
+ */
+static unsigned int asyn_init_count = 0;
+unsigned int asyn_init() {
+    unsigned int i;
+    if(asyn_init_count++ == 0) {
+        /* initialize */
+        /* TODO */
+    }
+    else return ASYN_E_SUCCESS;
+}
+void asyn_deinit() {
+    if(--asyn_init_count == 0) {
+        /* deinitialize */
+        /* TODO */
+    }
+}
+
+
 unsigned int asyn_open(asyn_obj_t **obj, unsigned int type, unsigned int opts) {
     unsigned int ret;
 
