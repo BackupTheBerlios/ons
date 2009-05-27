@@ -87,25 +87,22 @@ enum asyn_type_t {
 };
 
 /* Generic options available on all types. */
-enum asyn_option_t {
-    ASYN_NONE           = 0,
-    ASYN_NBLOCK         = 0x0001,
-    ASYN_KEEPEXEC       = 0x0002
-};
+#define ASYN_NONE       0x0000
+#define ASYN_NBLOCK     0x0001  /* Makes the functions return ASYN_BLOCKED when the call would block. */
 
 /* Basic return values. */
 enum asyn_ret_t {
-    ASYN_BLOCKED = -2,
-    ASYN_FAILURE = -3,
-    ASYN_CLOSED = 0,
-    ASYN_SUCCESS = 1
+    ASYN_BLOCKED = -2,      /* The call would block and should be recalled later. */
+    ASYN_FAILURE = -1,      /* The call failed but the object is still usable. */
+    ASYN_CLOSED = 0,        /* The object was closed due to a failure in the call. */
+    ASYN_SUCCESS = 1        /* The call succeeded. */
 };
 
 /* Error codes. */
 enum asyn_error_t {
     ASYN_E_SUCCESS = 0,
-    ASYN_E_INVALTYPE, /* Invalid asyn_type_t type. */
-    ASYN_E_NOTSUPP, /* Operation not supported. */
+    ASYN_E_INVALTYPE,       /* Invalid asyn_type_t type. */
+    ASYN_E_NOTSUPP,         /* Operation not supported. */
     ASYN_E_LAST
 };
 
