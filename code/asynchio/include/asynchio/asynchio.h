@@ -8,7 +8,7 @@
  * - Created: 5. April 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 13. May 2009
+ * - Last-Change: 26. May 2009
  */
 
 /* Main and public header of asynchio.
@@ -16,17 +16,18 @@
  * visible to the user.
  */
 
-#include <ons/ons.h>
 
-#ifndef ONS_INCLUDED_asynchio_asynchio_h
-#define ONS_INCLUDED_asynchio_asynchio_h
-ONS_EXTERN_C_BEGIN
+#include <sundry/sundry.h>
+
+#ifndef ASYNCHIO_INCLUDED_asynchio_asynchio_h
+#define ASYNCHIO_INCLUDED_asynchio_asynchio_h
+SUNDRY_EXTERN_C_BEGIN
 
 
 /* AsynchIO Design:
  * AsynchIO implements an IO object similar to the Berkeley Sockets which
  * can have different backends. However, you can access the object with
- * a simple integer and write/read from it like from Berkeley Sockets.
+ * a simple pointer and write/read from it like from Berkeley Sockets.
  *
  * Since some system do not provide such integral file descriptors for
  * some tasks, the backend may use complex system APIs. However, the user
@@ -35,8 +36,10 @@ ONS_EXTERN_C_BEGIN
  *
  * The main IO tasks are reading/writing synchronously AND asynchronously
  * and waiting for events. Asynchronous IO is achieved by setting the FD
- * to non-blocking state. If a backend does not support non-blocking FDs,
- * a threading architecture is used to simulate it.
+ * to non-blocking state. Every backend currently supports something
+ * similar to a non-blocking state, however, if there will be a backend
+ * that does not support non-blocking states, then this might be done with
+ * a threading architecture.
  *
  * The event engine is another big part of AsynchIO. It is probably the
  * most complex part, however, it can be used like common other event
@@ -54,12 +57,8 @@ ONS_EXTERN_C_BEGIN
 
 /* IO System:
  * The IO System implements several fast and easy ways to send and read from
- * an IO Object. It should be used for accessing the IO Object instead of
- * the low-level API because it uses special system calls which may speed up
- * the functions which cannot be used in the low-level API.
- * This API is the base for every protocol implementation. It also provides
- * buffered reads/writes and really basic parser mechanisms like reading a
- * whole line.
+ * an IO Object.
+ * This API is the base for every protocol implementation.
  */
 
 /* Event Engine:
@@ -74,29 +73,56 @@ ONS_EXTERN_C_BEGIN
 
 
 /* IO objects. */
-typedef size_t io_fd_t;
-#define IO_INVALID_FD 0
+typedef struct asyn_obj_t {
+    unsigned int type;
+    unsigned int opts;
+    unsigned int error;
+    void *io;
+} asyn_obj_t;
 
 /* Types of IO objects. */
-enum {
-    IO_UDP,
-    IO_LAST
+enum asyn_type_t {
+    ASYN_UDP,
+    ASYN_LAST
+};
+
+/* Generic options available on all types. */
+enum asyn_option_t {
+    ASYN_NONE           = 0,
+    ASYN_NBLOCK         = 0x0001,
+    ASYN_KEEPEXEC       = 0x0002
+};
+
+/* Basic return values. */
+enum asyn_ret_t {
+    ASYN_BLOCKED = -2,
+    ASYN_FAILURE = -3,
+    ASYN_CLOSED = 0,
+    ASYN_SUCCESS = 1
+};
+
+/* Error codes. */
+enum asyn_error_t {
+    ASYN_E_SUCCESS = 0,
+    ASYN_E_INVALTYPE, /* Invalid asyn_type_t type. */
+    ASYN_E_NOTSUPP, /* Operation not supported. */
+    ASYN_E_LAST
 };
 
 /* Creates/Frees IO objects. */
-extern io_fd_t io_open(ons_err_t *err, signed int type);
-extern io_fd_t io_merge(ons_err_t *err, signed int type);
-extern void io_close(io_fd_t fd);
+extern unsigned int asyn_open(asyn_obj_t **obj, unsigned int type, unsigned int opts);
+extern unsigned int asyn_merge(asyn_obj_t **obj, unsigned int type, unsigned int opts, ...);
+extern void asyn_close(asyn_obj_t *obj);
+extern unsigned int asyn_err(asyn_obj_t *obj);
 
 /* Modifies a file descriptor. */
-extern unsigned int io_control(io_fd_t fd, ...);
-extern ons_err_t io_err(io_fd_t fd);
+extern signed int asyn_ctrl(asyn_obj_t *obj, ...);
 
 /* Basic IO. */
-extern size_t io_write(io_fd_t fd, const void *buf, size_t len);
-extern size_t io_read(io_fd_t fd, void *buf, size_t len);
+extern signed int asyn_write(asyn_obj_t *obj, const void *buf, size_t *len);
+extern signed int asyn_read(asyn_obj_t *obj, void *buf, size_t *len);
 
 
-ONS_EXTERN_C_END
-#endif /* ONS_INCLUDED_asynchio_asynchio_h */
+SUNDRY_EXTERN_C_END
+#endif /* ASYNCHIO_INCLUDED_asynchio_asynchio_h */
 

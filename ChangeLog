@@ -26,6 +26,8 @@ TODO =1.0:
     - Write XY.machine.h configs.
     - Improve autodetection in build.sh.
     - Rewrite INSTALL instructions.
+    - Add module selection to build.XY.
+    - Add debug selection to build.XY.
  - documentation:
     - complete rules and guidelines
     - Update documentation.
@@ -40,8 +42,18 @@ TODO =1.0:
 TODO on version change:
  - Change AC_INIT in configure.in.
  - Set ONS_DEBUG_MODE in machine.h to a proper value.
+ - `grep TODO -R .`
 
 [ ONS v0.1.1.0 (TESTING) ]
+    * David Herrmann 2009/05/27
+        * ./code/build.sh: Add "noclean" flag to disable implicit cleaning.
+                           Add MODULES variable which can later be used to enable/disable compilation
+                           of specific modules.
+        * ./code/Makefile: Add asynchio.
+                           Force no-pedantic and similar modes on memoria compilation.
+        * ./.../sundry.h: Change SUNDRY_FASSERT to SUNDRY_MASSERT because we don't have a "format" argument.
+        * ./.../asynchio.h: Implement new asynchio interface.
+        *. /.../asynchio/src/*.c: Implement new asynchio interface.
     * David Herrmann 2009/05/26
         * Rewrite build engine. This is hopefully the last time we rewrite it.
     * David Herrmann 2009/05/25

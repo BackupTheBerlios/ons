@@ -97,10 +97,10 @@ static void sundry_fdebug(const char *format, ...) {
  */
 #if defined(ONS_DEBUG_MODE) && ONS_DEBUG_MODE > 0
     #define SUNDRY_ASSERT(exp) ((exp)?0:(sundry_ferr("Assertation failed in %s at %u.\n", __FILE__, __LINE__),0))
-    #define SUNDRY_FASSERT(exp, msg) ((exp)?0:(sundry_ferr("Assertation failed in %s at %u: %s\n", __FILE__, __LINE__, msg),0))
+    #define SUNDRY_MASSERT(exp, msg) ((exp)?0:(sundry_ferr("Assertation failed in %s at %u: %s\n", __FILE__, __LINE__, msg),0))
 #else
     #define SUNDRY_ASSERT(exp)
-    #define SUNDRY_FASSERT(exp, msg)
+    #define SUNDRY_MASSERT(exp, msg)
 #endif
 static void SUNDRY_ABORT(const char *format, ...) {
     va_list list;

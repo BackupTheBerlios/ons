@@ -49,6 +49,7 @@ echo "                  path where to install ONS to  "
 echo "                  or where to remove ONS from.  "
 echo "                  It defaults to '/usr'.        "
 echo "       - 'pedantic': Compiles in strict mode.   "
+echo "       - 'noclean': Disable implicit 'clean'.   "
 echo "                                                "
 echo "       - 'autodetect': Autodetects the          "
 echo "                       environment (default).   "
@@ -77,6 +78,7 @@ WINDOWS="no"
 GENERIC="no"
 IPATH="/usr"
 PEDANTIC="no"
+NOCLEAN="no"
 for i in "$@" ; do
     case "$i" in
         clean)
@@ -90,13 +92,15 @@ for i in "$@" ; do
             ;;
         build)
             BUILD="yes"
-            CLEAN="yes"
             ;;
         autodetect)
             AUTODETECT="yes"
             ;;
         pedantic)
             PEDANTIC="yes"
+            ;;
+        noclean)
+            NOCLEAN="yes"
             ;;
         macos)
             MACOS="yes"
@@ -130,6 +134,9 @@ done
 if test $CLEAN = "no" -a $BUILD = "no" -a $INSTALL = "no" ; then
     echo "Error: Please specify at least one parameter of: CLEAN BUILD INSTALL"
     exit 1
+fi
+if test $NOCLEAN = "no" -a $BUILD = "yes" ; then
+    CLEAN="yes"
 fi
 
 
@@ -211,6 +218,7 @@ fi
 if test $BUILD = "yes" ; then
     echo "BUILD: make"
 
+    MODULES="sundry memoria asynchio"
     if test $PEDANTIC = "yes" ; then
         CEXTRA="-pedantic -std=c89 -ansi -Wno-unused-function -Wshadow"
     else
@@ -218,11 +226,11 @@ if test $BUILD = "yes" ; then
     fi
 
     if test $SYSTEM = "macos" ; then
-        make sundry memoria DFLAGS=-dynamiclib SUFFIX=dylib LIBS=-lpthread CONFDEF=ONS_SYS_MACOS "CEXTRA=$CEXTRA"
+        make $MODULES DFLAGS=-dynamiclib SUFFIX=dylib LIBS=-lpthread CONFDEF=ONS_SYS_MACOS "CEXTRA=$CEXTRA"
     elif test $SYSTEM = "linux" ; then
-        make sundry memoria DFLAGS=-shared SUFFIX=so LIBS=-lpthread CONFDEF=ONS_SYS_LINUX "CEXTRA=$CEXTRA"
+        make $MODULES DFLAGS=-shared SUFFIX=so LIBS=-lpthread CONFDEF=ONS_SYS_LINUX "CEXTRA=$CEXTRA"
     else
-        make sundry memoria "CEXTRA=$CEXTRA"
+        make $MODULES "CEXTRA=$CEXTRA"
     fi
     check_ret $?
 fi
