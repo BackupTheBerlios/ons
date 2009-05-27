@@ -86,10 +86,10 @@ struct asyn_backend_t asyn_backends[ASYN_LAST + 1] = {
  */
 static unsigned int asyn_init_count = 0;
 unsigned int asyn_init() {
-    unsigned int i;
     if(asyn_init_count++ == 0) {
         /* initialize */
         /* TODO */
+        return ASYN_E_SUCCESS;
     }
     else return ASYN_E_SUCCESS;
 }
