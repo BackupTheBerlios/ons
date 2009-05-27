@@ -40,7 +40,7 @@ struct asyn_backend_t {
     unsigned int (*open)(asyn_obj_t *obj, unsigned int opts);
     unsigned int (*merge)(asyn_obj_t *obj, unsigned int opts, va_list list);
     void (*close)(asyn_obj_t *obj);
-    signed int (*ctrl)(asyn_obj_t *obj, va_list list);
+    signed int (*ctrl)(asyn_obj_t *obj, asyn_opt_t opt, va_list list);
     signed int (*write)(asyn_obj_t *obj, const void *buf, size_t *len);
     signed int (*read)(asyn_obj_t *obj, void *buf, size_t *len);
 };
@@ -133,15 +133,15 @@ unsigned int asyn_err(asyn_obj_t *obj) {
 }
 
 
-signed int asyn_ctrl(asyn_obj_t *obj, ...) {
+signed int asyn_ctrl(asyn_obj_t *obj, asyn_opt_t opt, ...) {
     va_list list;
     signed int ret;
 
     SUNDRY_MASSERT(obj->type < ASYN_LAST, "Invalid type in asynch-object.");
 
-    va_start(list, obj);
+    va_start(list, opt);
     /* This may destroy \obj by calling asyn_close(). */
-    ret = ASYN_BE_CALL(obj, ctrl, (obj, list), ASYN_FAILURE);
+    ret = ASYN_BE_CALL(obj, ctrl, (obj, opt, list), ASYN_FAILURE);
     va_end(list);
 
     return ret;
