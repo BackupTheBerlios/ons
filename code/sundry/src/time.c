@@ -8,7 +8,7 @@
  * - Created: 13. May 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 26. May 2009
+ * - Last-Change: 17. June 2009
  */
 
 /* Time controlling API.
@@ -28,6 +28,11 @@
 
 #ifdef ONS_TIME_GTOD
     #include <sys/time.h>
+    #include <unistd.h>
+#endif
+
+#ifdef ONS_TIME_WIN
+    #include <windows.h>
 #endif
 
 
@@ -68,6 +73,65 @@ void sundry_time(sundry_time_t *buf) {
 #else
     buf->usecs = 0;
     buf->secs = time(NULL);
+#endif
+}
+
+
+void sundry_timediff(sundry_time_t *buf, sundry_time_t *ctime, sundry_time_t *ptime) {
+    sundry_time_t *big, *small;
+
+    SUNDRY_ASSERT(buf && ctime && ptime);
+
+    /* Check which one is bigger. */
+    if(ctime->secs > ptime->secs) {
+        big = ctime;
+        small = ptime;
+    }
+    else if(ctime->secs < ptime->secs) {
+        big = ptime;
+        small = ctime;
+    }
+    else if(ctime->usecs > ptime->usecs) {
+        big = ctime;
+        small = ptime;
+    }
+    else if(ctime->usecs < ptime->usecs) {
+        big = ptime;
+        small = ctime;
+    }
+    else {
+        memset(buf, 0, sizeof(sundry_time_t));
+        return;
+    }
+
+    buf->secs = big->secs - small->secs;
+    if(small->usecs > big->usecs) {
+        --buf->secs;
+        buf->usecs = 1000000UL + big->usecs - small->usecs;
+    }
+    else buf->usecs = big->usecs - small->usecs;
+}
+
+
+void sundry_timesum(sundry_time_t *buf, sundry_time_t *ctime, sundry_time_t *ptime) {
+    SUNDRY_ASSERT(buf && ctime && ptime);
+
+    buf->secs = ctime->secs + ptime->secs;
+    buf->usecs = ctime->usecs + ptime->usecs;
+
+    /* Check for microseconds overflow. */
+    if(buf->usecs >= 1000000UL) {
+        buf->usecs -= 1000000UL;
+        ++buf->secs;
+    }
+}
+
+
+void sundry_sleep(sundry_time_t *ptime) {
+#ifdef ONS_TIME_WIN
+    sleep(ptime->secs * 1000UL + ptime->usecs / 1000);
+#elif defined(ONS_TIME_GTOD)
+    usleep(ptime->secs * 1000000UL + ptime->usecs);
 #endif
 }
 

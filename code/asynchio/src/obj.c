@@ -8,193 +8,83 @@
  * - Created: 7. April 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 27. May 2009
+ * - Last-Change: 29. May 2009
  */
 
-/* Generic File Descriptors
- * This API controls the file descriptors and describes the API
- * used by the backends. It delegates the work to the right
- * backend and checks for valid parameters.
+/* Defines miscellaneous asynchio functions
+ * which are not related to any other group.
  */
 
 
 #include "config/machine.h"
 #include "sundry/sundry.h"
-#include "memoria/memoria.h"
 #include "asynchio/asynchio.h"
+#include "memoria/memoria.h"
+#include "backend.h"
 
 
 #include <stdlib.h>
 #include <string.h>
 #include <stddef.h>
 #include <stdarg.h>
+#include <errno.h>
 
 
-/* Different backends.
- * They implement the different functions for a specific type.
- */
-struct asyn_backend_t {
-    /* Size of the \io member in \asyn_obj_t. */
-    size_t size;
-    /* Different function prototypes. Set to NULL if not supported. */
-    unsigned int (*open)(asyn_obj_t *obj, unsigned int opts);
-    unsigned int (*merge)(asyn_obj_t *obj, unsigned int opts, va_list list);
-    void (*close)(asyn_obj_t *obj);
-    signed int (*ctrl)(asyn_obj_t *obj, asyn_opt_t opt, va_list list);
-    signed int (*write)(asyn_obj_t *obj, const void *buf, size_t *len);
-    signed int (*read)(asyn_obj_t *obj, void *buf, size_t *len);
-};
+#ifdef ONS_SOCKET_WIN_HEADERS
+    #include <windows.h>
+    #include <winsock2.h>
+#endif
+#ifdef ONS_SOCKET_BERKELEY_HEADERS
+    #include <unistd.h>
+    #include <sys/types.h>
+    #include <sys/socket.h>
+    #include <sys/un.h>
+    #include <netinet/in.h>
+    #include <arpa/inet.h>
+#endif
 
-struct asyn_backend_t asyn_backends[ASYN_LAST + 1] = {
-    /* ASYN_UDP */
-    {
-        /* .size = */ 0,
-        /* .open = */ NULL,
-        /* .merge = */ NULL,
-        /* .close = */ NULL,
-        /* .ctrl = */ NULL,
-        /* .write = */ NULL,
-        /* .read = */ NULL
-    },
-    /* ASYN_LAST */
-    {
-        /* .size = */ 0,
-        /* .open = */ NULL,
-        /* .merge = */ NULL,
-        /* .close = */ NULL,
-        /* .ctrl = */ NULL,
-        /* .write = */ NULL,
-        /* .read = */ NULL
+
+unsigned int asyn_str2addr(unsigned int type, const char *str, void *addr) {
+    char buffer[MEM_MAX(sizeof(struct in_addr), sizeof(struct in6_addr))];
+
+    if(inet_pton((type == ASYN_IPV4)?AF_INET:AF_INET6, str, buffer) == 1) {
+        if(type == ASYN_IPV4) {
+            memcpy(addr, &((struct in_addr*)buffer)->s_addr, ASYN_V4SIZE);
+        }
+        else {
+            memcpy(addr, ((struct in6_addr*)buffer)->s6_addr, ASYN_V6SIZE);
+        }
+        return ASYN_DONE;
     }
-};
-
-/* This calls the backend function. If the backend function is NULL, then obj->error is set appropriately
- * and (fail) is returned. \params must be the parameter list passed to the function encapsulated into
- * parentheses.
- * eg.: ASYN_BE_CALL(my_obj, ctrl, (my_obj, my_list), ASYN_FAILURE)
- */
-#define ASYN_BE_CALL(obj, what, params, fail) (((obj)->type < ASYN_LAST && asyn_backends[(obj)->type].what) \
-                    ?(asyn_backends[(obj)->type].what params) \
-                    :(((obj)->error = ASYN_E_NOTSUPP), (fail)))
+    else return ASYN_FAILED;
+}
 
 
-/* Library initialization.
- * We check that asyn_init() does only ONE initialization and increment an
- * internal counter to allow an application to call the init/deinit functions
- * while other libraries of the application also can call them without causing
- * any conflicts.
- */
-static unsigned int asyn_init_count = 0;
-unsigned int asyn_init() {
-    if(asyn_init_count++ == 0) {
-        /* initialize */
-        /* TODO */
-        return ASYN_E_SUCCESS;
+void asyn_addr2str(unsigned int type, const void *addr, char *str) {
+    char buffer[MEM_MAX(sizeof(struct in_addr), sizeof(struct in6_addr))];
+
+    if(type == ASYN_IPV4) {
+        memcpy(&((struct in_addr*)buffer)->s_addr, addr, ASYN_V4SIZE);
     }
-    else return ASYN_E_SUCCESS;
-}
-void asyn_deinit() {
-    if(--asyn_init_count == 0) {
-        /* deinitialize */
-        /* TODO */
+    else {
+        memcpy(((struct in6_addr*)buffer)->s6_addr, addr, ASYN_V6SIZE);
     }
-}
 
-
-unsigned int asyn_open(asyn_obj_t **obj, unsigned int type, unsigned int opts) {
-    unsigned int ret;
-
-    SUNDRY_ASSERT(obj != NULL);
-    if(type >= ASYN_LAST) return ASYN_E_INVALTYPE;
-
-    *obj = mem_zmalloc(sizeof(asyn_obj_t) + asyn_backends[type].size);
-    (*obj)->io = sizeof(asyn_obj_t) + (void*)*obj;
-    (*obj)->error = ASYN_E_SUCCESS;
-    (*obj)->type = type;
-    (*obj)->opts = ASYN_NONE;
-
-    ret = ASYN_BE_CALL(*obj, open, (*obj, opts), (*obj)->error);
-    if(ret != ASYN_E_SUCCESS) {
-        mem_free(*obj);
-        *obj = NULL;
+    if(inet_ntop((type == ASYN_IPV4)?AF_INET:AF_INET6, buffer, str, ASYN_STRLEN) == NULL) {
+        /* inet_ntop should never fail. We supplied a buffer which is big enough
+         * for the result and there is no other error which can occur.
+         * However, just to go sure, we copy "0.0.0.0" or "::" into the buffer
+         * to actually have a result.
+         */
+        if(type == ASYN_IPV4) {
+            strncpy(str, "0.0.0.0", ASYN_STRLEN);
+            str[ASYN_STRLEN - 1] = 0;
+        }
+        else {
+            strncpy(str, "::", ASYN_STRLEN);
+            str[ASYN_STRLEN - 1] = 0;
+        }
+        SUNDRY_DEBUG("asynchio: inet_ntop() returned NULL: errno (%d)", errno);
     }
-    return ret;
-}
-
-
-unsigned int asyn_merge(asyn_obj_t **obj, unsigned int type, unsigned int opts, ...) {
-    va_list list;
-    unsigned int ret;
-
-    SUNDRY_ASSERT(obj != NULL);
-    if(type >= ASYN_LAST) return ASYN_E_INVALTYPE;
-
-    *obj = mem_zmalloc(sizeof(asyn_obj_t) + asyn_backends[type].size);
-    (*obj)->io = sizeof(asyn_obj_t) + (void*)*obj;
-    (*obj)->error = ASYN_E_SUCCESS;
-    (*obj)->type = type;
-    (*obj)->opts = opts;
-
-    va_start(list, opts);
-    ret = ASYN_BE_CALL(*obj, merge, (*obj, opts, list), (*obj)->error);
-    if(ret != ASYN_E_SUCCESS) {
-        mem_free(*obj);
-        *obj = NULL;
-    }
-    va_end(list);
-    return ret;
-}
-
-
-void asyn_close(asyn_obj_t *obj) {
-    SUNDRY_ASSERT(obj != NULL);
-    SUNDRY_MASSERT(obj->type < ASYN_LAST, "Invalid type in asynch-object.");
-    ASYN_BE_CALL(obj, close, (obj), (void)0);
-    mem_free(obj);
-}
-
-
-unsigned int asyn_err(asyn_obj_t *obj) {
-    return obj->error;
-}
-
-
-signed int asyn_ctrl(asyn_obj_t *obj, asyn_opt_t opt, ...) {
-    va_list list;
-    signed int ret;
-
-    SUNDRY_ASSERT(obj != NULL);
-    SUNDRY_MASSERT(obj->type < ASYN_LAST, "Invalid type in asynch-object.");
-    SUNDRY_MASSERT(opt & (ASYN_SET | ASYN_UNSET), "No SET/UNSET specified in option flag.");
-    SUNDRY_MASSERT((opt & (ASYN_SET | ASYN_UNSET)) != (ASYN_SET | ASYN_UNSET), "Cannot SET and UNSET simultaneously.");
-
-    va_start(list, opt);
-    /* This may destroy \obj by calling asyn_close(). */
-    ret = ASYN_BE_CALL(obj, ctrl, (obj, opt, list), ASYN_FAILURE);
-    va_end(list);
-
-    return ret;
-}
-
-
-signed int asyn_write(asyn_obj_t *obj, const void *buf, size_t *len) {
-    SUNDRY_ASSERT(obj != NULL);
-    SUNDRY_ASSERT(buf != NULL);
-    SUNDRY_ASSERT(len != NULL);
-    SUNDRY_MASSERT(obj->type < ASYN_LAST, "Invalid type in asynch-object.");
-
-    /* This may destroy \obj by calling asyn_close(). */
-    return ASYN_BE_CALL(obj, write, (obj, buf, len), ASYN_FAILURE);
-}
-
-
-signed int asyn_read(asyn_obj_t *obj, void *buf, size_t *len) {
-    SUNDRY_ASSERT(obj != NULL);
-    SUNDRY_ASSERT(buf != NULL);
-    SUNDRY_ASSERT(len != NULL);
-    SUNDRY_MASSERT(obj->type < ASYN_LAST, "Invalid type in asynch-object.");
-
-    /* This may destroy \obj by calling asyn_close(). */
-    return ASYN_BE_CALL(obj, read, (obj, buf, len), ASYN_FAILURE);
 }
 

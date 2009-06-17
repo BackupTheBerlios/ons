@@ -51,3 +51,11 @@
  * as on any other good Unix system.
  */
 #define ONS_TIME_GTOD
+
+/* The Berkeley Socket API is available.
+ * However, EXTSOCK is not available here.
+ */
+#define ONS_SOCKET_BERKELEY_HEADERS
+#define ONS_SOCKET_IOCTL
+#define ONS_SOCKET_FCNTL
+#define ONS_SOCKET_ALEN

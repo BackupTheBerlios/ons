@@ -201,13 +201,13 @@ $(CODEDIR)/memoria/src/%.o: $(CONFIG) $(MEMORIA_TINCLUDES)
 # Metatargets to build asynchio.
 #
 
-ASYNCHIO_SOURCES=obj.c
+ASYNCHIO_SOURCES=obj.c os_generic.c type_udp.c
 ASYNCHIO_INCLUDES=asynchio.h
 
 ASYNCHIO_TSOURCES=$(foreach file,$(ASYNCHIO_SOURCES),$(CODEDIR)/asynchio/src/$(file))
 ASYNCHIO_OBJECTS=$(ASYNCHIO_TSOURCES:%.c=%.o)
 ASYNCHIO_TINCLUDES=$(foreach file,$(ASYNCHIO_INCLUDES),$(CODEDIR)/asynchio/include/asynchio/$(file))
-ASYNCHIO_INCPATH=-I$(CODEDIR)/sundry/include -I$(CODEDIR)/memoria/include -I$(CODEDIR)/asynchio/include
+ASYNCHIO_INCPATH=-I$(CODEDIR)/sundry/include -I$(CODEDIR)/memoria/include -I$(CODEDIR)/asynchio/include -I$(CODEDIR)/asynchio/src
 
 asynchio: sundry memoria asynchio_begin $(CODEDIR)/libasynchio.$(SUFFIX) asynchio_end
 
@@ -220,6 +220,6 @@ asynchio_end:
 $(CODEDIR)/libasynchio.$(SUFFIX): $(ASYNCHIO_OBJECTS)
 	$(CC) $(LFLAGS) $(DFLAGS) $(CODEDIR)/libsundry.$(SUFFIX) $(CODEDIR)/libmemoria.$(SUFFIX) $(ASYNCHIO_OBJECTS) -o $(CODEDIR)/libasynchio.$(SUFFIX) $(ASYNCHIO_LIBS)
 
-$(CODEDIR)/asynchio/src/%.o: $(CONFIG) $(ASYNCHIO_TINCLUDES)
+$(CODEDIR)/asynchio/src/%.o: $(CONFIG) $(ASYNCHIO_TINCLUDES) $(CODEDIR)/asynchio/src/backend.h
 	$(CC) $(CFLAGS) $(ASYNCHIO_INCPATH) $(CODEDIR)/asynchio/src/$*.c -o $(CODEDIR)/asynchio/src/$*.o
 

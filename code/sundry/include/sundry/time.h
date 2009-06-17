@@ -8,11 +8,20 @@
  * - Created: 13. May 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 26. May 2009
+ * - Last-Change: 17. June 2009
  */
 
 /* Time controlling API.
  * This API is similar to <time.h> but is much more precise.
+ * It stores seconds and microseconds in two separate integers,
+ * however, this way it is possible that the microseconds int
+ * is bigger or equal than 1,000,000, that is, it should be
+ * converted into seconds.
+ * All functions here automatically return "valid" times where
+ * this does not occur, however, if you manually modify them
+ * please go sure to "normalize" them.
+ * For common math operations this header provides functions
+ * that take this in mind.
  */
 
 #include <sundry/sundry.h>
@@ -29,7 +38,7 @@ SUNDRY_EXTERN_C_BEGIN
  */
 typedef struct sundry_time_t {
     uint64_t secs;
-    uint64_t usecs;
+    uint32_t usecs;
 } sundry_time_t;
 
 /* Both constants can be passed as additional parameter and specify
@@ -42,6 +51,20 @@ typedef struct sundry_time_t {
 
 /* Saves the current time in \buf. */
 extern void sundry_time(sundry_time_t *buf);
+
+/* Computes the time difference between \ctime and \ptime and saves
+ * it into \buf.
+ * \ctime and \ptime have to be valid timestamps.
+ */
+extern void sundry_timediff(sundry_time_t *buf, sundry_time_t *ctime, sundry_time_t *ptime);
+
+/* Sums up two times and stores them into \buf.
+ * Both times have to be valid timestamps.
+ */
+extern void sundry_timesum(sundry_time_t *buf, sundry_time_t *ctime, sundry_time_t *ptime);
+
+/* Sleeps the process for the specified amount of time. */
+extern void sundry_sleep(sundry_time_t *ptime);
 
 
 SUNDRY_EXTERN_C_END

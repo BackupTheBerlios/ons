@@ -8,7 +8,7 @@
  * - Created: 25. May 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 26. May 2009
+ * - Last-Change: 17. June 2009
  */
 
 /* Miscellaneous
@@ -57,15 +57,13 @@ extern 'C' {
  */
 static void sundry_verr(const char *format, va_list list) {
     if(format != NULL) vfprintf(stderr, format, list);
-    else fprintf(stderr, "Discovered a fatal error. No error message specified; Exiting...\n");
+    else fprintf(stderr, "Sundry: Discovered a fatal error. No error message specified; Exiting...\n");
     abort();
 }
 static void sundry_ferr(const char *format, ...) {
     va_list list;
     va_start(list, format);
     sundry_verr(format, list);
-    va_end(list);
-    abort();
 }
 
 
@@ -74,7 +72,7 @@ static void sundry_ferr(const char *format, ...) {
  */
 static void sundry_vdebug(const char *format, va_list list) {
     if(format != NULL) vfprintf(stderr, format, list);
-    else fprintf(stderr, "Discovered a debug error. No debug message specified; Ignoring...\n");
+    else fprintf(stderr, "Sundry: Discovered a debug error. No debug message specified; Ignoring...\n");
 }
 static void sundry_fdebug(const char *format, ...) {
     va_list list;
@@ -85,19 +83,19 @@ static void sundry_fdebug(const char *format, ...) {
 }
 
 
-/* SUNDRY_(F)ASSERT: This macro is equal to ISO-c89 assert() but does not depend on NDEBUG but on ONS_DEBUG_MODE and
- *                   requires a second parameter which must be a string defining an error message.
+/* SUNDRY_(M)ASSERT: This macro is equal to ISO-c89 assert() but does not depend on NDEBUG but on ONS_DEBUG_MODE and
+ *                   can take a second parameter which must be a string defining an error message.
  * SUNDRY_DEBUG: This macro prints a message to stdout that a bug occurred and should be
- *               reported when ONS_DEBUG_MODE is defined and greater or equal to 3.
+ *               reported when ONS_DEBUG_MODE is defined.
  * SUNDRY_ABORT: Prints a message and raises an exception. This often causes a core to be dumped.
  *
  * Because ONS_DEBUG_MODE is not defined in any header included here, you have to define it before using this macro, otherwise
  * the functions will always do nothing which can also be the expected behaviour.
- * source files which are part of ONS should include "machine.h" which defines ONS_DEBUG_MODE.
+ * Source files which are part of ONS should include "machine.h" which defines ONS_DEBUG_MODE.
  */
-#if defined(ONS_DEBUG_MODE) && ONS_DEBUG_MODE > 0
-    #define SUNDRY_ASSERT(exp) ((exp)?0:(sundry_ferr("Assertation failed in %s at %u.\n", __FILE__, __LINE__),0))
-    #define SUNDRY_MASSERT(exp, msg) ((exp)?0:(sundry_ferr("Assertation failed in %s at %u: %s\n", __FILE__, __LINE__, msg),0))
+#if defined(ONS_DEBUG_MODE)
+    #define SUNDRY_ASSERT(exp) ((exp)?0:(sundry_ferr("Sundry: Assertation failed in %s at %u.\n", __FILE__, __LINE__),0))
+    #define SUNDRY_MASSERT(exp, msg) ((exp)?0:(sundry_ferr("Sundry: Assertation failed in %s at %u: %s\n", __FILE__, __LINE__, msg),0))
 #else
     #define SUNDRY_ASSERT(exp)
     #define SUNDRY_MASSERT(exp, msg)
@@ -105,16 +103,15 @@ static void sundry_fdebug(const char *format, ...) {
 static void SUNDRY_ABORT(const char *format, ...) {
     va_list list;
     va_start(list, format);
-    sundry_fdebug("ONS failed in %s at %u: ", __FILE__, __LINE__);
+    sundry_fdebug("Sundry: Failed in %s at %u: ", __FILE__, __LINE__);
     sundry_fdebug(format, list);
     sundry_ferr("\n");
-    va_end(list);
 }
 static void SUNDRY_DEBUG(const char *format, ...) {
-#if ONS_DEBUG_MODE > 2
+#ifdef ONS_DEBUG_MODE
     va_list list;
     va_start(list, format);
-    sundry_fdebug("Debug failed in %s at %u: ", __FILE__, __LINE__);
+    sundry_fdebug("Sundry: Debug (%s: %u): ", __FILE__, __LINE__);
     sundry_vdebug(format, list);
     sundry_fdebug("\n");
     va_end(list);

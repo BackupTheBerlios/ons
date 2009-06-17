@@ -1,0 +1,17 @@
+Header inclusion:
+- First "machine.h" if it is a source file, and only if it really is.
+- Then "sundry.h".
+- Then in headers you check for "extern-c" and "double inclusion" probably
+  with SUNDRY macros.
+- Then include all other ONS headers you depend on.
+- Then all ISO-C headers.
+- And as last step include operating system headers if required.
+
+Function parameters:
+- If the function has two parameters, the first is the source, the second the
+  target.
+- If the function has more than 2 parameters, then the first is the target that
+  we operate on and then all sources, each followed by parameters affecting only
+  this source, and last parameters which are general or affect all sources.
+- If we operate on an object and we have NO source but another parameter, then
+  the target (the object) is the first parameter followed by the other param.

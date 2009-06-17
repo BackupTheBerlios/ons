@@ -43,8 +43,13 @@ TODO on version change:
  - Change AC_INIT in configure.in.
  - Set ONS_DEBUG_MODE in machine.h to a proper value.
  - `grep TODO -R .`
+ - Compile on supported platforms with "pedantic".
 
 [ ONS v0.1.1.0 (TESTING) ]
+    * David Herrmann 2009/06/17
+        * ./.../machine.h: Change ONS_DEBUG_MODE to have only one level.
+    * David Herrmann 2009/06/16
+        * ./.../sundry.h: Adjust error messages.
     * David Herrmann 2009/05/27
         * ./code/build.sh: Add "noclean" flag to disable implicit cleaning.
                            Add MODULES variable which can later be used to enable/disable compilation

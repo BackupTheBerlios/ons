@@ -50,6 +50,8 @@ echo "                  or where to remove ONS from.  "
 echo "                  It defaults to '/usr'.        "
 echo "       - 'pedantic': Compiles in strict mode.   "
 echo "       - 'noclean': Disable implicit 'clean'.   "
+echo "       - 'mods=list of mods' Compiles only      "
+echo "                             those modules.     "
 echo "                                                "
 echo "       - 'autodetect': Autodetects the          "
 echo "                       environment (default).   "
@@ -79,6 +81,7 @@ GENERIC="no"
 IPATH="/usr"
 PEDANTIC="no"
 NOCLEAN="no"
+MODULES="sundry memoria asynchio"
 for i in "$@" ; do
     case "$i" in
         clean)
@@ -117,6 +120,14 @@ for i in "$@" ; do
         generic)
             GENERIC="yes"
             AUTODETECT="no"
+            ;;
+        mods=*)
+            IMODS=$(echo "$i" | sed -e 's/^mods=//g')
+            if test "x$IMODS" = "x" ; then
+                echo "Invalid mods argument: '$i'"
+                exit 1
+            fi
+            MODULES=$IMODS
             ;;
         path=*)
             IPATH=$(echo "$i" | sed -e 's/^path=//g')
@@ -218,7 +229,6 @@ fi
 if test $BUILD = "yes" ; then
     echo "BUILD: make"
 
-    MODULES="sundry memoria asynchio"
     if test $PEDANTIC = "yes" ; then
         CEXTRA="-pedantic -std=c89 -ansi -Wno-unused-function -Wshadow"
     else

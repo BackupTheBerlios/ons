@@ -8,7 +8,7 @@
  * - Created: 25. May 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 26. May 2009
+ * - Last-Change: 17. June 2009
  */
 
 /* ONS configuration
@@ -111,35 +111,60 @@
  * If the GetTimeOfDay() function is available on your platform through <sys/time.h> then define
  * ONS_TIME_GTOD. If the windows function GetSystemTimeAsFileTime() is available through the Windows
  * API then define ONS_TIME_WIN.
- * One of them MUST be defined.
+ * One of them must be defined. *_GTOD includes the usleep() systcall and *_WIN includes the sleep()
+ * syscall.
  */
 /* #define ONS_TIME_GTOD */
 /* #define ONS_TIME_WIN */
+
+
+/* Socket API
+ *
+ * The Berkeley Socket API must be (at least partly) supported by your system. Nearly
+ * every system supports other BSD extensions so only the basic tasks are required
+ * everything else can be configured with the macros below.
+ *
+ * Since the Berkeley Socket API is not expected to be fully supported on every system
+ * we have workarounds for rarely used functions which are not available in every
+ * Berkeley-API implementation:
+ * - If socket() supports the binary options SOCK_NONBLOCK and SOCK_CLOEXEC then
+ *   define ONS_SOCKET_EXTSOCK.
+ * - If the typical berkeley socket headers like sys/socket.h are available, then
+ *   define ONS_SOCKET_BERKELEY_HEADERS.
+ * - If the API is available through WindowsAPI then define ONS_SOCKET_WIN_HEADERS.
+ * - If the fcntl() syscall is available, define ONS_SOCKET_FCNTL.
+ * - If the ioctl() syscall is available, define ONS_SOCKET_IOCTL.
+ * - If the ioctlsocket() function is available, define ONS_SOCKET_IOCTLSOCKET.
+ * - If the BSD address structures have a "len" member, then define ONS_SOCKET_ALEN.
+ *
+ * One of *_FCNTL, *_IOCTL, *_IOCTLSOCKET must be defined.
+ * A combination of ONS_SOCKET_WIN_HEADERS with one of the following is invalid:
+ * - ONS_SOCKET_EXTSOCK
+ * - ONS_SOCKET_FCNTL
+ * - ONS_SOCKET_IOCTL
+ */
+/* #define ONS_SOCKET_EXTSOCK */
+/* #define ONS_SOCKET_BERKELEY_HEADERS */
+/* #define ONS_SOCKET_WIN_HEADERS */
+/* #define ONS_SOCKET_FCNTL */
+/* #define ONS_SOCKET_IOCTL */
+/* #define ONS_SOCKET_IOCTLSOCKET */
+/* #define ONS_SOCKET_ALEN */
 
 
 /* Debug mode
  *
  * This defines whether debug messages should be included in the library.
  *
- *   ONS_DEBUG_MODE [0..4]
+ *   ONS_DEBUG_MODE
  *          This is defined if debug behaviour shall be included. Each library
  *          of ONS has to decide whether it includes debug facilities.
  *          However, if this macro is not defined, debug facilities must not
  *          be included.
- *          If the macro is defined, it expands to an integer describing the
- *          debug level. A higher level always includes more debug output.
- *          A level includes all lower levels.
- *      Level:
- *      - 0: Equals to not defining this macro. No debug information is included.
- *      - 1: Basic security mechanism are included like assertations.
- *      - 2: Debug messages are printed to stderr on fatal errors.
- *      - 3: Debug messages are printed to stderr on warnings and unexpected function calls.
- *           Reporting them to the developers will help improving ONS.
- *      - 4: Currently not used.
  *
  * This macro is not defined by the backends but inside this file. If you downloaded a
- * release version this is probably set to 1, if you downloaded a beta version this is probably
- * set to 4.
+ * release version this is probably not defined, if you downloaded a beta version this is probably
+ * defined.
  */
-#define ONS_DEBUG_MODE 4
+#define ONS_DEBUG_MODE
 

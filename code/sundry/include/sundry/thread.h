@@ -74,7 +74,8 @@ extern unsigned int sundry_mutex_trylock(sundry_mutex_t *mutex);
 /* Locks a mutex. This function returns when the timeout \timeout has exceeded and the mutex
  * could not be locked.
  * Returns 1 when the mutex has been successfully locked, otherwise it returns 0 after the timeout exceeded.
- * This function is not available when PTHREAD is defined as backend but the TMR extension is not available.
+ * This function is the same as sundry_mutex_trylock followed by a sleep when PTHREAD is used and TMR
+ * is not available.
  */
 extern unsigned int sundry_mutex_timedlock(sundry_mutex_t *mutex, sundry_time_t *timeout);
 

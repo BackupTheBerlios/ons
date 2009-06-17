@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 26. May 2009
+ * - Last-Change: 29. May 2009
  */
 
 /* Main and public header of memoria.
@@ -152,6 +152,11 @@ typedef unsigned long mem_flagpage_t;
 #define MEM_HASFLAG(set, flag) ((set)->bits[MEM_FLAGSET_INDEX(flag)] & MEM_FLAGSET_MASK(flag))
 #define MEM_SETFLAG(set, flag) ((set)->bits[MEM_FLAGSET_INDEX(flag)] |= MEM_FLAGSET_MASK(flag))
 #define MEM_CLRFLAG(set, flag) ((set)->bits[MEM_FLAGSET_INDEX(flag)] &= ~MEM_FLAGSET_MASK(flag))
+
+
+/* Returns the smaller/bigger value of two values. */
+#define MEM_MAX(x, y) (((x) > (y))?(x):(y))
+#define MEM_MIN(x, y) (((x) < (y))?(x):(y))
 
 
 #include <memoria/alloc.h>

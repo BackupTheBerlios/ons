@@ -8,7 +8,7 @@
  * - Created: 13. May 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 26. May 2009
+ * - Last-Change: 17. June 2009
  */
 
 /* Thread wrapper.
@@ -144,6 +144,12 @@ unsigned int sundry_mutex_timedlock(sundry_mutex_t *mutex, sundry_time_t *timeou
 #elif defined(ONS_THREAD_WIN)
     return (WaitForSingleObject(*mutex, (timeout->usec / 1000) + (timeout->secs * 1000)) == WAIT_OBJECT_0);
 #endif
+}
+#else
+unsigned int sundry_mutex_timedlock(sundry_mutex_t *mutex, sundry_time_t *timeout) {
+    if(sundry_mutex_trylock(mutex)) return 1;
+    sundry_sleep(timeout);
+    return sundry_mutex_trylock(mutex);
 }
 #endif
 
