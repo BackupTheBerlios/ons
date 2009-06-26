@@ -8,7 +8,7 @@
  * - Created: 13. May 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 17. June 2009
+ * - Last-Change: 26. June 2009
  */
 
 /* Time controlling API.
@@ -77,27 +77,27 @@ void sundry_time(sundry_time_t *buf) {
 }
 
 
-void sundry_timediff(sundry_time_t *buf, sundry_time_t *ctime, sundry_time_t *ptime) {
+void sundry_timediff(sundry_time_t *buf, sundry_time_t *ctime2, sundry_time_t *ptime) {
     sundry_time_t *big, *small;
 
-    SUNDRY_ASSERT(buf && ctime && ptime);
+    SUNDRY_ASSERT(buf && ctime2 && ptime);
 
     /* Check which one is bigger. */
-    if(ctime->secs > ptime->secs) {
-        big = ctime;
+    if(ctime2->secs > ptime->secs) {
+        big = ctime2;
         small = ptime;
     }
-    else if(ctime->secs < ptime->secs) {
+    else if(ctime2->secs < ptime->secs) {
         big = ptime;
-        small = ctime;
+        small = ctime2;
     }
-    else if(ctime->usecs > ptime->usecs) {
-        big = ctime;
+    else if(ctime2->usecs > ptime->usecs) {
+        big = ctime2;
         small = ptime;
     }
-    else if(ctime->usecs < ptime->usecs) {
+    else if(ctime2->usecs < ptime->usecs) {
         big = ptime;
-        small = ctime;
+        small = ctime2;
     }
     else {
         memset(buf, 0, sizeof(sundry_time_t));
@@ -113,11 +113,11 @@ void sundry_timediff(sundry_time_t *buf, sundry_time_t *ctime, sundry_time_t *pt
 }
 
 
-void sundry_timesum(sundry_time_t *buf, sundry_time_t *ctime, sundry_time_t *ptime) {
-    SUNDRY_ASSERT(buf && ctime && ptime);
+void sundry_timesum(sundry_time_t *buf, sundry_time_t *ctime2, sundry_time_t *ptime) {
+    SUNDRY_ASSERT(buf && ctime2 && ptime);
 
-    buf->secs = ctime->secs + ptime->secs;
-    buf->usecs = ctime->usecs + ptime->usecs;
+    buf->secs = ctime2->secs + ptime->secs;
+    buf->usecs = ctime2->usecs + ptime->usecs;
 
     /* Check for microseconds overflow. */
     if(buf->usecs >= 1000000UL) {

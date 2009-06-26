@@ -8,7 +8,7 @@
  * - Created: 18. December 2008
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 26. May 2009
+ * - Last-Change: 26. June 2009
  */
 
 /* List interface
@@ -38,6 +38,22 @@ typedef enum mem_color_t {
 } mem_color_t;
 
 
+/* Backend structure. */
+typedef union mem_node_be_t {
+    struct mem_node_be_rb_t {
+        struct mem_node_t *left;
+        struct mem_node_t *right;
+        mem_color_t color;
+        struct mem_list_t *tree;
+        struct mem_node_t *parent;
+    } rbtree;
+    struct mem_node_be_splay_t {
+        struct mem_node_t *left;
+        struct mem_node_t *right;
+    } splay;
+} mem_node_be_t;
+
+
 /* Single node which is stored in a linked list. */
 typedef struct mem_node_t {
     /* node properties */
@@ -49,27 +65,8 @@ typedef struct mem_node_t {
     struct mem_node_t *next;
     struct mem_node_t *prev;
 
-    /* backend */
-    /* DO NOT CHANGE THE ORDER OF THE ELEMENTS. THE ORDER IS USED TO
-     * COMPUTE THE SIZE OF THIS STRUCTURE DEPENDING ON THE BACKEND.
-     * Most backends do not have all of these members in it's node, therefore
-     * the node size is cutted to the appropriate size to save memory.
-     */
-    struct {
-        struct mem_node_t *right;
-        union {
-            struct {
-                struct mem_node_t *left;
-                mem_color_t color;
-                struct mem_list_t *tree;
-                struct mem_node_t *parent;
-            };
-            struct {
-                size_t bucket;
-                mem_hash_t hash;
-            };
-        };
-    };
+    /* backend; this must be the last member in the structure! */
+    mem_node_be_t be;
 } mem_node_t;
 
 
@@ -89,21 +86,13 @@ typedef struct mem_list_t {
     mem_node_t *last;
 
     /* backend */
-    union {
-        mem_node_t *root;
-        struct {
-            size_t size;
-            mem_node_t **table;
-        };
-    };
+    mem_node_t *root;
 } mem_list_t;
 
 
 /* Functions which operate on a single node. */
-extern mem_node_t *mem_node_new(unsigned int type);
+extern void mem_node_init(mem_node_t *node, unsigned int type);
 extern void mem_node_free(mem_node_t *node);
-extern void mem_node_setkey(mem_node_t *node, void *key, size_t len);
-extern void mem_node_setvalue(mem_node_t *node, void *data);
 #define mem_node_key(node) (node)->key
 #define mem_node_len(node) (node)->len
 #define mem_node_value(node) (node)->value
@@ -112,7 +101,7 @@ extern void mem_node_setvalue(mem_node_t *node, void *data);
 
 
 /* Functions to manage an whole list. */
-extern mem_list_t *mem_list_new(unsigned int type);
+extern void mem_list_init(mem_list_t *list, unsigned int type);
 extern void mem_list_clear(mem_list_t *list);
 extern void mem_list_free(mem_list_t *list);
 
@@ -147,6 +136,7 @@ typedef struct {
     mem_node_t *(*insert)(mem_list_t *list, mem_node_t *node);      /* Function that inserts a node into a list. */
     void (*remove)(mem_list_t *list, mem_node_t *node);             /* Function that removes a node from a list. */
 } mem_binfo_t;
+#define MEM_BSIZE(type) (mem_blist[type]->size)
 
 
 /* Red-Black Tree backend. */
@@ -177,9 +167,6 @@ extern mem_binfo_t mem_table;
 enum {
     MEM_RBTREE,
     MEM_SPLAY,
-    MEM_TABLE,
-    MEM_TABLE_STATIC,
-    MEM_TABLE_GREEDY,
     MEM_BACKEND_LAST
 };
 extern mem_binfo_t *mem_blist[MEM_BACKEND_LAST];

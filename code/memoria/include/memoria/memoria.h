@@ -78,7 +78,7 @@ typedef signed int (*mem_match_t)(const void *comparison, const void *original);
  */
 #define MEM_LROT(bit, val, k) (( (val) << (k) ) | ( (val) >> ((bit) - (k)) ))
 #define MEM_RROT(bit, val, k) (( (val) >> (k) ) | ( (val) << ((bit) - (k)) ))
-#define MEM_BIT(x) (0x1ULL << (x))
+#define MEM_BIT(x) (0x1UL << (x))
 #define MEM_BITS(x) ((MEM_BIT((x) - 1) - 1) | MEM_BIT((x) - 1))
 
 

@@ -8,7 +8,7 @@
  * - Created: 22. March 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 26. May 2009
+ * - Last-Change: 26. June 2009
  */
 
 /* Splay Tree backend
@@ -60,8 +60,8 @@ static mem_node_t *mem_stree_splay(mem_list_t *tree, mem_node_t *node, mem_node_
     SUNDRY_ASSERT(tree != NULL);
     SUNDRY_ASSERT(node != NULL);
 
-    tmp.left = NULL;
-    tmp.right = NULL;
+    tmp.be.splay.left = NULL;
+    tmp.be.splay.right = NULL;
     left = &tmp;
     right = &tmp;
 
@@ -72,45 +72,45 @@ static mem_node_t *mem_stree_splay(mem_list_t *tree, mem_node_t *node, mem_node_
              * Check next link first to prevent a loop
              * rotation.
              */
-            if(!node->left) break;
-            comp = mem_stree_comp(tree, node->left, search);
+            if(!node->be.splay.left) break;
+            comp = mem_stree_comp(tree, node->be.splay.left, search);
             if(comp < 0) {
-                yank = node->left;
-                node->left = yank->right;
-                yank->right = node;
+                yank = node->be.splay.left;
+                node->be.splay.left = yank->be.splay.right;
+                yank->be.splay.right = node;
                 node = yank;
-                if(!node->left) break;
+                if(!node->be.splay.left) break;
             }
-            right->left = node;
+            right->be.splay.left = node;
             right = node;
-            node = node->left;
+            node = node->be.splay.left;
         }
         else if(comp > 0) {
             /* Left rotation.
              * Check next link first to prevent a loop
              * rotation.
              */
-            if(!node->right) break;
-            comp = mem_stree_comp(tree, node->right, search);
+            if(!node->be.splay.right) break;
+            comp = mem_stree_comp(tree, node->be.splay.right, search);
             if(comp > 0) {
-                yank = node->right;
-                node->right = yank->left;
-                yank->left = node;
+                yank = node->be.splay.right;
+                node->be.splay.right = yank->be.splay.left;
+                yank->be.splay.left = node;
                 node = yank;
-                if(!node->right) break;
+                if(!node->be.splay.right) break;
             }
-            left->right = node;
+            left->be.splay.right = node;
             left = node;
-            node = node->right;
+            node = node->be.splay.right;
         }
         /* Or have we found the node? return. */
         else break;
     }
 
-    left->right = node->left;
-    right->left = node->right;
-    node->left = tmp.right;
-    node->right = tmp.left;
+    left->be.splay.right = node->be.splay.left;
+    right->be.splay.left = node->be.splay.right;
+    node->be.splay.left = tmp.be.splay.right;
+    node->be.splay.right = tmp.be.splay.left;
     return node;
 }
 
@@ -161,8 +161,8 @@ mem_node_t *mem_splay_insert(mem_list_t *tree, mem_node_t *node) {
     SUNDRY_ASSERT(tree != NULL && node != NULL && node->next == NULL && node->prev == NULL);
 
     if(!tree->root) {
-        node->left = NULL;
-        node->right = NULL;
+        node->be.splay.left = NULL;
+        node->be.splay.right = NULL;
         node->next = NULL;
         node->prev = NULL;
         tree->root = node;
@@ -174,9 +174,9 @@ mem_node_t *mem_splay_insert(mem_list_t *tree, mem_node_t *node) {
         ret = mem_stree_comp(tree, tree->root, node);
         if(ret < 0) {
             /* Insert before the current root. */
-            node->left = tree->root->left;
-            node->right = tree->root;
-            tree->root->left = NULL;
+            node->be.splay.left = tree->root->be.splay.left;
+            node->be.splay.right = tree->root;
+            tree->root->be.splay.left = NULL;
             if(tree->root->prev) tree->root->prev->next = node;
             else tree->first = node;
             node->prev = tree->root->prev;
@@ -186,9 +186,9 @@ mem_node_t *mem_splay_insert(mem_list_t *tree, mem_node_t *node) {
         }
         else if(ret > 0) {
             /* Insert after the current root. */
-            node->right = tree->root->right;
-            node->left = tree->root;
-            tree->root->right = NULL;
+            node->be.splay.right = tree->root->be.splay.right;
+            node->be.splay.left = tree->root;
+            tree->root->be.splay.right = NULL;
             if(tree->root->next) tree->root->next->prev = node;
             else tree->last = node;
             node->next = tree->root->next;
@@ -220,16 +220,16 @@ void mem_splay_remove(mem_list_t *tree, mem_node_t *node) {
      */
     SUNDRY_ASSERT(tree->root == node);
 
-    if(tree->root->left) {
+    if(tree->root->be.splay.left) {
         /* Put an element without a right node at the top of the left subtree. */
-        root = mem_stree_splay(tree, tree->root->left, node);
+        root = mem_stree_splay(tree, tree->root->be.splay.left, node);
         /* After a right rotation, we are the right child, therefore set the child
          * to one lower layer.
          */
-        root->right = tree->root->right;
+        root->be.splay.right = tree->root->be.splay.right;
     }
     else {
-        root = tree->root->right;
+        root = tree->root->be.splay.right;
     }
     if(tree->root->prev) tree->root->prev->next = tree->root->next;
     if(tree->first == tree->root) tree->first = tree->first->next;
@@ -238,8 +238,8 @@ void mem_splay_remove(mem_list_t *tree, mem_node_t *node) {
 
     tree->root->next = NULL;
     tree->root->prev = NULL;
-    tree->root->left = NULL;
-    tree->root->right = NULL;
+    tree->root->be.splay.left = NULL;
+    tree->root->be.splay.right = NULL;
 
     tree->root = root;
     --tree->count;

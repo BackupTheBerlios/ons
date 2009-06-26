@@ -171,7 +171,7 @@ $(CODEDIR)/sundry/src/%.o: $(CONFIG) $(SUNDRY_TINCLUDES)
 # Metatargets to build memoria.
 #
 
-MEMORIA_SOURCES=random.c hash.c list.c rbtree.c splay.c table.c
+MEMORIA_SOURCES=random.c hash.c list.c rbtree.c splay.c
 MEMORIA_INCLUDES=memoria.h alloc.h array.h list.h
 
 MEMORIA_TSOURCES=$(foreach file,$(MEMORIA_SOURCES),$(CODEDIR)/memoria/src/$(file))
@@ -190,10 +190,8 @@ memoria_end:
 $(CODEDIR)/libmemoria.$(SUFFIX): $(MEMORIA_OBJECTS)
 	$(CC) $(LFLAGS) $(DFLAGS) $(CODEDIR)/libsundry.$(SUFFIX) $(MEMORIA_OBJECTS) -o $(CODEDIR)/libmemoria.$(SUFFIX) $(MEMORIA_LIBS) 
 
-# TODO:
-# We currently fix the build with a force "-no-pedantic" (and similar) here!
 $(CODEDIR)/memoria/src/%.o: $(CONFIG) $(MEMORIA_TINCLUDES)
-	$(CC) $(CFLAGS) -no-pedantic -std=gnu99 $(MEMORIA_INCPATH) $(CODEDIR)/memoria/src/$*.c -o $(CODEDIR)/memoria/src/$*.o
+	$(CC) $(CFLAGS) $(MEMORIA_INCPATH) $(CODEDIR)/memoria/src/$*.c -o $(CODEDIR)/memoria/src/$*.o
 
 
 #

@@ -8,7 +8,7 @@
  * - Created: 22. March 2009
  * - Lead-Dev: - David Herrmann
  * - Contributors: /
- * - Last-Change: 26. May 2009
+ * - Last-Change: 26. June 2009
  */
 
 /* Implements the list managenent.
@@ -32,47 +32,30 @@
  */
 
 mem_binfo_t mem_rbtree = {
-    .size = sizeof(mem_node_t*) + offsetof(mem_node_t, parent),
-    .clear = mem_rbtree_clear,
-    .find = mem_rbtree_find,
-    .insert = mem_rbtree_insert,
-    .remove = mem_rbtree_remove
+    /* .size = */ sizeof(struct mem_node_be_rb_t) + offsetof(mem_node_t, be),
+    /* .clear = */ mem_rbtree_clear,
+    /* .find = */ mem_rbtree_find,
+    /* .insert = */ mem_rbtree_insert,
+    /* .remove = */ mem_rbtree_remove
 };
 
 mem_binfo_t mem_splay = {
-    .size = sizeof(mem_node_t*) + offsetof(mem_node_t, left),
-    .clear = mem_splay_clear,
-    .find = mem_splay_find,
-    .insert = mem_splay_insert,
-    .remove = mem_splay_remove
-};
-
-mem_binfo_t mem_table = {
-    .size = sizeof(mem_hash_t*) + offsetof(mem_node_t, hash),
-    .clear = mem_table_clear,
-    .find = mem_table_find,
-    .insert = mem_table_insert,
-    .remove = mem_table_remove
+    /* .size = */ sizeof(struct mem_node_be_splay_t) + offsetof(mem_node_t, be),
+    /* .clear = */ mem_splay_clear,
+    /* .find = */ mem_splay_find,
+    /* .insert = */ mem_splay_insert,
+    /* .remove = */ mem_splay_remove
 };
 
 mem_binfo_t *mem_blist[] = {
     &mem_rbtree,
-    &mem_splay,
-    &mem_table,
-    &mem_table,
-    &mem_table
+    &mem_splay
 };
 
 
-mem_node_t *mem_node_new(unsigned int type) {
-    mem_node_t *node;
-    size_t size;
-
+void mem_node_init(mem_node_t *node, unsigned int type) {
     SUNDRY_ASSERT(mem_valid_type(type));
-
-    size = mem_blist[type]->size;
-    node = mem_zmalloc(size);
-    return node;
+    memset(node, 0, mem_blist[type]->size);
 }
 
 
@@ -84,30 +67,11 @@ void mem_node_free(mem_node_t *node) {
 }
 
 
-void mem_node_setkey(mem_node_t *node, void *key, size_t len) {
-    SUNDRY_ASSERT(node != NULL);
-    SUNDRY_ASSERT(!node->next && !node->prev);
-    SUNDRY_ASSERT(key != NULL && len != 0);
-    mem_free(node->key);
-    node->key = mem_dup(key, len);
-    node->len = len;
-}
-
-
-void mem_node_setvalue(mem_node_t *node, void *data) {
-    SUNDRY_ASSERT(node != NULL);
-    node->value = data;
-}
-
-
-mem_list_t *mem_list_new(unsigned int type) {
-    mem_list_t *list;
-
+void mem_list_init(mem_list_t *list, unsigned int type) {
     SUNDRY_ASSERT(mem_valid_type(type));
 
-    list = mem_zmalloc(sizeof(mem_list_t));
+    memset(list, 0, sizeof(mem_list_t));
     list->type = type;
-    return list;
 }
 
 

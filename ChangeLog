@@ -46,6 +46,13 @@ TODO on version change:
  - Compile on supported platforms with "pedantic".
 
 [ ONS v0.1.1.0 (TESTING) ]
+    * David Herrmann 2009/06/26
+        * ./.../list.h: Make c89 compatible.
+        * ./.../list.c: likewise
+        * ./.../splay.c: likewise
+        * ./.../rbtree.c: likewise
+        * ./.../table.c: Remove the hash table backend. (it sucked)
+        * ./.../time.c: Fix global shadow on "ctime".
     * David Herrmann 2009/06/17
         * ./.../machine.h: Change ONS_DEBUG_MODE to have only one level.
     * David Herrmann 2009/06/16

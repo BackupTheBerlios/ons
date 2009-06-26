@@ -55,6 +55,9 @@ SUNDRY_EXTERN_C_BEGIN
  * before it is deleted. If NULL, nothing is done. The space where the element is located is
  * always freed by this implementation, but this function can be used if you store pointers
  * in this array and want to free the space the pointers point to before they get deleted.
+ * You have to define "mem_realloc" and "mem_free" to something different before using this
+ * macro and #undef those after using it to get other allocation functions to work with this
+ * interface.
  *
  * Structure:
  *  - The structure contains 3 members:
@@ -281,7 +284,7 @@ static uint32_t mem_isaac_rand(mem_isaac_t *r) {
 }
 
 /* Fastest unbiased pseudo random number generator found
- * in the internet.
+ * on the internet.
  * Developed by Bob Jenkins and works fast. THE HELL FAST!
  * It's almost twice as fast as ISAAC.
  */
